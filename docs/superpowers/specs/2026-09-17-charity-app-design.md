@@ -38,7 +38,7 @@ The app is framed in a mobile layout (`max-w-md mx-auto` on desktop, full native
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│  🪷 Lotus Grove Sanctuary               [ Devotee ▾ ]     │  <-- Header & Role Switcher
+│  🪷 Lotus Grove Sanctuary     [VI|EN]   [ Devotee ▾ ]     │  <-- Header, Language Switcher & Role
 ├───────────────────────────────────────────────────────────┤
 │                                                           │
 │                                                           │
@@ -229,7 +229,69 @@ export interface MonasteryTransaction {
 
 ---
 
-## 5. UI/UX & Visual Design Tokens
+---
+
+## 5. Internationalization (i18n) & JSON Translation Architecture
+
+To support seamless switching between **Vietnamese (Tiếng Việt)** and **English (English)** and enable effortless addition of future languages (e.g. French, Chinese, Japanese):
+
+### 1. JSON Dictionary Structure
+All user-facing strings, labels, teachings, categories, and system messages are decoupled into clean JSON files under `src/locales/`:
+- `src/locales/en.json` — English translation dictionary
+- `src/locales/vi.json` — Vietnamese translation dictionary (e.g. *"Tịnh Xá Sen Vàng"*, *"Cúng Dường & Cầu Nguyện"*, *"Sổ Minh Bạch UTXO"*, *"Hóa Đơn Minh Chứng"*, *"Tâm Nguyện & Hồi Hướng"*, *"Cầu An"*, *"Cầu Siêu"*, *"Tu Viện Quản Sự"*)
+
+### 2. Extensible Schema Structure
+Each language file adheres to an identical, strongly-typed JSON schema:
+```json
+{
+  "common": {
+    "appName": "Lotus Grove Sanctuary",
+    "monasteryName": "Lotus Grove Vihara",
+    "devoteeRole": "Devotee View",
+    "stewardRole": "Steward / Monk View",
+    "tabs": {
+      "sanctuary": "Sanctuary",
+      "transparency": "Transparency",
+      "prayerWall": "Prayer Wall",
+      "steward": "Steward"
+    }
+  },
+  "sanctuary": {
+    "teachingQuote": "In giving, we find boundless peace",
+    "offerButton": "Offer to this Cause",
+    "verifiedBy": "Verified by Abbot ✓",
+    "remaining": "{{days}} days remaining"
+  },
+  "transparency": {
+    "title": "UTXO Transparency Ledger",
+    "subtitle": "Tap any spent output to inspect verified merchant receipts",
+    "inputsTitle": "Donation Inputs",
+    "spentTitle": "Verified Spent",
+    "unspentTitle": "Unspent Change (Treasury)"
+  },
+  "prayerWall": {
+    "title": "Book of Intentions & Sangha",
+    "blessedStatus": "Blessed in Morning Chanting • 6:00 AM 🪷",
+    "rejoiceInMerit": "Rejoice in Merit (Sadhu)",
+    "replyPlaceholder": "Write a compassionate message or question for monks..."
+  },
+  "steward": {
+    "title": "Steward Portal",
+    "logExpense": "Log Expense",
+    "launchFund": "Launch New Cause Fund",
+    "treasuryTotal": "Total Available Reserves"
+  }
+}
+```
+
+### 3. Lightweight i18n Hook (`useTranslation`)
+- A zero-overhead React Context provides `t(key, params)` and `currentLanguage` (`'vi' | 'en'`).
+- Header language toggle: Compact, tactile `[🇻🇳 VI | 🇬🇧 EN]` pill with persistent storage in `localStorage ('lotus_language')`.
+- Adding a 3rd language (e.g., French, Japanese) only requires dropping `fr.json` into `src/locales/` and adding one line to the language registry array!
+
+---
+
+## 6. UI/UX & Visual Design Tokens
 
 - **Background:** Soft warm parchment / cream (`#FAF7F2`).
 - **Card Surfaces:** Pure white (`#FFFFFF`) with subtle warm borders (`#EFEAE1`).
@@ -246,16 +308,18 @@ export interface MonasteryTransaction {
 
 ---
 
-## 6. Testing & Verification Strategy
+## 7. Testing & Verification Strategy
 
 1. **Unit & Logic Tests:**
    - UTXO math invariant test: Ensure `Sum(Inputs) == SpentOutput + ChangeOutput`.
    - Fund balance recalculation test upon logging an expense and making a donation.
    - Provenance calculation test: Correctly compute percentage spent vs. unspent for any given donation `txHash`.
+   - Language switching test: Verify all UI keys resolve in both `vi` and `en` without missing key fallbacks.
 2. **Component & Flow Tests:**
    - Donation flow completion creates a valid `txHash` and updates the Prayer Wall.
    - Monk expense logging updates the UTXO ledger and reflects in the transparency view.
    - Clicking a spent output in the UTXO flow opens the receipt inspection drawer with correct details.
+   - Monk launches a new cause fund and verifies it immediately renders on Tab 1 with fulfillment bar and offering button.
    - Role switching and PIN verification for Steward mode.
 3. **Responsive Mobile Testing:**
    - Pixel-perfect layout check across standard mobile viewport widths (`375px`, `390px`, `414px`, `480px`).
