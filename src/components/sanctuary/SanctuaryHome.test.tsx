@@ -1,0 +1,118 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { CauseFundCard } from './CauseFundCard';
+import { SanctuaryHome } from '../tabs/SanctuaryHome';
+import { LanguageProvider } from '../../context/LanguageContext';
+import { MonasteryStoreProvider } from '../../context/MonasteryStore';
+import { Fund } from '../../types';
+
+describe('CauseFundCard', () => {
+  it('renders progress bar, verified badge, deadline, and dedicated offering button', () => {
+    const onOfferMock = vi.fn();
+    const mockFund: Fund = {
+      id: 'alms',
+      name: 'Daily Alms & Nutritious Food',
+      description: 'Supporting daily meal offerings for monks',
+      category: 'necessities',
+      targetAmount: 1500,
+      currentBalance: 1240,
+      deadline: '2026-09-22',
+      daysRemaining: 5,
+      verifiedStatus: { isVerified: true, attestedBy: 'Abbot', badgeLabel: 'Verified by Abbot ✓' },
+      supportersCount: 38,
+      icon: 'bowl',
+      color: '#D97706',
+    };
+
+    render(
+      <LanguageProvider>
+        <CauseFundCard fund={mockFund} onOffer={onOfferMock} />
+      </LanguageProvider>
+    );
+
+    expect(screen.getByText('Daily Alms & Nutritious Food')).toBeInTheDocument();
+    expect(screen.getByText(/Verified by Abbot/i)).toBeInTheDocument();
+    expect(screen.getByText(/82%/)).toBeInTheDocument();
+    expect(screen.getByText(/5 days remaining/i)).toBeInTheDocument();
+
+    const offerBtn = screen.getByRole('button', { name: /Offer to this Cause/i });
+    expect(offerBtn).toBeInTheDocument();
+    fireEvent.click(offerBtn);
+    expect(onOfferMock).toHaveBeenCalledWith('alms');
+  });
+
+  it('renders 100% fulfillment and handles zero or missing daysRemaining properly', () => {
+    const onOfferMock = vi.fn();
+    const fundedFund: Fund = {
+      id: 'completed-drive',
+      name: 'Roof Repair Project',
+      description: 'Completed meditation roof repairs',
+      category: 'infrastructure' as any,
+      targetAmount: 1000,
+      currentBalance: 1200,
+      deadline: '2026-12-31',
+      verifiedStatus: { isVerified: false, attestedBy: '', badgeLabel: '' },
+      supportersCount: 50,
+      icon: 'unknown-icon',
+      color: '#10B981',
+    };
+
+    render(
+      <LanguageProvider>
+        <CauseFundCard fund={fundedFund} onOffer={onOfferMock} />
+      </LanguageProvider>
+    );
+
+    expect(screen.getByText('Roof Repair Project')).toBeInTheDocument();
+    expect(screen.getByText(/100%/)).toBeInTheDocument();
+    expect(screen.queryByText(/Verified by Abbot/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('SanctuaryHome Tab', () => {
+  it('renders daily teaching quote banner and all active cause cards from store', () => {
+    const onOfferMock = vi.fn();
+
+    render(
+      <LanguageProvider>
+        <MonasteryStoreProvider>
+          <SanctuaryHome onOffer={onOfferMock} />
+        </MonasteryStoreProvider>
+      </LanguageProvider>
+    );
+
+    // Daily teaching reflection
+    expect(screen.getByText(/In giving, we find boundless peace/i)).toBeInTheDocument();
+    expect(screen.getByText(/Active Cause Funds/i)).toBeInTheDocument();
+
+    // Check seed data funds are rendered
+    expect(screen.getByText('Daily Alms & Nutritious Food')).toBeInTheDocument();
+    expect(screen.getByText('Monastery Healthcare & Medicine')).toBeInTheDocument();
+    expect(screen.getByText('Monastery Solar & Clean Water Utilities')).toBeInTheDocument();
+    expect(screen.getByText('Dharma Texts & Sangha Education')).toBeInTheDocument();
+
+    // Check offering buttons exist for each fund
+    const offerButtons = screen.getAllByRole('button', { name: /Offer to this Cause/i });
+    expect(offerButtons.length).toBe(4);
+
+    // Clicking first button calls onOffer with first fund ID
+    fireEvent.click(offerButtons[0]);
+    expect(onOfferMock).toHaveBeenCalledWith('alms');
+  });
+
+  it('renders correctly in Vietnamese localization', () => {
+    render(
+      <LanguageProvider defaultLanguage="vi">
+        <MonasteryStoreProvider>
+          <SanctuaryHome />
+        </MonasteryStoreProvider>
+      </LanguageProvider>
+    );
+
+    expect(screen.getByText(/Trong sự sẻ chia, ta tìm thấy an lạc vô biên/i)).toBeInTheDocument();
+    expect(screen.getByText(/Các Quỹ Thiện Nguyện Hiện Tại/i)).toBeInTheDocument();
+
+    const viOfferButtons = screen.getAllByRole('button', { name: /Cúng Dường Quỹ Này/i });
+    expect(viOfferButtons.length).toBe(4);
+  });
+});

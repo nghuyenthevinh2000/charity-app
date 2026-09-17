@@ -7,4 +7,13 @@ describe('App smoke test', () => {
     render(<App />);
     expect(screen.getByText(/Lotus Grove/i)).toBeInTheDocument();
   });
+
+  it('renders sanctuary home tab with cause funds on default load', () => {
+    render(<App />);
+    expect(screen.getByText(/Active Cause Funds/i)).toBeInTheDocument();
+    expect(screen.getByText('Daily Alms & Nutritious Food')).toBeInTheDocument();
+    const offerButtons = screen.getAllByRole('button', { name: /Offer to this Cause/i });
+    expect(offerButtons.length).toBeGreaterThan(0);
+  });
 });
+
