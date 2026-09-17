@@ -114,12 +114,15 @@ This tab unifies the UTXO fund flow with itemized receipt inspection:
 
 ---
 
-### Tab 3: Book of Intentions (Prayer Wall)
-- Community feed of devotee prayers with filter pills (*All*, *Healing*, *In Loving Memory*, *Peace*, *My Prayers*).
-- Status indicator:
-  - `Queued for Morning Chanting` (pending)
-  - `Blessed in Morning Chanting • 6:00 AM 🪷` (blessed)
-- Community interaction: **"Rejoice in Merit" (`🙏 Anumodana`)** button with count increment.
+### Tab 3: Book of Intentions & Community Sangha (Prayer Wall & Dialogue)
+- **Sacred Dedications Feed:** Filterable by category (*All*, *Healing*, *In Loving Memory*, *Peace*, *My Prayers*).
+- **Status Badges:** `Queued for Morning Chanting` vs. `Blessed in Morning Chanting • 6:00 AM 🪷`.
+- **Reactions:** **"Rejoice in Merit" (`🙏 Anumodana`)** count with real-time increment.
+- **Monk & Devotee Community Dialogue (Threaded Conversations):**
+  - **Expandable Dialogue Drawer on each Prayer Card:** Monks and devotees can talk with one another in a calm, compassionate space.
+  - **Monk Verified Responses:** When monks post a reply, their message is styled with a subtle saffron glow and verified badge (`🧘 Venerable Monk (Lotus Grove) ✓`), offering spiritual comfort, sutra excerpts, and personal blessings.
+  - **Devotee Mutual Support:** Devotees can offer words of encouragement to fellow community members (e.g., sending strength to someone undergoing surgery or mourning a loved one).
+  - **"Ask a Monk / Community Reflection" Button:** Devotees can post a spiritual inquiry or gratitude message, allowing monks to respond with teachings and guidance.
 
 ---
 
@@ -173,13 +176,24 @@ export interface DonationInput {
   fundId: FundId;
   date: string;
   prayerIntention?: {
+    id: string;
     category: 'healing' | 'memorial' | 'peace' | 'gratitude';
     dedicationText: string;
     isPublic: boolean;
     blessingStatus: 'queued' | 'blessed';
     blessedAt?: string;
     rejoiceCount: number;
+    comments: CommunityComment[];
   };
+}
+
+export interface CommunityComment {
+  id: string;
+  authorName: string;
+  authorRole: 'monk' | 'devotee';
+  monkTitle?: string; // e.g. "Venerable Abbot Tam Duc"
+  commentText: string;
+  createdAt: string;
 }
 
 export interface SpentOutput {
