@@ -75,7 +75,7 @@ export function AppContent() {
           onRequestStewardUnlock={handleRequestStewardUnlock}
         />
 
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pb-6">
           {activeTab === 'sanctuary' && (
             <SanctuaryHome onOffer={handleOffer} />
           )}

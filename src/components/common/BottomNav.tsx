@@ -43,7 +43,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabSelect }) 
 
   return (
     <nav
-      className="sticky bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-parchment-300 px-2 py-1.5 shadow-md flex items-center justify-around"
+      className="sticky bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-parchment-300 px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))] shadow-md flex items-center justify-around"
       role="navigation"
       aria-label="Bottom Navigation"
     >
