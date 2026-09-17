@@ -16,10 +16,9 @@ flowchart TB
 
     subgraph Frontend ["Mobile Web Application (React + Vite + Tailwind)"]
         subgraph DevoteeViews ["Devotee / Public Portal"]
-            HomeTab["Sanctuary Home\n• Daily Blessing\n• Transparency Metrics\n• Quick Donate"]
-            TransTab["Transparency Ledger\n• Filter by Fund/Category\n• Itemized Cost Breakdown\n• Receipt Viewer / Zoom"]
-            DonateTab["Donate & Dedicate Flow\n• 3-Step Guided Giving\n• Cause Selection\n• Prayer Dedication Note"]
-            PrayerTab["Prayer Intention Wall\n• Devotee Intentions\n• 'Blessed by Monks' Status"]
+            HomeTab["Sanctuary Home\n• Daily Blessing\n• Modular Cause Funds\n• Fulfillment & Deadlines\n• Direct 'Offer' CTA & Modal"]
+            TransTab["Transparency Ledger\n• UTXO Fund Flow & Provenance\n• Filter by Fund\n• Receipt Viewer Drawer"]
+            PrayerTab["Prayer Intention Wall\n• Devotee Intentions\n• 'Blessed by Monks' Status\n• Rejoice in Merit (🙏)"]
         end
 
         subgraph StewardViews ["Monk / Steward Portal"]
@@ -44,7 +43,7 @@ flowchart TB
     PINCheck -->|Authorized| StewardViews
 
     %% Data interactions
-    DonateTab -->|1. Submit Donation + Prayer Note| Store
+    HomeTab -->|1. Submit Offering via Contextual Modal| Store
     ExpenseLog -->|2. Record Expense + Receipt Image| Store
     ChantQueue -->|3. Bless Prayer Intention| Store
 
@@ -70,8 +69,8 @@ sequenceDiagram
 
     rect rgb(240, 248, 255)
         note over Devotee, State: Flow 1: Donation & Prayer Dedication
-        Devotee->>App: Selects Cause (e.g. Alms Food) & Amount ($50)
-        Devotee->>App: Writes Prayer Intention ("For family health & peace")
+        Devotee->>App: Taps "Offer to this Cause" on Alms Food card
+        Devotee->>App: Completes 3-step modal (Amount $50 + Prayer Intention)
         Devotee->>App: Submits offering
         App->>State: Creates Donation record & queues Prayer Intention
         State-->>App: Generates Digital Blessing Receipt with Dedication ID
@@ -134,6 +133,8 @@ flowchart LR
     Out2 -.-> Tracker
 ```
 
+---
+
 ## 3. Component Hierarchy & Mobile Navigation
 
 ```mermaid
@@ -143,16 +144,16 @@ graph TD
     %% Shell
     AppRoot --> Header["Zen Header\n• Monastery Seal\n• Mode Switcher (Devotee / Monk)"]
     AppRoot --> Viewport["Main Viewport (Route / Active Tab Screen)"]
-    AppRoot --> BottomNav["Bottom Navigation Bar (5 Icons)"]
+    AppRoot --> BottomNav["Bottom Navigation Bar (4 Focused Tabs)"]
 
     %% Views
-    Viewport --> TabHome["Tab 1: Sanctuary (Home)\n• Quote of the Day\n• Live Fund Cards\n• Quick Stat Pill\n• CTA: Make Offering"]
-    Viewport --> TabTrans["Tab 2: Transparency\n• Fund Filter Pills\n• Search Bar\n• Expense Feed Card List\n• Receipt Viewer Drawer"]
-    Viewport --> TabDonate["Tab 3: Donate & Dedicate\n• Step 1: Fund Selection\n• Step 2: Amount & Frequency\n• Step 3: Prayer Intention\n• Step 4: Digital Blessing Card"]
-    Viewport --> TabPrayer["Tab 4: Prayer Wall\n• Intention Feed\n• Blessing Status Badges\n• Filter by Intention Type"]
-    Viewport --> TabSteward["Tab 5: Steward Portal\n(Monk Only)\n• Treasury Balance Overview\n• Quick Action: + Log Expense\n• Chanting Queue Manager\n• Audit History"]
+    Viewport --> TabHome["Tab 1: Sanctuary (Home)\n• Quote of the Day\n• Modular CauseFundCard List\n• Fulfillment Bars & Deadlines\n• 'Offer to this Cause' Action"]
+    Viewport --> TabTrans["Tab 2: Transparency\n• Fund Filter Pills\n• UTXO Fund Flow Diagram\n• Personal TX Provenance Search\n• Tap-to-Inspect Receipts"]
+    Viewport --> TabPrayer["Tab 3: Prayer Wall\n• Intention Feed\n• Blessing Status Badges\n• 'Rejoice in Merit' (🙏) Counter"]
+    Viewport --> TabSteward["Tab 4: Steward Portal\n(Monk Only)\n• Treasury Balance Overview\n• Quick Action: + Log Expense\n• Chanting Queue Manager\n• Audit History"]
 
-    %% Sub-components
+    %% Sub-components & Modals
+    TabHome --> OfferingModal["OfferingModal (Contextual Giving)\n• Pre-selected Cause\n• Amount & Prayer Note\n• Generates Blessing Certificate"]
     TabTrans --> ReceiptModal["ReceiptInspectionModal\n• Full Image with Zoom\n• Vendor & Itemized Items\n• Monk Attestation Note"]
     TabSteward --> ExpenseFormModal["ExpenseEntryModal\n• Amount Input\n• Category Selector\n• Camera / File Upload\n• Purpose Notes"]
 ```

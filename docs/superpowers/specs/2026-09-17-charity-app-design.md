@@ -47,7 +47,7 @@ The app is framed in a mobile layout (`max-w-md mx-auto` on desktop, full native
 │                                                           │
 │                                                           │
 ├───────────────────────────────────────────────────────────┤
-│  [🏠 Home]  [👁️ Ledger]  [🤲 Donate]  [📖 Prayers]  [👘 Steward] │  <-- Bottom Navigation Bar
+│  [🏠 Sanctuary]    [👁️ Transparency]    [📖 Prayer Wall]    [👘 Steward]  │  <-- 4 Focused Bottom Tabs
 └───────────────────────────────────────────────────────────┘
 ```
 
@@ -65,9 +65,27 @@ The app is framed in a mobile layout (`max-w-md mx-auto` on desktop, full native
      - Clear deadline or renewal badge: e.g., `⏳ 5 days remaining (Ends Sep 22)` or `🔄 Monthly Recurring: 8 days left`.
   4. **Dedicated Offering Button (Right below each fund group):**
      - Prominent warm amber button: `Offer to this Cause` directly embedded below the fulfillment bar.
-     - Tapping this button immediately launches the guided 3-step donation & prayer flow with this fund pre-selected.
+     - Tapping this button immediately launches the contextual **Offering Modal** with this fund pre-selected.
   5. **Dynamic Spin-Off Architecture:**
      - Supported by the extensible `Fund` data model. New emergency drives or seasonal projects (e.g., *Winter Warmth Robes*, *Monastery Solar Roof*, *Dharma Book Printing*) can be added dynamically and render with identical fidelity and functionality.
+
+---
+
+### Contextual Flow: Offering & Prayer Dedication Modal
+Triggered directly when a devotee taps `Offer to this Cause` on any fund card:
+- **Step 1: Cause & Amount:**
+  - Selected fund header and purpose reminder.
+  - Quick amount pills ($15, $35, $70, $150) or custom dollar input.
+  - One-time vs Monthly recurring switch.
+- **Step 2: Prayer Intention & Dedication:**
+  - Donor identification: Full name, Family name, or *Anonymous Devotee*.
+  - Intention category: *Healing & Longevity (Cầu An)*, *In Loving Memory (Cầu Siêu)*, *Peace & Gratitude*.
+  - Intention message: Multiline text area for personal prayers.
+  - Wall visibility: *Public on Prayer Wall* vs *Private to Monks Only*.
+- **Step 3: Confirmation & Digital Blessing Certificate:**
+  - Generates unique donation transaction hash (`0x...`).
+  - Displays a shareable Zen digital certificate with gold lotus seal and prayer dedication.
+  - Direct links to **"Trace on UTXO Ledger"** and **"View on Prayer Wall"**.
 
 ---
 
@@ -96,24 +114,7 @@ This tab unifies the UTXO fund flow with itemized receipt inspection:
 
 ---
 
-### Tab 3: Donate & Dedicate (Guided Offering Flow)
-A serene, mindful 3-step giving flow:
-- **Step 1: Choose Fund & Amount:**
-  - Select fund: *Alms*, *Medical*, *Utilities*, *General*.
-  - Select amount: Preset pills ($15, $35, $70, $150) or custom input.
-  - One-time vs Monthly recurring switch.
-- **Step 2: Prayer Intention & Dedication:**
-  - Donor identification: Full name, Family name, or *Anonymous Devotee*.
-  - Intention category: *Healing & Longevity (Cầu An)*, *In Loving Memory (Cầu Siêu)*, *Peace & Gratitude*.
-  - Intention message: Multiline text area for personal prayers.
-  - Wall visibility: *Public on Prayer Wall* vs *Private to Monks Only*.
-- **Step 3: Confirmation & Digital Blessing Certificate:**
-  - Generates unique donation transaction hash (`0x...`).
-  - Displays a shareable Zen digital certificate with gold lotus seal and prayer dedication.
-
----
-
-### Tab 4: Book of Intentions (Prayer Wall)
+### Tab 3: Book of Intentions (Prayer Wall)
 - Community feed of devotee prayers with filter pills (*All*, *Healing*, *In Loving Memory*, *Peace*, *My Prayers*).
 - Status indicator:
   - `Queued for Morning Chanting` (pending)
@@ -122,7 +123,7 @@ A serene, mindful 3-step giving flow:
 
 ---
 
-### Tab 5: Monk Steward Portal (Admin)
+### Tab 4: Monk Steward Portal (Admin)
 - Authenticated view (PIN: `1080`).
 - **Treasury Overview:** Total balance per fund, monthly expenditure totals, and low-fund alerts.
 - **Quick Action `+ Log New Expense` Modal:**
