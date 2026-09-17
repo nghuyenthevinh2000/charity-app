@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { Header, AppRole } from './components/common/Header';
 import { BottomNav, TabId } from './components/common/BottomNav';
 import { StewardPinModal } from './components/modals/StewardPinModal';
+import { OfferingModal } from './components/modals/OfferingModal';
 import { SanctuaryHome } from './components/tabs/SanctuaryHome';
 import { LanguageContext, LanguageProvider, useTranslation } from './context/LanguageContext';
 import { MonasteryStoreContext, MonasteryStoreProvider, useMonasteryStore } from './context/MonasteryStore';
@@ -9,6 +10,7 @@ import { MonasteryStoreContext, MonasteryStoreProvider, useMonasteryStore } from
 export function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('sanctuary');
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+  const [offeringFundId, setOfferingFundId] = useState<string | null>(null);
   const { t } = useTranslation();
   const { isStewardUnlocked } = useMonasteryStore();
 
@@ -42,8 +44,22 @@ export function AppContent() {
     setActiveTab('steward');
   };
 
-  const handleOffer = (_fundId: string) => {
-    // Contextual OfferingModal integration in Task 7
+  const handleOffer = (fundId: string) => {
+    setOfferingFundId(fundId);
+  };
+
+  const handleCloseOffering = () => {
+    setOfferingFundId(null);
+  };
+
+  const handleNavigateToLedger = (_txHash: string) => {
+    setOfferingFundId(null);
+    setActiveTab('transparency');
+  };
+
+  const handleNavigateToPrayerWall = () => {
+    setOfferingFundId(null);
+    setActiveTab('prayerWall');
   };
 
   return (
@@ -106,6 +122,13 @@ export function AppContent() {
           isOpen={isPinModalOpen}
           onClose={() => setIsPinModalOpen(false)}
           onSuccess={handlePinSuccess}
+        />
+
+        <OfferingModal
+          selectedFundId={offeringFundId}
+          onClose={handleCloseOffering}
+          onNavigateToLedger={handleNavigateToLedger}
+          onNavigateToPrayerWall={handleNavigateToPrayerWall}
         />
       </div>
     </div>

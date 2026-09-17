@@ -1,8 +1,12 @@
-import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 import App from './App';
 
 describe('App smoke test', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it('renders app title', () => {
     render(<App />);
     expect(screen.getByText(/Lotus Grove/i)).toBeInTheDocument();
@@ -15,5 +19,52 @@ describe('App smoke test', () => {
     const offerButtons = screen.getAllByRole('button', { name: /Offer to this Cause/i });
     expect(offerButtons.length).toBeGreaterThan(0);
   });
-});
 
+  it('opens OfferingModal when clicking Offer to this Cause and navigates to Prayer Wall upon certificate action', () => {
+    render(<App />);
+
+    const offerButtons = screen.getAllByRole('button', { name: /Offer to this Cause/i });
+    fireEvent.click(offerButtons[0]);
+
+    // Modal opens with selected fund
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText(/Make an Offering & Dedication/i)).toBeInTheDocument();
+
+    // Step 1 -> Step 2
+    fireEvent.click(screen.getByText('$35'));
+    fireEvent.click(screen.getByText(/Next/i));
+
+    // Step 2 -> Submit
+    fireEvent.change(screen.getByPlaceholderText(/prayer intention/i), {
+      target: { value: 'Peace for all beings' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /Submit Offering/i }));
+
+    // Step 3 -> Certificate rendered
+    expect(screen.getByText(/Digital Blessing Certificate/i)).toBeInTheDocument();
+
+    // Click "View on Prayer Wall"
+    const prayerWallBtn = screen.getByRole('button', { name: /View on Prayer Wall/i });
+    fireEvent.click(prayerWallBtn);
+
+    // Modal should close and active tab should be Prayer Wall
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /Prayer Wall/i })).toBeInTheDocument();
+  });
+
+  it('navigates to UTXO Transparency Ledger when clicking Trace on UTXO Ledger from certificate', () => {
+    render(<App />);
+
+    const offerButtons = screen.getAllByRole('button', { name: /Offer to this Cause/i });
+    fireEvent.click(offerButtons[0]);
+
+    fireEvent.click(screen.getByText(/Next/i));
+    fireEvent.click(screen.getByRole('button', { name: /Submit Offering/i }));
+
+    const traceBtn = screen.getByRole('button', { name: /Trace on UTXO Ledger/i });
+    fireEvent.click(traceBtn);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /UTXO Transparency Ledger/i })).toBeInTheDocument();
+  });
+});

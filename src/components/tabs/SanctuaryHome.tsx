@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
 import { CauseFundCard } from '../sanctuary/CauseFundCard';
+import { OfferingModal } from '../modals/OfferingModal';
 
 export interface SanctuaryHomeProps {
   onOffer?: (fundId: string) => void;
+  onNavigateToLedger?: (txHash: string) => void;
+  onNavigateToPrayerWall?: () => void;
 }
 
-export const SanctuaryHome: React.FC<SanctuaryHomeProps> = ({ onOffer }) => {
+export const SanctuaryHome: React.FC<SanctuaryHomeProps> = ({
+  onOffer,
+  onNavigateToLedger,
+  onNavigateToPrayerWall,
+}) => {
   const { funds } = useMonasteryStore();
   const { t } = useTranslation();
+  const [internalOfferingFundId, setInternalOfferingFundId] = useState<string | null>(null);
+
+  const handleOffer = (fundId: string) => {
+    if (onOffer) {
+      onOffer(fundId);
+    } else {
+      setInternalOfferingFundId(fundId);
+    }
+  };
 
   return (
     <div className="p-4 sm:p-5 space-y-5" aria-label="Sanctuary Home">
@@ -47,11 +63,20 @@ export const SanctuaryHome: React.FC<SanctuaryHomeProps> = ({ onOffer }) => {
             <CauseFundCard
               key={fund.id}
               fund={fund}
-              onOffer={onOffer}
+              onOffer={handleOffer}
             />
           ))}
         </div>
       </section>
+
+      {!onOffer && (
+        <OfferingModal
+          selectedFundId={internalOfferingFundId}
+          onClose={() => setInternalOfferingFundId(null)}
+          onNavigateToLedger={onNavigateToLedger}
+          onNavigateToPrayerWall={onNavigateToPrayerWall}
+        />
+      )}
     </div>
   );
 };
