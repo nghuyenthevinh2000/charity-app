@@ -156,6 +156,7 @@ graph TD
     TabHome --> OfferingModal["OfferingModal (Contextual Giving)\n• Pre-selected Cause\n• Amount & Prayer Note\n• Generates Blessing Certificate"]
     TabTrans --> ReceiptModal["ReceiptInspectionModal\n• Full Image with Zoom\n• Vendor & Itemized Items\n• Monk Attestation Note"]
     TabSteward --> ExpenseFormModal["ExpenseEntryModal\n• Amount Input\n• Category Selector\n• Camera / File Upload\n• Purpose Notes"]
+    TabSteward --> NewFundModal["NewFundModal (+ Launch Drive)\n• Cause Name & Purpose\n• Goal Amount & Deadline\n• Verification Badge & Icon"]
 ```
 
 ---

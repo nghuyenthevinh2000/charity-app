@@ -126,10 +126,14 @@ This tab unifies the UTXO fund flow with itemized receipt inspection:
 ### Tab 4: Monk Steward Portal (Admin)
 - Authenticated view (PIN: `1080`).
 - **Treasury Overview:** Total balance per fund, monthly expenditure totals, and low-fund alerts.
-- **Quick Action `+ Log New Expense` Modal:**
+- **Quick Action 1: `+ Log New Expense` Modal:**
   - Amount, fund category, merchant/payee, date.
   - Purpose description.
   - Receipt photo: Mobile camera capture or file upload (stored in base64 / object URL).
+- **Quick Action 2: `+ Launch New Cause Fund` Modal:**
+  - Allows monks to spin off new fundraising campaigns instantly.
+  - Fields: Cause Name (e.g., *"Winter Robes & Warm Blankets"*), Spiritual Purpose / Description, Category (`necessities`, `healthcare`, `operations`, `special-drive`), Target Amount ($), Deadline / End Date, Icon & Color theme, and Abbot Verification seal text.
+  - Instantly generates and activates a new `CauseFundCard` on Tab 1 with dedicated fulfillment bar, deadline timer, verified seal, and direct offering button.
 - **Morning Chanting Queue:**
   - List of pending prayer dedications.
   - One-tap button: *"Recite & Bless 🪷"* (attaches blessing timestamp to the devotee's prayer).
