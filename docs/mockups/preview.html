@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lotus Grove Sanctuary — Mobile UI Mockups</title>
+  <title>Lotus Grove Sanctuary — Finalized UI Mockups (V2)</title>
   <style>
     :root {
       --bg-cream: #FAF7F2;
@@ -12,6 +12,7 @@
       --amber-primary: #B45309;
       --amber-accent: #D97706;
       --gold-seal: #F59E0B;
+      --jade-green: #059669;
       --ink: #1F2937;
       --ink-muted: #6B7280;
     }
@@ -31,7 +32,7 @@
       margin-bottom: 32px;
     }
     .lotus-icon {
-      font-size: 36px;
+      font-size: 40px;
       margin-bottom: 8px;
     }
     h1 {
@@ -43,15 +44,26 @@
     }
     p.subtitle {
       color: var(--ink-muted);
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.5;
+    }
+    .badge-v2 {
+      display: inline-block;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-top: 10px;
+      border: 1px solid #FDE68A;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 32px;
       width: 100%;
-      max-width: 1200px;
+      max-width: 1300px;
     }
     .mockup-card {
       background: var(--card-bg);
@@ -65,17 +77,18 @@
     }
     .mockup-card h2 {
       font-family: Georgia, serif;
-      font-size: 20px;
+      font-size: 19px;
       color: #92400E;
       margin-bottom: 6px;
       text-align: center;
     }
     .mockup-card p.desc {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--ink-muted);
       margin-bottom: 16px;
       text-align: center;
       line-height: 1.4;
+      min-height: 36px;
     }
     .img-wrapper {
       width: 100%;
@@ -126,98 +139,83 @@
   <header>
     <div class="lotus-icon">🪷</div>
     <h1>Lotus Grove Sanctuary & Transparency</h1>
-    <p class="subtitle">Mobile UI & UX Concept Exploration for Devotee Transparency & Monastery Expense Tracking</p>
+    <p class="subtitle">Unified 4-Tab Mobile UI with Dedicated Offering Buttons, UTXO Bill Drill-Down, Sangha Dialogue & New Fund Creation</p>
+    <span class="badge-v2">Updated Final Mockups (V2)</span>
   </header>
 
   <main class="grid">
-    <!-- Screen 1 -->
+    <!-- Screen 1: Tab 1 -->
     <article class="mockup-card">
-      <h2>1. Sanctuary Home</h2>
-      <p class="desc">Devotee landing experience with daily teachings, designated cause progress, and giving CTA.</p>
+      <h2>1. Sanctuary Home (Tab 1)</h2>
+      <p class="desc">Modular cause funds with dedicated fulfillment bars, deadlines, verified status, and direct offering buttons.</p>
       <div class="img-wrapper">
-        <a href="screen1-sanctuary-home.jpg" target="_blank" title="Click to view full size">
-          <img src="screen1-sanctuary-home.jpg" alt="Sanctuary Home UI" />
+        <a href="v2-tab1-sanctuary-home.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab1-sanctuary-home.jpg" alt="Sanctuary Home UI" />
         </a>
       </div>
       <ul class="features-list">
-        <li><strong>Warm rice-paper palette</strong> with saffron accents</li>
-        <li><strong>Active Cause Funds</strong>: Food/Alms, Medicine, Utilities</li>
-        <li><strong>Verified Trust Badges</strong> on each active fund</li>
-        <li><strong>Persistent bottom navigation</strong> with 5 sacred tabs</li>
+        <li><strong>Dedicated Offering Button</strong> directly below each fund card</li>
+        <li><strong>Fulfillment Progress Bar</strong>: $1,240 / $1,500 (82% fulfilled)</li>
+        <li><strong>Time Deadline Pill</strong>: ⏳ 5 days remaining (Ends Sep 22)</li>
+        <li><strong>Verified Status Badge</strong>: Verified by Abbot ✓</li>
+        <li><strong>Focused 4-Tab Navigation</strong>: Sanctuary, Transparency, Prayer Wall, Steward</li>
       </ul>
     </article>
 
-    <!-- Screen 2 -->
+    <!-- Screen 2: Tab 2 -->
     <article class="mockup-card">
-      <h2>2. Transparency Ledger</h2>
-      <p class="desc">Searchable timeline of itemized expenses with full receipt bottom-sheet inspection.</p>
+      <h2>2. UTXO Ledger & Drill-Down (Tab 2)</h2>
+      <p class="desc">Unified UTXO flow: Tapping any spent output slides up the itemized bill and paper receipt drawer.</p>
       <div class="img-wrapper">
-        <a href="screen2-transparency-ledger.jpg" target="_blank" title="Click to view full size">
-          <img src="screen2-transparency-ledger.jpg" alt="Transparency Ledger UI" />
+        <a href="v2-tab2-utxo-transparency.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab2-utxo-transparency.jpg" alt="UTXO Transparency Ledger UI" />
         </a>
       </div>
       <ul class="features-list">
-        <li><strong>Filter Chips</strong>: All, Alms Food, Medicine, Power, Repairs</li>
-        <li><strong>Itemized receipt viewer</strong> with zoom & details</li>
-        <li><strong>Official Seal</strong>: "Verified by Monastery Steward"</li>
-        <li><strong>Radical clarity</strong>: Every cent traced to its purpose</li>
+        <li><strong>Inputs → Pool → Outputs Flow</strong>: Visual transaction lineage</li>
+        <li><strong>Tap-to-Inspect Spent Output</strong>: Slides up bill breakdown drawer</li>
+        <li><strong>Itemized Merchant Breakdown</strong>: Organic tofu, rice, fresh greens ($72.50)</li>
+        <li><strong>Authentic Paper Receipt Photo</strong> with official steward verification stamp</li>
       </ul>
     </article>
 
-    <!-- Screen 3 -->
+    <!-- Screen 3: Tab 3 -->
     <article class="mockup-card">
-      <h2>3. Book of Intentions (Prayer Wall)</h2>
-      <p class="desc">Community space where devotees' prayer dedications live and receive monks' blessings.</p>
+      <h2>3. Community Sangha Dialogue (Tab 3)</h2>
+      <p class="desc">Book of Intentions with active threaded dialogue between monks and devotees.</p>
       <div class="img-wrapper">
-        <a href="screen4-prayer-wall.jpg" target="_blank" title="Click to view full size">
-          <img src="screen4-prayer-wall.jpg" alt="Prayer Wall UI" />
+        <a href="v2-tab3-community-dialogue.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab3-community-dialogue.jpg" alt="Community Dialogue UI" />
         </a>
       </div>
       <ul class="features-list">
-        <li><strong>Intentions Filter</strong>: Memorial, Healing, Peace, My Prayers</li>
-        <li><strong>Monk Blessing Stamp</strong>: Golden lotus verified badge</li>
-        <li><strong>Community Merit</strong>: "Rejoice in Merit" (🙏 Anumodana)</li>
-        <li><strong>Privacy options</strong>: Family name or Anonymous</li>
+        <li><strong>Devotee Prayer Dedications</strong> with golden lotus blessing badge</li>
+        <li><strong>Threaded Conversation</strong>: Monks and devotees converse with compassion</li>
+        <li><strong>Verified Monk Badge</strong>: 🧘 Abbot Tam Duc ✓ with loving-kindness response</li>
+        <li><strong>Community Merit</strong>: Devotees support one another + message input box</li>
       </ul>
     </article>
 
-    <!-- Screen 4 -->
+    <!-- Screen 4: Tab 4 -->
     <article class="mockup-card">
-      <h2>4. UTXO Transparency Ledger</h2>
-      <p class="desc">Blockchain-style fund flow: Donations as inputs, spending & change as outputs, with personal TX tracker.</p>
+      <h2>4. Steward Portal & New Fund (Tab 4)</h2>
+      <p class="desc">Monk admin console with fast expense logging and dynamic fund drive creation.</p>
       <div class="img-wrapper">
-        <a href="screen5-utxo-ledger.jpg" target="_blank" title="Click to view full size">
-          <img src="screen5-utxo-ledger.jpg" alt="UTXO Ledger UI" />
+        <a href="v2-tab4-steward-newfund.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab4-steward-newfund.jpg" alt="Monk Steward Portal UI" />
         </a>
       </div>
       <ul class="features-list">
-        <li><strong>Inputs (Donations)</strong>: Verified donor TX hashes & amounts</li>
-        <li><strong>Outputs (Spending)</strong>: Merchant payment + unspent change</li>
-        <li><strong>Provenance Tracker</strong>: Devotee enters TX hash to see exact % spent</li>
-        <li><strong>Receipt Proof</strong>: Cryptographic hash linked to physical receipt</li>
-      </ul>
-    </article>
-
-    <!-- Screen 5 -->
-    <article class="mockup-card">
-      <h2>5. Monk Steward Portal</h2>
-      <p class="desc">Mobile admin console for logging expenses and reciting devotee prayer dedications.</p>
-      <div class="img-wrapper">
-        <a href="screen3-steward-portal.jpg" target="_blank" title="Click to view full size">
-          <img src="screen3-steward-portal.jpg" alt="Monk Steward Portal UI" />
-        </a>
-      </div>
-      <ul class="features-list">
-        <li><strong>Treasury Balance</strong> with real-time low-fund alerts</li>
-        <li><strong>One-Tap Expense Logger</strong> with camera receipt capture</li>
-        <li><strong>Morning Chanting Queue</strong>: Devotee prayer intentions</li>
-        <li><strong>Recite & Bless Action</strong> with gold lotus stamp</li>
+        <li><strong>Treasury Balance Snapshot</strong> ($4,850 Available)</li>
+        <li><strong>Two Quick Actions</strong>: 📷 Log Expense &amp; + Launch New Cause Fund</li>
+        <li><strong>+ Launch New Fund Modal</strong>: Name, purpose, target, deadline, categories</li>
+        <li><strong>Instant Spin-Off</strong>: Newly created funds appear on Tab 1 immediately</li>
       </ul>
     </article>
   </main>
 
   <footer>
-    <p>Project Location: <code>/projects/charity-app</code></p>
+    <p>Project Location: <code>/Users/thevinhnguyen/Documents/computer-science/projects/app-factory/projects/charity-app</code></p>
   </footer>
 
 </body>
