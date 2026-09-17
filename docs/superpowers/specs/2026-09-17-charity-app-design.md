@@ -51,15 +51,23 @@ The app is framed in a mobile layout (`max-w-md mx-auto` on desktop, full native
 └───────────────────────────────────────────────────────────┘
 ```
 
-### Tab 1: Sanctuary (Home)
+### Tab 1: Sanctuary (Home) — Modular Cause Fund Campaign Groups
 - **Monastery Greeting & Seal:** Lotus Grove Vihara.
 - **Daily Reflection / Teaching Card:** e.g., *"In giving, we find boundless peace"*.
-- **Active Cause Funds:** Cards displaying current balance vs. monthly target with progress meters and green trust badges:
-  - *Daily Alms & Food* ($1,240 / $1,500 target)
-  - *Monk Healthcare & Medicine* ($680 / $800 target)
-  - *Temple Solar & Utilities* ($420 / $500 target)
-  - *Monastery Maintenance & Roof* ($1,850 / $2,500 target)
-- **Primary CTA Button:** *"Make an Offering & Dedication"*.
+- **Modular Cause Fund Groups (`CauseFundCard`):**
+  Each cause fund is encapsulated in its own self-contained, reusable component group so new donation funds can spin off dynamically at any time without UI restructuring:
+  1. **Header & Verified Status:**
+     - Cause title, serene category icon, and official verified status badge (e.g., `Verified by Abbot ✓` in jade green).
+  2. **Dedicated Fulfillment Bar:**
+     - Visual progress bar showing real-time fulfillment percentage.
+     - Live metrics: e.g., `$1,240 raised of $1,500 target (82% fulfilled)` and `38 devotees offered`.
+  3. **Time Deadline / Cycle Indicator:**
+     - Clear deadline or renewal badge: e.g., `⏳ 5 days remaining (Ends Sep 22)` or `🔄 Monthly Recurring: 8 days left`.
+  4. **Dedicated Offering Button (Right below each fund group):**
+     - Prominent warm amber button: `Offer to this Cause` directly embedded below the fulfillment bar.
+     - Tapping this button immediately launches the guided 3-step donation & prayer flow with this fund pre-selected.
+  5. **Dynamic Spin-Off Architecture:**
+     - Supported by the extensible `Fund` data model. New emergency drives or seasonal projects (e.g., *Winter Warmth Robes*, *Monastery Solar Roof*, *Dharma Book Printing*) can be added dynamically and render with identical fidelity and functionality.
 
 ---
 
@@ -130,14 +138,23 @@ A serene, mindful 3-step giving flow:
 ## 4. Data Models & TypeScript Interfaces
 
 ```typescript
-export type FundId = 'alms' | 'medical' | 'utilities' | 'maintenance' | 'general';
+export type FundCategory = 'necessities' | 'healthcare' | 'operations' | 'infrastructure' | 'special-drive';
 
 export interface Fund {
-  id: FundId;
+  id: string;
   name: string;
   description: string;
-  targetMonthly: number;
+  category: FundCategory;
+  targetAmount: number;
   currentBalance: number;
+  deadline: string; // ISO date string or cycle description
+  daysRemaining?: number;
+  verifiedStatus: {
+    isVerified: boolean;
+    attestedBy: string; // e.g. "Abbot Thich Tam Duc"
+    badgeLabel: string; // e.g. "Verified by Abbot ✓"
+  };
+  supportersCount: number;
   icon: string;
   color: string;
 }
