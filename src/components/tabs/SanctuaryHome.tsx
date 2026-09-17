@@ -36,8 +36,8 @@ export const SanctuaryHome: React.FC<SanctuaryHomeProps> = ({ onOffer }) => {
           <h2 className="text-base font-serif font-bold text-stone-900">
             {t('sanctuary.activeCauses')}
           </h2>
-          <span className="text-xs text-stone-500 font-medium">
-            {funds.length} {funds.length === 1 ? 'fund' : 'funds'}
+          <span className="text-xs text-stone-600 font-medium bg-parchment-200/80 px-2.5 py-0.5 rounded-full">
+            {funds.length}
           </span>
         </div>
 

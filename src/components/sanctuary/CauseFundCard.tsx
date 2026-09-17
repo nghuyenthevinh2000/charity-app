@@ -79,17 +79,33 @@ export const CauseFundCard: React.FC<CauseFundCardProps> = ({ fund, onOffer }) =
   }
 
   const formattedDate = formatDeadlineDate(fund.deadline, language);
-  const deadlineText =
-    fund.deadline && formattedDate
-      ? t('sanctuary.daysRemaining', { days: days ?? 0, date: formattedDate })
-      : t('sanctuary.remaining', { days: days ?? 0 });
+
+  // Check if recurring cycle (e.g. operations category, or recurring/monthly in deadline string)
+  const isRecurring =
+    fund.category === 'operations' ||
+    Boolean(fund.deadline && /recurring|monthly/i.test(fund.deadline));
+
+  let deadlineText = '';
+  if (isRecurring) {
+    deadlineText = t('sanctuary.recurringCycle', { days: days ?? 30 });
+  } else if (fund.deadline && formattedDate) {
+    deadlineText = t('sanctuary.daysRemaining', { days: days ?? 0, date: formattedDate });
+  } else {
+    deadlineText = t('sanctuary.remaining', { days: days ?? 0 });
+  }
+
+  // Detect if deadline text already starts with an emoji to prevent double icons
+  const startsWithEmoji = /^(\p{Extended_Pictographic}|\p{Emoji_Presentation})/u.test(deadlineText.trim());
 
   const formattedCurrent = `$${fund.currentBalance.toLocaleString()}`;
   const formattedTarget = `$${fund.targetAmount.toLocaleString()}`;
 
   const isVerified = fund.verifiedStatus?.isVerified;
+  // Prioritize localized verified badge in non-English locales (e.g. Vietnamese)
   const verifiedBadgeLabel =
-    fund.verifiedStatus?.badgeLabel || t('sanctuary.verifiedBy') || 'Verified by Abbot ✓';
+    language === 'vi'
+      ? t('sanctuary.verifiedBy')
+      : fund.verifiedStatus?.badgeLabel || t('sanctuary.verifiedBy') || 'Verified by Abbot ✓';
 
   return (
     <article
@@ -171,7 +187,7 @@ export const CauseFundCard: React.FC<CauseFundCardProps> = ({ fund, onOffer }) =
       {/* Time Deadline Tracker Pill */}
       <div className="flex items-center justify-between pt-0.5">
         <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-900 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-full">
-          <Clock className="w-3.5 h-3.5 text-amber-700" />
+          {!startsWithEmoji && <Clock className="w-3.5 h-3.5 text-amber-700" />}
           <span>{deadlineText}</span>
         </span>
       </div>

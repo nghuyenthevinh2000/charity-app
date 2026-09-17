@@ -67,6 +67,63 @@ describe('CauseFundCard', () => {
     expect(screen.getByText(/100%/)).toBeInTheDocument();
     expect(screen.queryByText(/Verified by Abbot/i)).not.toBeInTheDocument();
   });
+
+  it('renders recurring cycle pill for operations funds and avoids double clock icon', () => {
+    const recurringFund: Fund = {
+      id: 'utilities',
+      name: 'Monastery Solar & Clean Water Utilities',
+      description: 'Clean energy solar power',
+      category: 'operations',
+      targetAmount: 2000,
+      currentBalance: 1650,
+      deadline: '2026-10-05',
+      daysRemaining: 18,
+      verifiedStatus: { isVerified: true, attestedBy: 'Abbot', badgeLabel: 'Verified by Abbot ✓' },
+      supportersCount: 42,
+      icon: 'zap',
+      color: '#B45309',
+    };
+
+    const { container } = render(
+      <LanguageProvider>
+        <CauseFundCard fund={recurringFund} />
+      </LanguageProvider>
+    );
+
+    // Verify recurring cycle text is displayed
+    expect(screen.getByText(/Monthly Recurring: 18 days left/i)).toBeInTheDocument();
+
+    // Verify no double clock icon rendered inside the deadline pill
+    const deadlinePill = container.querySelector('.bg-amber-50');
+    expect(deadlinePill).toBeInTheDocument();
+    const svgInsidePill = deadlinePill?.querySelector('svg');
+    expect(svgInsidePill).toBeNull();
+  });
+
+  it('translates verified badge to Vietnamese when language is vi', () => {
+    const mockFund: Fund = {
+      id: 'alms',
+      name: 'Daily Alms',
+      description: 'Meal offerings',
+      category: 'necessities',
+      targetAmount: 1000,
+      currentBalance: 500,
+      deadline: '2026-09-30',
+      daysRemaining: 10,
+      verifiedStatus: { isVerified: true, attestedBy: 'Abbot', badgeLabel: 'Verified by Abbot ✓' },
+      supportersCount: 15,
+      icon: 'bowl',
+      color: '#D97706',
+    };
+
+    render(
+      <LanguageProvider defaultLanguage="vi">
+        <CauseFundCard fund={mockFund} />
+      </LanguageProvider>
+    );
+
+    expect(screen.getByText('Chứng thực bởi Thầy Trụ Trì ✓')).toBeInTheDocument();
+  });
 });
 
 describe('SanctuaryHome Tab', () => {
