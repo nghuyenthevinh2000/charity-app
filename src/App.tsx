@@ -5,6 +5,7 @@ import { StewardPinModal } from './components/modals/StewardPinModal';
 import { OfferingModal } from './components/modals/OfferingModal';
 import { SanctuaryHome } from './components/tabs/SanctuaryHome';
 import { UTXOLedger } from './components/tabs/UTXOLedger';
+import { PrayerWall } from './components/tabs/PrayerWall';
 import { LanguageContext, LanguageProvider, useTranslation } from './context/LanguageContext';
 import { MonasteryStoreContext, MonasteryStoreProvider, useMonasteryStore } from './context/MonasteryStore';
 
@@ -84,16 +85,7 @@ export function AppContent() {
           )}
 
           {activeTab === 'prayerWall' && (
-            <section className="p-4 space-y-4" aria-label="Prayer Wall">
-              <div className="border-b border-parchment-300 pb-3">
-                <h2 className="text-base font-serif font-bold text-stone-900">
-                  {t('prayerWall.title')}
-                </h2>
-                <p className="text-xs text-stone-600 mt-0.5">
-                  {t('prayerWall.subtitle')}
-                </p>
-              </div>
-            </section>
+            <PrayerWall />
           )}
 
           {activeTab === 'steward' && (
