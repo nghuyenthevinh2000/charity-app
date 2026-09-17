@@ -266,7 +266,7 @@ export const initialTransactions: MonasteryTransaction[] = [
       merchant: 'Green Valley Farmers Market',
       amount: 72.50,
       items: [
-        'Organic Firm Tofu (15 blocks)',
+        'Organic Tofu (Firm, 15 blocks)',
         'Jasmine Brown Rice (25kg bag)',
         'Fresh Bok Choy & Seasonal Greens',
         'Cold-pressed Sesame Oil'

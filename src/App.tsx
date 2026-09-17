@@ -4,6 +4,7 @@ import { BottomNav, TabId } from './components/common/BottomNav';
 import { StewardPinModal } from './components/modals/StewardPinModal';
 import { OfferingModal } from './components/modals/OfferingModal';
 import { SanctuaryHome } from './components/tabs/SanctuaryHome';
+import { UTXOLedger } from './components/tabs/UTXOLedger';
 import { LanguageContext, LanguageProvider, useTranslation } from './context/LanguageContext';
 import { MonasteryStoreContext, MonasteryStoreProvider, useMonasteryStore } from './context/MonasteryStore';
 
@@ -11,6 +12,7 @@ export function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('sanctuary');
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [offeringFundId, setOfferingFundId] = useState<string | null>(null);
+  const [ledgerInitialTxHash, setLedgerInitialTxHash] = useState<string | null>(null);
   const { t } = useTranslation();
   const { isStewardUnlocked } = useMonasteryStore();
 
@@ -52,8 +54,9 @@ export function AppContent() {
     setOfferingFundId(null);
   };
 
-  const handleNavigateToLedger = (_txHash: string) => {
+  const handleNavigateToLedger = (txHash: string) => {
     setOfferingFundId(null);
+    setLedgerInitialTxHash(txHash);
     setActiveTab('transparency');
   };
 
@@ -77,16 +80,7 @@ export function AppContent() {
           )}
 
           {activeTab === 'transparency' && (
-            <section className="p-4 space-y-4" aria-label="UTXO Transparency Ledger">
-              <div className="border-b border-parchment-300 pb-3">
-                <h2 className="text-base font-serif font-bold text-stone-900">
-                  {t('transparency.title')}
-                </h2>
-                <p className="text-xs text-stone-600 mt-0.5">
-                  {t('transparency.subtitle')}
-                </p>
-              </div>
-            </section>
+            <UTXOLedger initialTxHash={ledgerInitialTxHash} />
           )}
 
           {activeTab === 'prayerWall' && (

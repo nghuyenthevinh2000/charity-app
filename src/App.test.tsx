@@ -66,5 +66,7 @@ describe('App smoke test', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('region', { name: /UTXO Transparency Ledger/i })).toBeInTheDocument();
+    const searchInput = screen.getByPlaceholderText(/Search by your donation TX Hash/i) as HTMLInputElement;
+    expect(searchInput.value).toMatch(/^0x/);
   });
 });
