@@ -112,6 +112,7 @@
     "authenticated": "Đã xác thực với vai trò Viện Chủ / Ban Quản Sự",
     "treasuryTotal": "Tổng Dự Trữ Khả Dụng",
     "logExpense": "Ghi Nhận Khoản Chi",
+    "logNewExpense": "Ghi Nhận Khoản Chi Mới",
     "launchFund": "Khởi Tạo Quỹ Thiện Nguyện Mới",
     "chantingQueue": "Danh Sách Cầu Nguyện & Công Phu Sáng",
     "reciteAndBless": "Tụng Kinh & Chú Nguyện 🪷",
@@ -122,6 +123,19 @@
     "targetGoal": "Mục Tiêu Quyên Góp ($)",
     "deadlineDate": "Thời Hạn Đóng Quỹ",
     "categoryLabel": "Danh Mục",
-    "createButton": "Đăng Quỹ Lên Tịnh Xá"
+    "createButton": "Đăng Quỹ Lên Tịnh Xá",
+    "expenseModalTitle": "Ghi Nhận Khoản Chi Mới",
+    "expenseAmount": "Số Tiền Chi ($)",
+    "fundSelector": "Nguồn Quỹ Chi Trả",
+    "merchantLabel": "Đơn Vị Thụ Hưởng / Nhà Cung Cấp",
+    "itemsLabel": "Danh Mục Hàng Hóa / Dịch Vụ",
+    "purposeLabel": "Mục Đích Sử Dụng",
+    "receiptLabel": "Ảnh Hóa Đơn & Mã Băm Xác Thực",
+    "useSampleReceipt": "Dùng Hóa Đơn Mẫu",
+    "submitExpense": "Lưu Khoản Chi",
+    "lowFundAlert": "Cảnh Báo Quỹ Thấp",
+    "reservesAndFunds": "Quỹ Dự Trữ & Hoạt Động",
+    "verifiedByAbbot": "Chứng Nhận Bởi Viện Chủ ✓",
+    "lockPortal": "Khóa Cổng Quản Sự"
   }
 }

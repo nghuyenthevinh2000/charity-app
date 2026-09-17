@@ -112,6 +112,7 @@
     "authenticated": "Authenticated as Abbot / Steward",
     "treasuryTotal": "Total Available Reserves",
     "logExpense": "Log Expense",
+    "logNewExpense": "Log New Expense",
     "launchFund": "Launch New Cause Fund",
     "chantingQueue": "Morning Chanting & Prayer Intentions",
     "reciteAndBless": "Recite & Bless 🪷",
@@ -122,6 +123,19 @@
     "targetGoal": "Target Goal ($)",
     "deadlineDate": "Deadline Date",
     "categoryLabel": "Category",
-    "createButton": "Launch Fund to Sanctuary"
+    "createButton": "Launch Fund to Sanctuary",
+    "expenseModalTitle": "Log New Expense",
+    "expenseAmount": "Expense Amount ($)",
+    "fundSelector": "Cause Fund",
+    "merchantLabel": "Payee / Merchant",
+    "itemsLabel": "Purchased Items",
+    "purposeLabel": "Spiritual Purpose / Purpose",
+    "receiptLabel": "Receipt Photo & Cryptographic Proof",
+    "useSampleReceipt": "Use Sample Receipt",
+    "submitExpense": "Record Expense",
+    "lowFundAlert": "Low Reserve Warning",
+    "reservesAndFunds": "Reserves & Active Funds",
+    "verifiedByAbbot": "Verified by Abbot ✓",
+    "lockPortal": "Lock Steward Portal"
   }
 }

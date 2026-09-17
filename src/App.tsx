@@ -6,7 +6,8 @@ import { OfferingModal } from './components/modals/OfferingModal';
 import { SanctuaryHome } from './components/tabs/SanctuaryHome';
 import { UTXOLedger } from './components/tabs/UTXOLedger';
 import { PrayerWall } from './components/tabs/PrayerWall';
-import { LanguageContext, LanguageProvider, useTranslation } from './context/LanguageContext';
+import { StewardPortal } from './components/tabs/StewardPortal';
+import { LanguageContext, LanguageProvider } from './context/LanguageContext';
 import { MonasteryStoreContext, MonasteryStoreProvider, useMonasteryStore } from './context/MonasteryStore';
 
 export function AppContent() {
@@ -14,7 +15,6 @@ export function AppContent() {
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [offeringFundId, setOfferingFundId] = useState<string | null>(null);
   const [ledgerInitialTxHash, setLedgerInitialTxHash] = useState<string | null>(null);
-  const { t } = useTranslation();
   const { isStewardUnlocked } = useMonasteryStore();
 
   const currentRole: AppRole = activeTab === 'steward' ? 'steward' : 'devotee';
@@ -89,16 +89,7 @@ export function AppContent() {
           )}
 
           {activeTab === 'steward' && (
-            <section className="p-4 space-y-4" aria-label="Steward Portal">
-              <div className="border-b border-parchment-300 pb-3">
-                <h2 className="text-base font-serif font-bold text-stone-900">
-                  {t('steward.title')}
-                </h2>
-                <p className="text-xs text-stone-600 mt-0.5">
-                  {t('steward.authenticated')}
-                </p>
-              </div>
-            </section>
+            <StewardPortal onLock={() => setActiveTab('sanctuary')} />
           )}
         </main>
 

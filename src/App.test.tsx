@@ -69,4 +69,41 @@ describe('App smoke test', () => {
     const searchInput = screen.getByPlaceholderText(/Search by your donation TX Hash/i) as HTMLInputElement;
     expect(searchInput.value).toMatch(/^0x/);
   });
+
+  it('authenticates steward with PIN, launches new fund, and displays it on Sanctuary tab', () => {
+    render(<App />);
+
+    // Click Steward tab in bottom nav
+    const stewardTabBtn = screen.getByRole('button', { name: /Steward/i });
+    fireEvent.click(stewardTabBtn);
+
+    // PIN modal opens
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText(/Steward Authentication/i)).toBeInTheDocument();
+
+    // Quick fill 1080 or type PIN
+    fireEvent.click(screen.getByRole('button', { name: '1080' }));
+    fireEvent.click(screen.getByRole('button', { name: /Unlock/i }));
+
+    // PIN modal closes and Steward Portal renders
+    expect(screen.queryByText(/Steward Authentication/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /Steward Portal/i })).toBeInTheDocument();
+
+    // Launch a new fund
+    fireEvent.click(screen.getByRole('button', { name: /Launch New Cause Fund/i }));
+    fireEvent.change(screen.getByLabelText(/Cause Name/i), { target: { value: 'Zen Solar Library' } });
+    fireEvent.change(screen.getByLabelText(/Target Goal/i), { target: { value: '4500' } });
+    fireEvent.click(screen.getByRole('button', { name: /Launch Fund/i }));
+
+    // Verify fund exists in Steward portal
+    expect(screen.getByText('Zen Solar Library')).toBeInTheDocument();
+
+    // Switch back to Sanctuary tab
+    const sanctuaryTabBtn = screen.getByRole('button', { name: /Sanctuary/i });
+    fireEvent.click(sanctuaryTabBtn);
+
+    // Fund must be live on Sanctuary tab!
+    expect(screen.getByText('Zen Solar Library')).toBeInTheDocument();
+  });
 });
+
