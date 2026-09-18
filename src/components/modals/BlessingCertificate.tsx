@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { DonationInput } from '../../types';
 import { useTranslation } from '../../context/LanguageContext';
+import { getPrayerDedication } from '../../utils/localization';
 
 export interface BlessingCertificateProps {
   donation: DonationInput;
@@ -56,7 +57,7 @@ export const BlessingCertificate: React.FC<BlessingCertificateProps> = ({
   const formattedDate = donation.date || new Date().toISOString().split('T')[0];
 
   return (
-    <div className="space-y-5" aria-label="Digital Blessing Certificate">
+    <div className="space-y-5" aria-label={t('offeringModal.certificateTitle')}>
       {/* Sacred Parchment Certificate Card */}
       <div className="relative bg-gradient-to-b from-amber-50/80 via-white to-amber-50/60 border-2 border-amber-300/80 rounded-2xl p-5 sm:p-6 shadow-sm overflow-hidden">
         {/* Ornate Zen Corner Accents */}
@@ -69,7 +70,7 @@ export const BlessingCertificate: React.FC<BlessingCertificateProps> = ({
         <div className="text-center space-y-2">
           {/* Gold Lotus Seal */}
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-stone-900 shadow-md ring-4 ring-amber-200/60 mx-auto">
-            <span className="text-2xl select-none" role="img" aria-label="Lotus Seal">
+            <span className="text-2xl select-none" role="img" aria-label={t('offeringModal.lotusSeal')}>
               🪷
             </span>
           </div>
@@ -139,7 +140,7 @@ export const BlessingCertificate: React.FC<BlessingCertificateProps> = ({
                 <div className="pt-1">
                   <div className="flex items-start gap-1.5 text-xs italic text-stone-700 bg-amber-50/50 p-2 rounded-lg border border-amber-100">
                     <MessageSquareQuote className="w-4 h-4 text-saffron-600 shrink-0 mt-0.5" />
-                    <span>"{donation.prayerIntention.dedicationText}"</span>
+                    <span>"{getPrayerDedication(donation.prayerIntention, t)}"</span>
                   </div>
                 </div>
               </>
@@ -154,17 +155,17 @@ export const BlessingCertificate: React.FC<BlessingCertificateProps> = ({
                 type="button"
                 onClick={handleCopyTx}
                 className="hover:text-white transition-colors flex items-center gap-1 text-[10px] text-amber-300 cursor-pointer"
-                title="Copy TX Hash"
+                title={t('offeringModal.copyTxHash')}
               >
                 {copied ? (
                   <>
                     <Check className="w-3 h-3 text-emerald-400" />
-                    <span className="text-emerald-400">Copied</span>
+                    <span className="text-emerald-400">{t('common.copied')}</span>
                   </>
                 ) : (
                   <>
                     <Copy className="w-3 h-3" />
-                    <span>Copy</span>
+                    <span>{t('common.copy')}</span>
                   </>
                 )}
               </button>

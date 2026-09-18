@@ -3,6 +3,7 @@ import { X, Heart, Sparkles, ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-r
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
 import { DonationInput, IntentionCategory } from '../../types';
+import { getFundName } from '../../utils/localization';
 import { BlessingCertificate } from './BlessingCertificate';
 
 export interface OfferingModalProps {
@@ -115,7 +116,7 @@ export const OfferingModal: React.FC<OfferingModalProps> = ({
           type="button"
           onClick={handleModalClose}
           className="absolute top-4 right-4 text-stone-400 hover:text-stone-700 p-1.5 rounded-full transition-colors cursor-pointer"
-          aria-label="Close"
+          aria-label={t('common.close')}
         >
           <X className="w-5 h-5" />
         </button>
@@ -125,7 +126,7 @@ export const OfferingModal: React.FC<OfferingModalProps> = ({
           <div className="flex items-center justify-center gap-1.5 mb-1.5">
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-saffron-800 bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 rounded-full">
               <Sparkles className="w-3 h-3 text-saffron-600" />
-              {fund.name}
+              {getFundName(fund, t)}
             </span>
           </div>
 
@@ -417,7 +418,7 @@ export const OfferingModal: React.FC<OfferingModalProps> = ({
         {step === 3 && completedDonation && (
           <BlessingCertificate
             donation={completedDonation}
-            fundName={fund.name}
+            fundName={getFundName(fund, t)}
             onNavigateToLedger={onNavigateToLedger}
             onNavigateToPrayerWall={onNavigateToPrayerWall}
             onClose={handleModalClose}

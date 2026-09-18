@@ -162,12 +162,12 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
                       <span>{item}</span>
                     </span>
                     <span className="text-[11px] font-mono text-stone-600 bg-stone-100 px-2 py-0.5 rounded">
-                      ✓ Item #{idx + 1}
+                      {t('transparency.itemNumber', { num: idx + 1 })}
                     </span>
                   </li>
                 ))
               ) : (
-                <li className="py-2 text-stone-500 italic">No itemized entries</li>
+                <li className="py-2 text-stone-500 italic">{t('transparency.noItemized')}</li>
               )}
             </ul>
           </div>
@@ -177,7 +177,7 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-stone-600 flex items-center gap-1.5">
                 <Receipt className="w-3.5 h-3.5 text-stone-600" />
-                <span>{language === 'vi' ? 'Hóa Đơn Giấy Đính Kèm' : 'Original Paper Receipt'}</span>
+                <span>{t('transparency.originalReceipt')}</span>
               </span>
               <button
                 type="button"
@@ -187,12 +187,12 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
                 {isZoomed ? (
                   <>
                     <ZoomOut className="w-3 h-3" />
-                    <span>{language === 'vi' ? 'Thu nhỏ' : 'Zoom Out'}</span>
+                    <span>{t('transparency.tapToCloseZoom')}</span>
                   </>
                 ) : (
                   <>
                     <ZoomIn className="w-3 h-3" />
-                    <span>{language === 'vi' ? 'Phóng to' : 'Tap to Zoom'}</span>
+                    <span>{t('transparency.tapToZoom')}</span>
                   </>
                 )}
               </button>
@@ -203,7 +203,7 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
                 isZoomed ? 'max-h-[500px]' : 'max-h-56'
               }`}
               onClick={() => setIsZoomed(!isZoomed)}
-              title="Click to toggle zoom"
+              title={t('transparency.tapToZoom')}
             >
               {!imageError && spentOutput.receiptImageUrl ? (
                 <img
@@ -228,7 +228,7 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
 
               {/* Watermark badge */}
               <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded border border-white/20">
-                {isZoomed ? 'Tap to close zoom' : 'Tap to zoom'}
+                {isZoomed ? t('transparency.zoomWatermarkOut') : t('transparency.zoomWatermarkIn')}
               </div>
             </div>
           </div>
@@ -265,17 +265,17 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
                 type="button"
                 onClick={handleCopyHash}
                 className="hover:text-white transition-colors flex items-center gap-1 text-[10px] text-amber-300 cursor-pointer"
-                title="Copy Receipt Hash"
+                title={t('transparency.copyReceiptHash')}
               >
                 {copied ? (
                   <>
                     <Check className="w-3 h-3 text-emerald-400" />
-                    <span className="text-emerald-400">Copied</span>
+                    <span className="text-emerald-400">{t('common.copied')}</span>
                   </>
                 ) : (
                   <>
                     <Copy className="w-3 h-3" />
-                    <span>Copy Hash</span>
+                    <span>{t('common.copyHash')}</span>
                   </>
                 )}
               </button>

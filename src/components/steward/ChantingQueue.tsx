@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, Check, Flower2 } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
+import { getPrayerDedication } from '../../utils/localization';
 import { IntentionCategory } from '../../types';
 
 export interface ChantingQueueProps {
@@ -143,7 +144,7 @@ export const ChantingQueue: React.FC<ChantingQueueProps> = ({ onBlessed }) => {
 
                 {/* Dedication Text */}
                 <p className="text-xs font-serif italic text-stone-800 bg-amber-50/40 p-2.5 rounded-xl border border-amber-100 mb-3 leading-relaxed">
-                  "{intention.dedicationText}"
+                  "{getPrayerDedication(intention, t)}"
                 </p>
 
                 {/* Action / Status Row */}
@@ -153,16 +154,16 @@ export const ChantingQueue: React.FC<ChantingQueueProps> = ({ onBlessed }) => {
                       type="button"
                       onClick={() => handleBless(donation.id)}
                       className="w-full py-2 px-3 rounded-xl bg-saffron-600 hover:bg-saffron-700 active:scale-[0.98] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
-                      aria-label="Recite & Bless 🪷"
+                      aria-label={t('steward.reciteAndBless')}
                     >
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>{t('steward.reciteAndBless') || 'Recite & Bless 🪷'}</span>
+                      <span>{t('steward.reciteAndBless')}</span>
                     </button>
                   ) : (
                     <div className="w-full flex items-center justify-between py-1.5 px-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
                       <span className="flex items-center gap-1">
                         <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>{t('steward.blessedSuccess') || 'Blessed'} • Morning Chanting</span>
+                        <span>{t('steward.blessedSuccess')} • {t('steward.morningChanting')}</span>
                       </span>
                       <span className="text-[10px] text-emerald-700/80">6:00 AM 🪷</span>
                     </div>

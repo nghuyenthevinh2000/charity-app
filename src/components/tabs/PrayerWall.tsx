@@ -112,12 +112,12 @@ export const PrayerWall: React.FC = () => {
           <div className="text-center py-10 bg-white rounded-2xl border border-parchment-300 p-6 space-y-2">
             <span className="text-3xl">🕊️</span>
             <h3 className="text-sm font-serif font-semibold text-stone-800">
-              No prayer intentions in this category
+              {t('prayerWall.emptyTitle')}
             </h3>
             <p className="text-xs text-stone-500 max-w-xs mx-auto">
               {activeFilter === 'my'
-                ? "You have not dedicated any prayer intentions yet. When making an offering, include a prayer dedication to view it here."
-                : "Be the first to offer a dedication and receive morning chanting blessings from the Sangha."}
+                ? t('prayerWall.emptyMy')
+                : t('prayerWall.emptyGeneral')}
             </p>
           </div>
         ) : (

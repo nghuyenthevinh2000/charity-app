@@ -316,7 +316,7 @@ describe('End-to-End Integration Tests', () => {
 
       // Switch to Tab 3 (Sổ Cầu Nguyện)
       fireEvent.click(screen.getByRole('button', { name: 'Sổ Cầu Nguyện' }));
-      expect(screen.getByText(/Sổ Tâm Nguyện & Tăng Thân/i)).toBeInTheDocument();
+      expect(screen.getByText(/Sổ Cầu Nguyện & Tăng Đoàn|Sổ Tâm Nguyện & Tăng Thân/i)).toBeInTheDocument();
 
       // Switch back to English [🇬🇧 EN]
       const enBtn = screen.getByRole('button', { name: /English/i });

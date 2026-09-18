@@ -11,7 +11,7 @@ import {
   LogExpensePayload,
   TxInput,
 } from '../types';
-import { initialFunds, initialDonations, initialTransactions } from '../data/seedData';
+import { initialFunds, initialDonations, initialTransactions } from '../data/seedDataVI';
 
 export const STORAGE_KEY_FUNDS = 'lotus_funds';
 export const STORAGE_KEY_DONATIONS = 'lotus_donations';

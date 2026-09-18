@@ -32,8 +32,8 @@ export const Header: React.FC<HeaderProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const devoteeLabel = language === 'vi' ? t('common.devoteeRole') : 'Devotee View';
-  const stewardLabel = language === 'vi' ? t('common.stewardRole') : 'Steward View';
+  const devoteeLabel = t('common.devoteeRole');
+  const stewardLabel = t('common.stewardRole');
   const activeRoleLabel = currentRole === 'steward' ? stewardLabel : devoteeLabel;
 
   return (
@@ -160,7 +160,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex flex-col">
                   <span>{stewardLabel}</span>
                   {!isStewardUnlocked && (
-                    <span className="text-[10px] text-stone-400">PIN 1080</span>
+                    <span className="text-[10px] text-stone-400">{t('common.pinHint')}</span>
                   )}
                 </div>
                 {currentRole === 'steward' ? (

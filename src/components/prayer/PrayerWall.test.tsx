@@ -19,7 +19,7 @@ describe('PrayerWall & Sangha Dialogue', () => {
     );
 
     expect(screen.getByText(/The Nguyen Family/i)).toBeInTheDocument();
-    expect(screen.getByText(/Blessed in Morning Chanting/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Blessed in Morning Chanting/i).length).toBeGreaterThan(0);
 
     // Click conversation
     const talkBtn = screen.getByText(/conversation/i);

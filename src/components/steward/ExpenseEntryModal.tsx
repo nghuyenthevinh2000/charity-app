@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { X, Upload, CheckCircle2, Image as ImageIcon, Trash2, Receipt, AlertCircle } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
+import { getFundName } from '../../utils/localization';
 
 export interface ExpenseEntryModalProps {
   isOpen: boolean;
@@ -9,8 +10,7 @@ export interface ExpenseEntryModalProps {
   onSuccess?: () => void;
 }
 
-const SAMPLE_RECEIPT_DATA_URL =
-  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="420" viewBox="0 0 320 420"><rect width="320" height="420" fill="%23FFFDF9"/><rect x="10" y="10" width="300" height="400" fill="none" stroke="%23E7E5E4" stroke-width="2" stroke-dasharray="4 4"/><text x="160" y="45" font-family="serif" font-size="15" text-anchor="middle" font-weight="bold" fill="%231C1917">SANCTUARY AUDITED RECEIPT</text><text x="160" y="65" font-family="sans-serif" font-size="10" text-anchor="middle" fill="%2378716C">VERIFIED MONASTERY UTXO OUTLAY</text><line x1="25" y1="80" x2="295" y2="80" stroke="%23D6D3D1"/><text x="30" y="110" font-family="monospace" font-size="11" fill="%23292524">MERCHANT: Organic Farm Coop</text><text x="30" y="130" font-family="monospace" font-size="11" fill="%23292524">PURCHASE: Fresh Vegetables, Tofu</text><text x="30" y="150" font-family="monospace" font-size="11" fill="%23292524">PURPOSE: Community Nourishment</text><text x="30" y="180" font-family="monospace" font-size="13" font-weight="bold" fill="%23D97706">TOTAL: $150.00</text><line x1="25" y1="200" x2="295" y2="200" stroke="%23D6D3D1"/><text x="160" y="235" font-family="serif" font-size="11" text-anchor="middle" font-style="italic" fill="%2357534E">"Dedicated to Sangha Sustenance"</text><text x="160" y="270" font-family="monospace" font-size="9" text-anchor="middle" fill="%23A8A29E">SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</text><circle cx="160" cy="330" r="28" fill="%23F59E0B" opacity="0.15"/><text x="160" y="335" font-family="serif" font-size="18" text-anchor="middle" fill="%23B45309">🪷 VERIFIED</text></svg>';
+const SAMPLE_RECEIPT_DATA_URL = '/images/verified-groceries-receipt.jpg';
 
 export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
   isOpen,
@@ -175,7 +175,7 @@ export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
               >
                 {funds.map((f) => (
                   <option key={f.id} value={f.id}>
-                    {f.name} (${f.currentBalance.toLocaleString()})
+                    {getFundName(f, t)} (${f.currentBalance.toLocaleString()})
                   </option>
                 ))}
               </select>
@@ -190,7 +190,7 @@ export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
             <input
               id="expense-merchant"
               type="text"
-              placeholder="e.g. Green Earth Produce, SolarTech Supplies"
+              placeholder={t('steward.merchantPlaceholder')}
               value={merchant}
               onChange={(e) => setMerchant(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 bg-parchment-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-stone-900"
@@ -206,7 +206,7 @@ export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
             <input
               id="expense-items"
               type="text"
-              placeholder="e.g. 100kg Organic Jasmine Rice, Sesame Oil, Soy Sauce"
+              placeholder={t('steward.itemsPlaceholder')}
               value={items}
               onChange={(e) => setItems(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 bg-parchment-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-stone-900"
@@ -224,7 +224,7 @@ export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
             <textarea
               id="expense-purpose"
               rows={2}
-              placeholder="e.g. Daily alms meals for monks, nuns, and visiting pilgrims"
+              placeholder={t('steward.purposePlaceholder')}
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-xl border border-stone-300 bg-parchment-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-stone-900"
@@ -272,7 +272,7 @@ export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
                   <p className="text-xs font-medium text-stone-700">
                     {language === 'vi' ? 'Chụp ảnh hoặc tải hóa đơn từ máy' : 'Take photo or upload receipt file'}
                   </p>
-                  <p className="text-[10px] text-stone-400 mt-0.5">PNG, JPG, SVG up to 10MB</p>
+                  <p className="text-[10px] text-stone-400 mt-0.5">{t('steward.receiptUploadFormats')}</p>
                 </div>
 
                 <div className="flex items-center justify-between gap-2">

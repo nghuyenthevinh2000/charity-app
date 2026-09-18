@@ -124,6 +124,65 @@ describe('CauseFundCard', () => {
 
     expect(screen.getByText('Chứng thực bởi Thầy Trụ Trì ✓')).toBeInTheDocument();
   });
+
+  it('renders verified badge with responsive non-overflowing classes on mobile in Vietnamese', () => {
+    const mockFund: Fund = {
+      id: 'alms',
+      name: 'Cúng Dường Trai Tăng & Thực Dưỡng Dài',
+      description: 'Meal offerings for sangha',
+      category: 'necessities',
+      targetAmount: 1000,
+      currentBalance: 500,
+      deadline: '2026-09-30',
+      daysRemaining: 10,
+      verifiedStatus: { isVerified: true, attestedBy: 'Abbot', badgeLabel: 'Verified by Abbot ✓' },
+      supportersCount: 15,
+      icon: 'bowl',
+      color: '#D97706',
+    };
+
+    const { container } = render(
+      <LanguageProvider defaultLanguage="vi">
+        <CauseFundCard fund={mockFund} />
+      </LanguageProvider>
+    );
+
+    const article = container.querySelector('article');
+    expect(article).toHaveClass('overflow-hidden');
+
+    const header = article?.querySelector('.flex-wrap');
+    expect(header).toBeInTheDocument();
+    expect(header).toHaveClass('justify-between');
+
+    const badge = screen.getByText('Chứng thực bởi Thầy Trụ Trì ✓').closest('.rounded-full');
+    expect(badge).toHaveClass('max-w-full');
+    expect(badge?.querySelector('.truncate')).toBeInTheDocument();
+  });
+
+  it('translates verified badge to English when language is en even if fund has Vietnamese badgeLabel', () => {
+    const mockFund: Fund = {
+      id: 'alms',
+      name: 'Daily Alms',
+      description: 'Meal offerings',
+      category: 'necessities',
+      targetAmount: 1000,
+      currentBalance: 500,
+      deadline: '2026-09-30',
+      daysRemaining: 10,
+      verifiedStatus: { isVerified: true, attestedBy: 'Hòa Thượng Thích Tâm Đức', badgeLabel: 'Chứng thực bởi Thầy Trụ Trì ✓' },
+      supportersCount: 15,
+      icon: 'bowl',
+      color: '#D97706',
+    };
+
+    render(
+      <LanguageProvider defaultLanguage="en">
+        <CauseFundCard fund={mockFund} />
+      </LanguageProvider>
+    );
+
+    expect(screen.getByText('Verified by Abbot ✓')).toBeInTheDocument();
+  });
 });
 
 describe('SanctuaryHome Tab', () => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Layers, ShieldCheck, Receipt, Filter } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
+import { getFundName } from '../../utils/localization';
 import { MonasteryTransaction, SpentOutput } from '../../types';
 import { UTXOFlowCard } from '../transparency/UTXOFlowCard';
 import { ReceiptInspectionDrawer } from '../transparency/ReceiptInspectionDrawer';
@@ -13,7 +14,7 @@ export interface UTXOLedgerProps {
 
 export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
   const { transactions, funds, getFund } = useMonasteryStore();
-  const { t, language } = useTranslation();
+  const { t } = useTranslation();
 
   const [selectedFundId, setSelectedFundId] = useState<string>('all');
   const [selectedSpentOutput, setSelectedSpentOutput] = useState<SpentOutput | null>(null);
@@ -39,14 +40,7 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
     { id: 'all', label: t('transparency.allFunds') || 'All Funds' },
     ...funds.map((f) => ({
       id: f.id,
-      label:
-        f.id === 'healthcare'
-          ? 'Healthcare'
-          : f.id === 'alms'
-          ? 'Alms & Food'
-          : f.id === 'utilities'
-          ? 'Utilities'
-          : f.name,
+      label: getFundName(f, t),
     })),
   ];
 
@@ -56,23 +50,19 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
       : transactions.filter((tx) => tx.fundId === selectedFundId);
 
   return (
-    <section
-      role="region"
-      aria-label="UTXO Transparency Ledger"
-      className="p-4 space-y-5"
-    >
-      {/* Tab Header Banner */}
-      <div className="border-b border-parchment-300 pb-3">
+    <section role="region" className="p-4 space-y-5" aria-label="UTXO Transparency Ledger">
+      {/* Header */}
+      <div className="border-b border-stone-200 pb-3">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-xl bg-saffron-100 text-saffron-800">
-            <Layers className="w-5 h-5 text-saffron-700" />
+          <div className="p-1.5 rounded-lg bg-amber-100 text-saffron-800">
+            <Layers className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-serif font-bold text-stone-900">
-              {t('transparency.title') || 'UTXO Transparency Ledger'}
+            <h2 className="text-base sm:text-lg font-serif font-bold text-stone-900">
+              {t('transparency.title')}
             </h2>
-            <p className="text-xs text-stone-600 mt-0.5">
-              {t('transparency.subtitle') || 'Tap any spent output to inspect verified merchant receipts'}
+            <p className="text-xs text-stone-600">
+              {t('transparency.subtitle')}
             </p>
           </div>
         </div>
@@ -88,7 +78,7 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
       <div className="space-y-2">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-stone-600">
           <Filter className="w-3.5 h-3.5 text-amber-700" />
-          <span>{language === 'vi' ? 'Lọc theo quỹ thiện nguyện' : 'Filter by Cause Fund'}</span>
+          <span>{t('transparency.filterByCause')}</span>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
@@ -116,11 +106,11 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-xs uppercase font-bold tracking-wider text-stone-500">
-            {language === 'vi' ? 'Dòng giao dịch chi tiêu' : 'Expenditure Batch Flows'} ({filteredTransactions.length})
+            {t('transparency.expenditureFlows')} ({filteredTransactions.length})
           </span>
           <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Monastery Audited</span>
+            <span>{t('transparency.monasteryAudited')}</span>
           </span>
         </div>
 
@@ -130,7 +120,7 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
               <UTXOFlowCard
                 key={tx.id}
                 transaction={tx}
-                fundName={getFund(tx.fundId)?.name}
+                fundName={getFundName(getFund(tx.fundId), t)}
                 onInspectReceipt={handleInspectReceipt}
               />
             ))}
@@ -139,12 +129,10 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
           <div className="bg-white rounded-2xl border border-stone-200 p-8 text-center space-y-2">
             <Receipt className="w-10 h-10 text-stone-400 mx-auto" />
             <h4 className="text-sm font-semibold text-stone-800">
-              {language === 'vi' ? 'Chưa có khoản chi nào cho quỹ này' : 'No Expenditures Logged Yet'}
+              {t('transparency.noExpenditures')}
             </h4>
             <p className="text-xs text-stone-500 max-w-xs mx-auto">
-              {language === 'vi'
-                ? 'Tất cả các khoản cúng dường đang được lưu trữ an toàn trong kho bạc tu viện.'
-                : 'Offerings for this cause are safely preserved in monastery treasury reserves.'}
+              {t('transparency.offeringsPreserved')}
             </p>
           </div>
         )}
@@ -155,7 +143,7 @@ export const UTXOLedger: React.FC<UTXOLedgerProps> = ({ initialTxHash }) => {
         isOpen={Boolean(selectedSpentOutput)}
         spentOutput={selectedSpentOutput}
         txHash={selectedTx?.txHash}
-        fundName={selectedTx ? getFund(selectedTx.fundId)?.name : undefined}
+        fundName={getFundName(selectedTx ? getFund(selectedTx.fundId) : undefined, t)}
         onClose={handleCloseDrawer}
       />
     </section>

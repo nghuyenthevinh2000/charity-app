@@ -3,6 +3,7 @@ import { MessageCircle } from 'lucide-react';
 import { DonationInput, IntentionCategory } from '../../types';
 import { useTranslation } from '../../context/LanguageContext';
 import { useMonasteryStore } from '../../context/MonasteryStore';
+import { getPrayerDedication } from '../../utils/localization';
 
 export interface PrayerCardProps {
   donation: DonationInput;
@@ -83,20 +84,20 @@ export const PrayerCard: React.FC<PrayerCardProps> = ({
         {isBlessed ? (
           <span
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs"
-            title="Blessed during morning chanting meditation"
+            title={t('prayerWall.titleBlessedChanting')}
           >
             <span>
               {donation.id === 'd4' || prayer.blessedAt?.startsWith('2026-09-17')
-                ? 'Blessed in Morning Chanting • 6:00 AM 🪷'
-                : 'Blessed in Chanting Meditation 🪷'}
+                ? t('prayerWall.blessedMorningChanting')
+                : t('prayerWall.blessedChantingMeditation')}
             </span>
           </span>
         ) : (
           <span
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-600 border border-stone-200"
-            title="Queued for chanting meditation"
+            title={t('prayerWall.titleQueuedChanting')}
           >
-            <span>⏳ Queued for Morning Chanting</span>
+            <span>{t('prayerWall.queuedStatus')}</span>
           </span>
         )}
       </div>
@@ -114,7 +115,7 @@ export const PrayerCard: React.FC<PrayerCardProps> = ({
       {/* Intention / Dedication Text */}
       <div className="my-1.5 bg-parchment-50/60 rounded-xl p-3 border border-parchment-200/80">
         <p className="font-serif italic text-stone-800 text-xs sm:text-sm leading-relaxed">
-          "{prayer.dedicationText}"
+          "{getPrayerDedication(prayer, t)}"
         </p>
       </div>
 
@@ -125,7 +126,7 @@ export const PrayerCard: React.FC<PrayerCardProps> = ({
         <button
           type="button"
           data-testid="rejoice-btn"
-          aria-label="Rejoice in Merit"
+          aria-label={t('prayerWall.rejoiceInMerit')}
           onClick={handleRejoiceClick}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-amber-50 hover:bg-amber-100 active:scale-95 text-amber-950 border border-amber-200/80 transition-all cursor-pointer shadow-2xs"
         >
@@ -144,11 +145,11 @@ export const PrayerCard: React.FC<PrayerCardProps> = ({
         >
           <MessageCircle className="w-3.5 h-3.5 text-stone-600" />
           <span>
-            {donation.id === 'd4' || donation.donorName === 'The Nguyen Family'
-              ? `${commentsCount} conversation`
-              : commentsCount === 0
-                ? 'Offer reflection'
-                : `${commentsCount} Sangha ${commentsCount === 1 ? 'reply' : 'replies'}`}
+            {commentsCount === 0
+              ? t('prayerWall.offerReflection')
+              : donation.id === 'd4' || donation.donorName === 'The Nguyen Family'
+                ? t('prayerWall.conversationsCount', { count: commentsCount })
+                : t('prayerWall.repliesCount', { count: commentsCount, unit: commentsCount === 1 ? 'reply' : 'replies' })}
           </span>
         </button>
       </div>

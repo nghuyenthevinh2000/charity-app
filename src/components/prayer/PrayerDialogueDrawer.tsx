@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, Send, HeartHandshake } from 'lucide-react';
 import { DonationInput, CommunityComment } from '../../types';
 import { useTranslation } from '../../context/LanguageContext';
+import { getPrayerDedication } from '../../utils/localization';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 
 export interface PrayerDialogueDrawerProps {
@@ -103,7 +104,7 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close dialogue"
+            aria-label={t('prayerWall.closeDialogue')}
             className="p-1.5 rounded-full hover:bg-stone-100 text-stone-500 hover:text-stone-800 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -118,12 +119,12 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
             </span>
             {isBlessed && (
               <span className="text-[11px] font-semibold text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                <span>Blessed in Morning Chanting • 6:00 AM 🪷</span>
+                <span>{t('prayerWall.blessedMorningChanting')}</span>
               </span>
             )}
           </div>
           <p className="text-xs italic font-serif text-stone-700">
-            "{prayer.dedicationText}"
+            "{getPrayerDedication(prayer, t)}"
           </p>
         </div>
 
@@ -133,10 +134,10 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
             <div className="text-center py-8 text-stone-500 space-y-2">
               <span className="text-3xl">🪷</span>
               <p className="text-xs sm:text-sm font-medium">
-                No replies yet on this prayer intention.
+                {t('prayerWall.noRepliesTitle')}
               </p>
               <p className="text-[11px] text-stone-400 max-w-xs mx-auto">
-                Offer your compassionate reflection, or inquire with the Sangha.
+                {t('prayerWall.noRepliesDesc')}
               </p>
             </div>
           ) : (
@@ -160,7 +161,7 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
                     ) : (
                       <span className="px-2 py-0.5 rounded-full bg-white border border-stone-200 text-stone-700 font-medium inline-flex items-center gap-1">
                         <span>🌸</span>
-                        <span>{comment.authorName || 'Devotee'}</span>
+                        <span>{comment.authorName || t('common.devotee')}</span>
                       </span>
                     )}
                     <span className="text-[10px] text-stone-400">
@@ -193,7 +194,7 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
           {/* If Steward is unlocked, allow role selection */}
           {isStewardUnlocked && (
             <div className="flex items-center gap-2 text-xs">
-              <span className="text-stone-500 font-medium">Post as:</span>
+              <span className="text-stone-500 font-medium">{t('prayerWall.postAs')}</span>
               <button
                 type="button"
                 onClick={() => setReplyRole('monk')}
@@ -214,7 +215,7 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
                     : 'bg-stone-50 border-stone-200 text-stone-600'
                 }`}
               >
-                🌸 Devotee
+                🌸 {t('common.devotee')}
               </button>
             </div>
           )}
@@ -224,8 +225,8 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
               type="text"
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
-              placeholder="Your name or devotee name (optional)"
-              aria-label="Devotee name"
+              placeholder={t('prayerWall.devoteeNamePlaceholder')}
+              aria-label={t('prayerWall.devoteeNameAria')}
               className="w-full px-3 py-1 text-xs rounded-lg border border-stone-200 bg-parchment-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600 transition-all"
             />
           )}
@@ -236,17 +237,17 @@ export const PrayerDialogueDrawer: React.FC<PrayerDialogueDrawerProps> = ({
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
               placeholder={t('prayerWall.inputPlaceholder') || 'Write a compassionate message or question for monks...'}
-              aria-label="Compassionate message"
+              aria-label={t('prayerWall.compassionateMsgAria')}
               className="flex-1 px-3 py-2 text-xs sm:text-sm rounded-xl border border-stone-300 bg-parchment-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 transition-all resize-none"
             />
             <button
               type="submit"
               disabled={!messageText.trim()}
-              aria-label="Send Message"
+              aria-label={t('prayerWall.send')}
               className="px-4 py-2 bg-saffron-600 hover:bg-saffron-700 disabled:bg-stone-300 text-white rounded-xl font-medium text-xs flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4" />
-              <span>Send</span>
+              <span>{t('prayerWall.send')}</span>
             </button>
           </div>
         </form>

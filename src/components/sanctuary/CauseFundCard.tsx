@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Fund } from '../../types';
 import { useTranslation } from '../../context/LanguageContext';
+import { getFundName, getFundDescription, getFundCategory } from '../../utils/localization';
 
 export interface CauseFundCardProps {
   fund: Fund;
@@ -101,22 +102,31 @@ export const CauseFundCard: React.FC<CauseFundCardProps> = ({ fund, onOffer }) =
   const formattedTarget = `$${fund.targetAmount.toLocaleString()}`;
 
   const isVerified = fund.verifiedStatus?.isVerified;
-  // Prioritize localized verified badge in non-English locales (e.g. Vietnamese)
-  const verifiedBadgeLabel =
-    language === 'vi'
-      ? t('sanctuary.verifiedBy')
-      : fund.verifiedStatus?.badgeLabel || t('sanctuary.verifiedBy') || 'Verified by Abbot ✓';
+  const rawBadge = fund.verifiedStatus?.badgeLabel;
+  const isStandardAbbotBadge =
+    !rawBadge ||
+    rawBadge.includes('Verified by Abbot') ||
+    rawBadge.includes('Chứng thực bởi Thầy Trụ Trì') ||
+    rawBadge.includes('Chứng thực');
+
+  const verifiedBadgeLabel = isStandardAbbotBadge
+    ? t('sanctuary.verifiedBy')
+    : rawBadge;
+
+  const fundName = getFundName(fund, t);
+  const fundDescription = getFundDescription(fund, t);
+  const categoryLabel = getFundCategory(fund.category, t);
 
   return (
     <article
-      className="bg-white rounded-2xl p-4 sm:p-5 border border-parchment-300 shadow-xs space-y-3.5 transition-all hover:shadow-sm"
-      aria-label={fund.name}
+      className="bg-white rounded-2xl p-4 sm:p-5 border border-parchment-300 shadow-xs space-y-3.5 transition-all hover:shadow-sm overflow-hidden"
+      aria-label={fundName}
     >
       {/* Header: Icon, Title & Verified Badge */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-2.5 sm:gap-3">
+        <div className="flex items-start gap-3 min-w-0 flex-1">
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-2xs"
+            className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-2xs mt-0.5"
             style={{
               backgroundColor: fund.color ? `${fund.color}15` : '#D9770615',
               color: fund.color || '#D97706',
@@ -124,13 +134,13 @@ export const CauseFundCard: React.FC<CauseFundCardProps> = ({ fund, onOffer }) =
           >
             <IconComponent className="w-5 h-5 stroke-[2]" />
           </div>
-          <div>
-            <h3 className="font-serif font-bold text-stone-900 text-base leading-tight">
-              {fund.name}
+          <div className="min-w-0 flex-1">
+            <h3 className="font-serif font-bold text-stone-900 text-base leading-tight break-words">
+              {fundName}
             </h3>
             {fund.category && (
-              <span className="text-[11px] uppercase tracking-wider text-stone-500 font-medium">
-                {fund.category.replace('-', ' ')}
+              <span className="text-[11px] uppercase tracking-wider text-stone-500 font-medium block mt-0.5">
+                {categoryLabel}
               </span>
             )}
           </div>
@@ -139,18 +149,18 @@ export const CauseFundCard: React.FC<CauseFundCardProps> = ({ fund, onOffer }) =
         {/* Jade Green Verified Status Badge */}
         {isVerified && (
           <span
-            className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-xs font-medium shrink-0"
+            className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-[11px] sm:text-xs font-medium shrink-0 max-w-full"
             title={verifiedBadgeLabel}
           >
-            <CheckCircle2 className="w-3 h-3 text-emerald-600 stroke-[2.5]" />
-            <span>{verifiedBadgeLabel}</span>
+            <CheckCircle2 className="w-3 h-3 text-emerald-600 stroke-[2.5] shrink-0" />
+            <span className="truncate">{verifiedBadgeLabel}</span>
           </span>
         )}
       </div>
 
       {/* Cause Description */}
       <p className="text-xs text-stone-600 leading-relaxed">
-        {fund.description}
+        {fundDescription}
       </p>
 
       {/* Fulfillment Progress Bar & Numbers */}

@@ -140,7 +140,7 @@ export const UTXOFlowCard: React.FC<UTXOFlowCardProps> = ({
                     </span>
                     <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>Verified</span>
+                      <span>{t('transparency.verified')}</span>
                     </span>
                   </div>
                   <div className="font-bold text-stone-900 text-sm group-hover:text-amber-800 transition-colors truncate">
@@ -157,7 +157,7 @@ export const UTXOFlowCard: React.FC<UTXOFlowCardProps> = ({
                   </div>
                   <div className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-800 group-hover:underline mt-1 bg-amber-100/70 px-2 py-0.5 rounded-full">
                     <Receipt className="w-3 h-3" />
-                    <span>Inspect Bill</span>
+                    <span>{t('transparency.inspectBill')}</span>
                   </div>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export const UTXOFlowCard: React.FC<UTXOFlowCardProps> = ({
                   {formatCurrency(transaction.changeOutput.amount)}
                 </div>
                 <span className="text-[10px] text-stone-400 font-mono">
-                  → Treasury Reserve
+                  {t('transparency.toTreasuryReserve')}
                 </span>
               </div>
             </div>
@@ -200,10 +200,10 @@ export const UTXOFlowCard: React.FC<UTXOFlowCardProps> = ({
           <span>
             {isBalanced ? (
               <span className="font-medium text-emerald-800">
-                UTXO Invariant Verified (Sum In = Sum Out)
+                {t('transparency.invariantVerified')}
               </span>
             ) : (
-              <span className="font-medium text-red-600">Balance Unaligned</span>
+              <span className="font-medium text-red-600">{t('transparency.balanceUnaligned')}</span>
             )}
           </span>
         </div>

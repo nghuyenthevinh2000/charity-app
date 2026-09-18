@@ -13,7 +13,7 @@ export const StewardPinModal: React.FC<StewardPinModalProps> = ({ isOpen, onClos
   const [pin, setPin] = useState('');
   const [error, setError] = useState<string | null>(null);
   const { unlockSteward } = useMonasteryStore();
-  const { language } = useTranslation();
+  const { language, t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -102,8 +102,8 @@ export const StewardPinModal: React.FC<StewardPinModalProps> = ({ isOpen, onClos
                   setPin(e.target.value);
                   setError(null);
                 }}
-                placeholder="Enter PIN (1080)"
-                aria-label="Steward PIN"
+                placeholder={t('steward.enterPinPlaceholder')}
+                aria-label={t('steward.stewardPinAria')}
                 autoFocus
                 className="w-full pl-10 pr-4 py-2.5 text-center tracking-widest text-lg font-mono rounded-xl border border-stone-300 bg-parchment-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 focus:border-transparent transition-all"
               />
@@ -149,7 +149,7 @@ export const StewardPinModal: React.FC<StewardPinModalProps> = ({ isOpen, onClos
                 setError(null);
               }}
               className="py-2.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-saffron-800 text-xs font-semibold active:scale-95 transition-all border border-amber-200"
-              title="Quick fill 1080"
+              title={t('steward.quickFill')}
             >
               1080
             </button>

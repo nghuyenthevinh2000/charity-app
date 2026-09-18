@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
+import { getFundName, getFundDescription } from '../../utils/localization';
 import { ExpenseEntryModal } from '../steward/ExpenseEntryModal';
 import { NewFundModal } from '../steward/NewFundModal';
 import { ChantingQueue } from '../steward/ChantingQueue';
@@ -87,7 +88,7 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
           </div>
 
           <div className="text-right">
-            <span className="text-[10px] text-stone-400 block">Total Target</span>
+            <span className="text-[10px] text-stone-400 block">{t('steward.totalTarget')}</span>
             <span className="text-xs text-amber-400 font-semibold">
               ${totalTarget.toLocaleString()}
             </span>
@@ -104,9 +105,9 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
             <div className="space-y-1">
               {lowFundAlerts.map((fund) => (
                 <div key={fund.id} className="text-[11px] text-amber-200/90 flex justify-between">
-                  <span className="truncate pr-2">• {fund.name}</span>
+                  <span className="truncate pr-2">• {getFundName(fund, t)}</span>
                   <span className="font-mono text-amber-300 shrink-0">
-                    ${fund.currentBalance.toLocaleString()} remaining
+                    {t('steward.remainingBalance', { amount: fund.currentBalance.toLocaleString() })}
                   </span>
                 </div>
               ))}
@@ -144,7 +145,7 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
           <h3 className="text-sm font-serif font-bold text-stone-900">
             {t('steward.reservesAndFunds') || 'Reserves & Active Funds'}
           </h3>
-          <span className="text-xs text-stone-500">{funds.length} campaigns</span>
+          <span className="text-xs text-stone-500">{t('steward.campaignsCount', { count: funds.length })}</span>
         </div>
 
         <div className="space-y-2.5">
@@ -160,15 +161,15 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <h4 className="font-serif font-bold text-stone-900 text-xs sm:text-sm">
-                      {fund.name}
+                      {getFundName(fund, t)}
                     </h4>
                     <p className="text-[11px] text-stone-500 line-clamp-1">
-                      {fund.description}
+                      {getFundDescription(fund, t)}
                     </p>
                   </div>
                   {isLow && (
                     <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 text-rose-700 border border-rose-200 shrink-0">
-                      Low Reserve
+                      {t('steward.lowReserve')}
                     </span>
                   )}
                 </div>
@@ -192,10 +193,10 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
                 <div className="flex items-center justify-between text-[10px] text-stone-500 pt-0.5">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3 h-3 text-stone-400" />
-                    <span>{fund.daysRemaining ?? 30} days remaining</span>
+                    <span>{t('steward.daysRemaining', { days: fund.daysRemaining ?? 30 })}</span>
                   </span>
                   <span className="text-amber-800 font-medium">
-                    {fund.supportersCount} devotees
+                    {t('steward.devoteesCount', { count: fund.supportersCount })}
                   </span>
                 </div>
               </div>

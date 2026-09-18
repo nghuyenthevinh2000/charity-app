@@ -272,7 +272,7 @@ export const initialTransactions: MonasteryTransaction[] = [
         'Cold-pressed Sesame Oil'
       ],
       purpose: 'Nutritious breakfast and lunch for 35 resident monks and visiting pilgrims',
-      receiptImageUrl: '/docs/mockups/screen2-transparency-ledger.jpg',
+      receiptImageUrl: '/images/verified-groceries-receipt.jpg',
       receiptHash: 'sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
       verifiedBy: 'Monastery Kitchen Steward Thich Minh Thong',
       verifiedAt: '2026-09-16'
@@ -300,7 +300,7 @@ export const initialTransactions: MonasteryTransaction[] = [
         'Blood Pressure Monitor Cuff Replacement'
       ],
       purpose: 'Prescription medicines and geriatric health care supplies for senior monks',
-      receiptImageUrl: '/docs/mockups/transparency_ledger_1789656370602.jpg',
+      receiptImageUrl: '/images/verified-pharmacy-receipt.jpg',
       receiptHash: 'sha256:8f4c281a99ef87b001a45cbef712431289fe1234abcd5678ef0123456789abcd',
       verifiedBy: 'Monastery Health Care Attendant Bhikkhu Tam Tinh',
       verifiedAt: '2026-09-15'
@@ -327,7 +327,7 @@ export const initialTransactions: MonasteryTransaction[] = [
         'Clean Water Filter Cartridge 5-Stage Replacement'
       ],
       purpose: 'Solar battery maintenance and clean drinking water filtration for meditation retreat hall',
-      receiptImageUrl: '/docs/mockups/screen2-transparency-ledger.jpg',
+      receiptImageUrl: '/images/verified-solar-receipt.jpg',
       receiptHash: 'sha256:4a8b11cdef9012345678abcdef9012345678abcdef9012345678abcdef901234',
       verifiedBy: 'Monastery Operations Steward Thich Quang Hien',
       verifiedAt: '2026-09-16'
