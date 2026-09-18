@@ -14,6 +14,9 @@ import {
 } from 'lucide-react';
 import { SpentOutput } from '../../types';
 import { useTranslation } from '../../context/LanguageContext';
+import groceriesReceipt from '../../assets/receipts/verified-groceries-receipt.jpg';
+import pharmacyReceipt from '../../assets/receipts/verified-pharmacy-receipt.jpg';
+import solarReceipt from '../../assets/receipts/verified-solar-receipt.jpg';
 
 export interface ReceiptInspectionDrawerProps {
   spentOutput: SpentOutput | null;
@@ -21,6 +24,50 @@ export interface ReceiptInspectionDrawerProps {
   onClose: () => void;
   txHash?: string;
   fundName?: string;
+}
+
+export function getResolvedReceiptUrl(spentOutput: SpentOutput): string {
+  const url = spentOutput.receiptImageUrl;
+  if (url && (url.startsWith('data:') || url.startsWith('blob:') || url.startsWith('http://') || url.startsWith('https://'))) {
+    return url;
+  }
+  if (
+    url &&
+    (url.includes('pharmacy') ||
+      spentOutput.id === 's2' ||
+      spentOutput.merchant.toLowerCase().includes('pharmacy') ||
+      spentOutput.merchant.toLowerCase().includes('thuốc'))
+  ) {
+    return pharmacyReceipt;
+  }
+  if (
+    url &&
+    (url.includes('solar') ||
+      spentOutput.id === 's3' ||
+      spentOutput.merchant.toLowerCase().includes('solar') ||
+      spentOutput.merchant.toLowerCase().includes('mặt trời'))
+  ) {
+    return solarReceipt;
+  }
+  if (
+    url &&
+    (url.includes('groceries') ||
+      spentOutput.id === 's1' ||
+      spentOutput.merchant.toLowerCase().includes('farm') ||
+      spentOutput.merchant.toLowerCase().includes('tofu') ||
+      spentOutput.merchant.toLowerCase().includes('nông sản'))
+  ) {
+    return groceriesReceipt;
+  }
+  if (url) {
+    if (url.startsWith('./') || !url.startsWith('/')) {
+      return url;
+    }
+    const base = import.meta.env.BASE_URL || './';
+    const cleanBase = base.endsWith('/') ? base : `${base}/`;
+    return `${cleanBase}${url.replace(/^\//, '')}`;
+  }
+  return groceriesReceipt;
 }
 
 export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = ({
@@ -205,9 +252,9 @@ export const ReceiptInspectionDrawer: React.FC<ReceiptInspectionDrawerProps> = (
               onClick={() => setIsZoomed(!isZoomed)}
               title={t('transparency.tapToZoom')}
             >
-              {!imageError && spentOutput.receiptImageUrl ? (
+              {!imageError ? (
                 <img
-                  src={spentOutput.receiptImageUrl}
+                  src={getResolvedReceiptUrl(spentOutput)}
                   alt={`Receipt for ${spentOutput.merchant}`}
                   onError={() => setImageError(true)}
                   className={`w-full object-contain transition-transform duration-300 ${

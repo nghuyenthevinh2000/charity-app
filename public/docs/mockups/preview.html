@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lotus Grove Sanctuary — Finalized UI Mockups (V2)</title>
+  <style>
+    :root {
+      --bg-cream: #FAF7F2;
+      --card-bg: #FFFFFF;
+      --border-warm: #EAE3D2;
+      --amber-primary: #B45309;
+      --amber-accent: #D97706;
+      --gold-seal: #F59E0B;
+      --jade-green: #059669;
+      --ink: #1F2937;
+      --ink-muted: #6B7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-cream);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 32px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 32px;
+    }
+    .lotus-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 32px;
+      color: #78350F;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    p.subtitle {
+      color: var(--ink-muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .badge-v2 {
+      display: inline-block;
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      margin-top: 10px;
+      border: 1px solid #FDE68A;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      width: 100%;
+      max-width: 1300px;
+    }
+    .mockup-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(120, 53, 15, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .mockup-card h2 {
+      font-family: Georgia, serif;
+      font-size: 19px;
+      color: #92400E;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .mockup-card p.desc {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-bottom: 16px;
+      text-align: center;
+      line-height: 1.4;
+      min-height: 36px;
+    }
+    .img-wrapper {
+      width: 100%;
+      max-width: 340px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      border: 1px solid var(--border-warm);
+      background: #000;
+    }
+    .img-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.2s;
+    }
+    .img-wrapper img:hover {
+      transform: scale(1.02);
+    }
+    .features-list {
+      margin-top: 16px;
+      width: 100%;
+      max-width: 340px;
+      font-size: 13px;
+      color: #4B5563;
+    }
+    .features-list li {
+      margin-bottom: 6px;
+      list-style-type: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .features-list li::before {
+      content: "🪷";
+      font-size: 12px;
+    }
+    footer {
+      margin-top: 48px;
+      color: var(--ink-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="lotus-icon">🪷</div>
+    <h1>Lotus Grove Sanctuary & Transparency</h1>
+    <p class="subtitle">Unified 4-Tab Mobile UI with Dedicated Offering Buttons, UTXO Bill Drill-Down, Sangha Dialogue & New Fund Creation</p>
+    <span class="badge-v2">Updated Final Mockups (V2)</span>
+  </header>
+
+  <main class="grid">
+    <!-- Screen 1: Tab 1 -->
+    <article class="mockup-card">
+      <h2>1. Sanctuary Home (Tab 1)</h2>
+      <p class="desc">Modular cause funds with dedicated fulfillment bars, deadlines, verified status, and direct offering buttons.</p>
+      <div class="img-wrapper">
+        <a href="v2-tab1-sanctuary-home.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab1-sanctuary-home.jpg" alt="Sanctuary Home UI" />
+        </a>
+      </div>
+      <ul class="features-list">
+        <li><strong>Dedicated Offering Button</strong> directly below each fund card</li>
+        <li><strong>Fulfillment Progress Bar</strong>: $1,240 / $1,500 (82% fulfilled)</li>
+        <li><strong>Time Deadline Pill</strong>: ⏳ 5 days remaining (Ends Sep 22)</li>
+        <li><strong>Verified Status Badge</strong>: Verified by Abbot ✓</li>
+        <li><strong>Focused 4-Tab Navigation</strong>: Sanctuary, Transparency, Prayer Wall, Steward</li>
+      </ul>
+    </article>
+
+    <!-- Screen 2: Tab 2 -->
+    <article class="mockup-card">
+      <h2>2. UTXO Ledger & Drill-Down (Tab 2)</h2>
+      <p class="desc">Unified UTXO flow: Tapping any spent output slides up the itemized bill and paper receipt drawer.</p>
+      <div class="img-wrapper">
+        <a href="v2-tab2-utxo-transparency.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab2-utxo-transparency.jpg" alt="UTXO Transparency Ledger UI" />
+        </a>
+      </div>
+      <ul class="features-list">
+        <li><strong>Inputs → Pool → Outputs Flow</strong>: Visual transaction lineage</li>
+        <li><strong>Tap-to-Inspect Spent Output</strong>: Slides up bill breakdown drawer</li>
+        <li><strong>Itemized Merchant Breakdown</strong>: Organic tofu, rice, fresh greens ($72.50)</li>
+        <li><strong>Authentic Paper Receipt Photo</strong> with official steward verification stamp</li>
+      </ul>
+    </article>
+
+    <!-- Screen 3: Tab 3 -->
+    <article class="mockup-card">
+      <h2>3. Community Sangha Dialogue (Tab 3)</h2>
+      <p class="desc">Book of Intentions with active threaded dialogue between monks and devotees.</p>
+      <div class="img-wrapper">
+        <a href="v2-tab3-community-dialogue.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab3-community-dialogue.jpg" alt="Community Dialogue UI" />
+        </a>
+      </div>
+      <ul class="features-list">
+        <li><strong>Devotee Prayer Dedications</strong> with golden lotus blessing badge</li>
+        <li><strong>Threaded Conversation</strong>: Monks and devotees converse with compassion</li>
+        <li><strong>Verified Monk Badge</strong>: 🧘 Abbot Tam Duc ✓ with loving-kindness response</li>
+        <li><strong>Community Merit</strong>: Devotees support one another + message input box</li>
+      </ul>
+    </article>
+
+    <!-- Screen 4: Tab 4 -->
+    <article class="mockup-card">
+      <h2>4. Steward Portal & New Fund (Tab 4)</h2>
+      <p class="desc">Monk admin console with fast expense logging and dynamic fund drive creation.</p>
+      <div class="img-wrapper">
+        <a href="v2-tab4-steward-newfund.jpg" target="_blank" title="Click to view full size">
+          <img src="v2-tab4-steward-newfund.jpg" alt="Monk Steward Portal UI" />
+        </a>
+      </div>
+      <ul class="features-list">
+        <li><strong>Treasury Balance Snapshot</strong> ($4,850 Available)</li>
+        <li><strong>Two Quick Actions</strong>: 📷 Log Expense &amp; + Launch New Cause Fund</li>
+        <li><strong>+ Launch New Fund Modal</strong>: Name, purpose, target, deadline, categories</li>
+        <li><strong>Instant Spin-Off</strong>: Newly created funds appear on Tab 1 immediately</li>
+      </ul>
+    </article>
+  </main>
+
+  <footer>
+    <p>Project Location: <code>/Users/thevinhnguyen/Documents/computer-science/projects/app-factory/projects/charity-app</code></p>
+  </footer>
+
+</body>
+</html>

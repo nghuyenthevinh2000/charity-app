@@ -3,6 +3,7 @@ import { X, Upload, CheckCircle2, Image as ImageIcon, Trash2, Receipt, AlertCirc
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { useTranslation } from '../../context/LanguageContext';
 import { getFundName } from '../../utils/localization';
+import groceriesReceipt from '../../assets/receipts/verified-groceries-receipt.jpg';
 
 export interface ExpenseEntryModalProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ export interface ExpenseEntryModalProps {
   onSuccess?: () => void;
 }
 
-const SAMPLE_RECEIPT_DATA_URL = '/images/verified-groceries-receipt.jpg';
+const SAMPLE_RECEIPT_DATA_URL = groceriesReceipt;
 
 export const ExpenseEntryModal: React.FC<ExpenseEntryModalProps> = ({
   isOpen,

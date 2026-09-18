@@ -141,7 +141,40 @@ export function MonasteryStoreProvider({
 
   const [transactions, setTransactionsState] = useState<MonasteryTransaction[]>(() => {
     if (propTransactions) return propTransactions;
-    return safeGetItem<MonasteryTransaction[]>(STORAGE_KEY_TRANSACTIONS, initialTransactions);
+    const stored = safeGetItem<MonasteryTransaction[]>(STORAGE_KEY_TRANSACTIONS, initialTransactions);
+    if (Array.isArray(stored)) {
+      let changed = false;
+      const updated = stored.map((tx) => {
+        const seedMatch = initialTransactions.find(
+          (itx) => itx.id === tx.id || itx.spentOutput?.id === tx.spentOutput?.id
+        );
+        if (seedMatch) {
+          const currentUrl = tx.spentOutput?.receiptImageUrl;
+          const seedUrl = seedMatch.spentOutput?.receiptImageUrl;
+          if (
+            !currentUrl ||
+            currentUrl.startsWith('/docs/mockups/') ||
+            currentUrl.startsWith('/images/') ||
+            currentUrl !== seedUrl
+          ) {
+            changed = true;
+            return {
+              ...tx,
+              spentOutput: {
+                ...tx.spentOutput,
+                receiptImageUrl: seedUrl,
+              },
+            };
+          }
+        }
+        return tx;
+      });
+      if (changed) {
+        safeSetItem(STORAGE_KEY_TRANSACTIONS, updated);
+      }
+      return updated;
+    }
+    return stored;
   });
 
   const [isStewardUnlocked, setIsStewardUnlockedState] = useState<boolean>(() => {

@@ -1,4 +1,7 @@
 import { Fund, DonationInput, MonasteryTransaction } from '../types';
+import groceriesReceipt from '../assets/receipts/verified-groceries-receipt.jpg';
+import pharmacyReceipt from '../assets/receipts/verified-pharmacy-receipt.jpg';
+import solarReceipt from '../assets/receipts/verified-solar-receipt.jpg';
 
 /**
  * Vietnamese Seed Data for Lotus Grove Sanctuary (Tịnh Xá Sen Vàng)
@@ -285,7 +288,7 @@ export const initialTransactionsVI: MonasteryTransaction[] = [
         'Dầu Mè Ép Lạnh Nguyên Chất (Cold-pressed Sesame Oil)'
       ],
       purpose: 'Chuẩn bị bữa điểm tâm và cơm trưa thanh đạm, giàu dinh dưỡng cho 35 chư Tăng và Phật tử về tịnh xá tu học',
-      receiptImageUrl: '/images/verified-groceries-receipt.jpg',
+      receiptImageUrl: groceriesReceipt,
       receiptHash: 'sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
       verifiedBy: 'Tri Sự Ban Ẩm Thực Tịnh Xá - Thầy Thích Minh Thông (Kitchen Steward)',
       verifiedAt: '2026-09-16'
@@ -313,7 +316,7 @@ export const initialTransactionsVI: MonasteryTransaction[] = [
         'Bộ Phụ Kiện Vòng Bít Máy Đo Huyết Áp Điện Tử (Blood Pressure Monitor Cuff)'
       ],
       purpose: 'Thuốc theo toa và vật tư chăm sóc y tế chuyên biệt cho chư tôn đức trưởng lão tại tịnh xá',
-      receiptImageUrl: '/images/verified-pharmacy-receipt.jpg',
+      receiptImageUrl: pharmacyReceipt,
       receiptHash: 'sha256:8f4c281a99ef87b001a45cbef712431289fe1234abcd5678ef0123456789abcd',
       verifiedBy: 'Thị Giả Chăm Sóc Sức Khỏe - Tỳ Kheo Thích Tâm Tịnh (Health Care Attendant)',
       verifiedAt: '2026-09-15'
@@ -340,7 +343,7 @@ export const initialTransactionsVI: MonasteryTransaction[] = [
         'Thay Bộ Lõi Lọc Nước Tinh Khiết Chuẩn Sinh Hoạt (Clean Water Filter Cartridge)'
       ],
       purpose: 'Bảo trì dàn ắc quy năng lượng mặt trời và hệ thống lọc nước uống tinh khiết cho thiền đường khóa tu',
-      receiptImageUrl: '/images/verified-solar-receipt.jpg',
+      receiptImageUrl: solarReceipt,
       receiptHash: 'sha256:4a8b11cdef9012345678abcdef9012345678abcdef9012345678abcdef901234',
       verifiedBy: 'Tri Sự Hạ Tầng Tịnh Xá - Thầy Thích Quang Hiển',
       verifiedAt: '2026-09-16'
