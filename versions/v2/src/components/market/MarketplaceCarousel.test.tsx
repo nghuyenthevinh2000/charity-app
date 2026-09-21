@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { MarketplaceCarousel } from './MarketplaceCarousel';
 import { MonasteryProvider } from '../../context/MonasteryStore';
@@ -114,4 +114,49 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     expect(screen.getByText(/0x/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /view blessing certificate/i })).toBeInTheDocument();
   });
+
+  it('ignores vertical scrolling so vertical gestures do not trigger carousel navigation', () => {
+    const { container } = renderWithProviders(<MarketplaceCarousel />);
+    const swipeArea = container.querySelector('.swipe-container');
+    expect(swipeArea).not.toBeNull();
+
+    // Simulate vertical scroll: deltaY = 120, deltaX = 20
+    fireEvent.touchStart(swipeArea!, { touches: [{ clientX: 200, clientY: 100 }] });
+    fireEvent.touchEnd(swipeArea!, { changedTouches: [{ clientX: 220, clientY: 220 }] });
+
+    // Should stay on first package
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.queryByText('Highland Student Study Pack')).not.toBeInTheDocument();
+  });
+
+  it('aborts gesture on touchCancel without navigating', () => {
+    const { container } = renderWithProviders(<MarketplaceCarousel />);
+    const swipeArea = container.querySelector('.swipe-container');
+    expect(swipeArea).not.toBeNull();
+
+    fireEvent.touchStart(swipeArea!, { touches: [{ clientX: 300, clientY: 100 }] });
+    fireEvent.touchCancel(swipeArea!);
+    fireEvent.touchEnd(swipeArea!, { changedTouches: [{ clientX: 100, clientY: 100 }] });
+
+    // Should stay on first package because touchStart was cleared
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+  });
+
+  it('navigates to on-chain explorer from receipt action button', () => {
+    const mockOpenExplorer = vi.fn();
+    renderWithProviders(<MarketplaceCarousel onOpenProofExplorer={mockOpenExplorer} />);
+
+    const sponsorBtn = screen.getByRole('button', { name: /sponsor this package/i });
+    fireEvent.click(sponsorBtn);
+
+    const confirmBtn = screen.getByRole('button', { name: /confirm sponsorship/i });
+    fireEvent.click(confirmBtn);
+
+    // Click "View in On-Chain Explorer ➔"
+    const explorerBtn = screen.getByRole('button', { name: /view in on-chain explorer/i });
+    fireEvent.click(explorerBtn);
+
+    expect(mockOpenExplorer).toHaveBeenCalledWith('pkg-winter-warmth');
+  });
 });
+

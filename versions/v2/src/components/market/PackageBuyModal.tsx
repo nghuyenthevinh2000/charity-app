@@ -18,6 +18,7 @@ export interface PackageBuyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: (purchase: PackagePurchase) => void;
+  onViewInExplorer?: (purchase: PackagePurchase) => void;
 }
 
 const PRESET_UNITS = [1, 2, 5, 10];
@@ -27,6 +28,7 @@ export const PackageBuyModal: React.FC<PackageBuyModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
+  onViewInExplorer,
 }) => {
   const { purchasePackage } = useMonasteryStore();
 
@@ -76,9 +78,6 @@ export const PackageBuyModal: React.FC<PackageBuyModalProps> = ({
 
     setCompletedPurchase(purchase);
     setShowConfetti(true);
-    if (onSuccess) {
-      onSuccess(purchase);
-    }
   };
 
   const handleCopyTx = () => {
@@ -93,6 +92,24 @@ export const PackageBuyModal: React.FC<PackageBuyModalProps> = ({
     setCompletedPurchase(null);
     setShowCertificateView(false);
     onClose();
+  };
+
+  const handleViewInExplorerAction = () => {
+    const p = completedPurchase;
+    handleModalClose();
+    if (onViewInExplorer && p) {
+      onViewInExplorer(p);
+    } else if (onSuccess && p) {
+      onSuccess(p);
+    }
+  };
+
+  const handleCompleteReturnAction = () => {
+    const p = completedPurchase;
+    handleModalClose();
+    if (onSuccess && p) {
+      onSuccess(p);
+    }
   };
 
   return (
@@ -135,7 +152,10 @@ export const PackageBuyModal: React.FC<PackageBuyModalProps> = ({
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-xl font-serif font-bold text-stone-900">
+              <h3
+                id="package-buy-modal-title"
+                className="text-xl font-serif font-bold text-stone-900"
+              >
                 Offering Blessed &amp; Recorded
               </h3>
               <p className="text-xs text-stone-600">
@@ -226,7 +246,7 @@ export const PackageBuyModal: React.FC<PackageBuyModalProps> = ({
               </div>
             )}
 
-            {/* Toggle Certificate / Proof View */}
+            {/* Toggle Certificate / Proof View and Action Buttons */}
             <div className="space-y-2 pt-1">
               <button
                 type="button"
@@ -241,8 +261,16 @@ export const PackageBuyModal: React.FC<PackageBuyModalProps> = ({
 
               <button
                 type="button"
-                onClick={handleModalClose}
-                className="w-full py-2.5 px-4 rounded-xl bg-stone-900 hover:bg-black text-white font-medium text-xs sm:text-sm transition-colors cursor-pointer"
+                onClick={handleViewInExplorerAction}
+                className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-medium text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <span>View in On-Chain Explorer ➔</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCompleteReturnAction}
+                className="w-full py-2 px-4 rounded-xl text-stone-600 hover:text-stone-900 hover:bg-stone-100 font-medium text-xs transition-colors cursor-pointer"
               >
                 Complete &amp; Return to Sanctuary
               </button>

@@ -17,8 +17,9 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [selectedPackageForBuy, setSelectedPackageForBuy] = useState<CharityPackage | null>(null);
 
-  // Swipe gesture detection state
+  // Swipe gesture detection state (tracking both X and Y to distinguish vertical vs horizontal scroll)
   const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
 
   const totalPackages = packages.length;
 
@@ -38,37 +39,52 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
     }
   };
 
-  // Touch Handlers with 50px delta threshold
+  // Touch Handlers with 50px delta threshold and horizontal dominance check
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    const clientX =
-      e.touches?.[0]?.clientX ??
-      e.changedTouches?.[0]?.clientX ??
-      (e as unknown as MouseEvent).clientX;
+    const touch = e.touches?.[0] ?? e.changedTouches?.[0];
+    const clientX = touch?.clientX ?? (e as unknown as MouseEvent).clientX;
+    const clientY = touch?.clientY ?? (e as unknown as MouseEvent).clientY;
+
     if (typeof clientX === 'number') {
       touchStartXRef.current = clientX;
+    }
+    if (typeof clientY === 'number') {
+      touchStartYRef.current = clientY;
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (touchStartXRef.current === null) return;
-    const clientX =
-      e.changedTouches?.[0]?.clientX ??
-      e.touches?.[0]?.clientX ??
-      (e as unknown as MouseEvent).clientX;
+    const touch = e.changedTouches?.[0] ?? e.touches?.[0];
+    const clientX = touch?.clientX ?? (e as unknown as MouseEvent).clientX;
+    const clientY = touch?.clientY ?? (e as unknown as MouseEvent).clientY;
 
     if (typeof clientX === 'number') {
       const deltaX = clientX - touchStartXRef.current;
+      const deltaY =
+        typeof clientY === 'number' && touchStartYRef.current !== null
+          ? clientY - touchStartYRef.current
+          : 0;
       const SWIPE_THRESHOLD = 50;
 
-      if (deltaX < -SWIPE_THRESHOLD) {
-        // Swiped left -> navigate next
-        handleNext();
-      } else if (deltaX > SWIPE_THRESHOLD) {
-        // Swiped right -> navigate prev
-        handlePrev();
+      // Distinguish horizontal swipe vs vertical scroll
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
+        if (deltaX < -SWIPE_THRESHOLD) {
+          // Swiped left -> navigate next
+          handleNext();
+        } else if (deltaX > SWIPE_THRESHOLD) {
+          // Swiped right -> navigate prev
+          handlePrev();
+        }
       }
     }
     touchStartXRef.current = null;
+    touchStartYRef.current = null;
+  };
+
+  const handleTouchCancel = () => {
+    touchStartXRef.current = null;
+    touchStartYRef.current = null;
   };
 
   // Keyboard navigation
@@ -124,6 +140,7 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
         className="swipe-container relative select-none touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchCancel}
       >
         {/* Exactly ONE package card rendered on screen */}
         <PackageCard
@@ -183,9 +200,16 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
         pkg={selectedPackageForBuy}
         isOpen={Boolean(selectedPackageForBuy)}
         onClose={() => setSelectedPackageForBuy(null)}
-        onSuccess={() => {
-          if (onOpenProofExplorer && selectedPackageForBuy) {
-            onOpenProofExplorer(selectedPackageForBuy.id);
+        onViewInExplorer={(purchase) => {
+          setSelectedPackageForBuy(null);
+          if (onOpenProofExplorer) {
+            onOpenProofExplorer(purchase.packageId);
+          }
+        }}
+        onSuccess={(purchase) => {
+          setSelectedPackageForBuy(null);
+          if (onOpenProofExplorer) {
+            onOpenProofExplorer(purchase.packageId);
           }
         }}
       />
