@@ -32,6 +32,7 @@ export function generateMerkleRoot(elements: string[]): string {
     const nextLayer: string[] = [];
     for (let i = 0; i < currentLayer.length; i += 2) {
       const left = currentLayer[i];
+      // In Merkle tree construction with an odd number of elements, the last leaf is duplicated to form a pair
       const right = i + 1 < currentLayer.length ? currentLayer[i + 1] : left;
       nextLayer.push(simpleHash(`${left}:${right}`));
     }
