@@ -10,13 +10,26 @@ import {
   LaunchFundPayload,
   LogExpensePayload,
   TxInput,
+  CharityPackage,
+  PackagePurchase,
+  GivingProofBatch,
+  CampaignComment,
+  CreatePackagePayload,
+  PurchasePackagePayload,
+  UploadProofPayload,
 } from '../types';
 import { initialFunds, initialDonations, initialTransactions } from '../data/seedDataVI';
+import { initialPackages, initialProofBatches, initialPurchases } from '../data/seedDataV2';
+import { generateTxHash as generateCryptoTxHash, generateMerkleRoot } from '../utils/crypto';
 
 export const STORAGE_KEY_FUNDS = 'lotus_funds';
 export const STORAGE_KEY_DONATIONS = 'lotus_donations';
 export const STORAGE_KEY_TRANSACTIONS = 'lotus_transactions';
 export const STORAGE_KEY_STEWARD = 'lotus_steward_unlocked';
+export const STORAGE_KEY_PACKAGES = 'lotus_packages_v2';
+export const STORAGE_KEY_PURCHASES = 'lotus_purchases_v2';
+export const STORAGE_KEY_USER_PURCHASES = 'lotus_user_purchases_v2';
+export const STORAGE_KEY_PROOF_BATCHES = 'lotus_proof_batches_v2';
 
 export const DEFAULT_STEWARD_PIN = '1080';
 
@@ -25,6 +38,11 @@ export interface MonasteryStoreContextType {
   donations: DonationInput[];
   transactions: MonasteryTransaction[];
   isStewardUnlocked: boolean;
+
+  packages: CharityPackage[];
+  purchases: PackagePurchase[];
+  userPurchases: PackagePurchase[];
+  proofBatches: GivingProofBatch[];
 
   addDonation: {
     (payload: CreateDonationPayload): DonationInput;
@@ -66,6 +84,11 @@ export interface MonasteryStoreContextType {
 
   getFund: (fundId: FundId) => Fund | undefined;
   getDonation: (idOrTxHash: string) => DonationInput | undefined;
+
+  createPackage: (payload: CreatePackagePayload) => CharityPackage;
+  purchasePackage: (payload: PurchasePackagePayload) => PackagePurchase;
+  uploadGivingProof: (payload: UploadProofPayload) => GivingProofBatch;
+  addCommentToProof: (batchId: string, comment: Omit<CampaignComment, 'id' | 'campaignId' | 'createdAt'>) => boolean;
 }
 
 function safeGetItem<T>(key: string, fallback: T): T {
@@ -120,6 +143,10 @@ export interface MonasteryStoreProviderProps {
   initialDonations?: DonationInput[];
   initialTransactions?: MonasteryTransaction[];
   initialStewardUnlocked?: boolean;
+  initialPackages?: CharityPackage[];
+  initialPurchases?: PackagePurchase[];
+  initialUserPurchases?: PackagePurchase[];
+  initialProofBatches?: GivingProofBatch[];
 }
 
 export function MonasteryStoreProvider({
@@ -128,6 +155,10 @@ export function MonasteryStoreProvider({
   initialDonations: propDonations,
   initialTransactions: propTransactions,
   initialStewardUnlocked: propSteward,
+  initialPackages: propPackages,
+  initialPurchases: propPurchases,
+  initialUserPurchases: propUserPurchases,
+  initialProofBatches: propProofBatches,
 }: MonasteryStoreProviderProps) {
   const [funds, setFundsState] = useState<Fund[]>(() => {
     if (propFunds) return propFunds;
@@ -182,6 +213,26 @@ export function MonasteryStoreProvider({
     return safeGetItem<boolean>(STORAGE_KEY_STEWARD, false);
   });
 
+  const [packages, setPackagesState] = useState<CharityPackage[]>(() => {
+    if (propPackages) return propPackages;
+    return safeGetItem<CharityPackage[]>(STORAGE_KEY_PACKAGES, initialPackages);
+  });
+
+  const [purchases, setPurchasesState] = useState<PackagePurchase[]>(() => {
+    if (propPurchases) return propPurchases;
+    return safeGetItem<PackagePurchase[]>(STORAGE_KEY_PURCHASES, initialPurchases);
+  });
+
+  const [userPurchases, setUserPurchasesState] = useState<PackagePurchase[]>(() => {
+    if (propUserPurchases) return propUserPurchases;
+    return safeGetItem<PackagePurchase[]>(STORAGE_KEY_USER_PURCHASES, []);
+  });
+
+  const [proofBatches, setProofBatchesState] = useState<GivingProofBatch[]>(() => {
+    if (propProofBatches) return propProofBatches;
+    return safeGetItem<GivingProofBatch[]>(STORAGE_KEY_PROOF_BATCHES, initialProofBatches);
+  });
+
   const setFunds = useCallback((newFunds: Fund[] | ((prev: Fund[]) => Fund[])) => {
     setFundsState((prev) => {
       const next = typeof newFunds === 'function' ? newFunds(prev) : newFunds;
@@ -213,6 +264,44 @@ export function MonasteryStoreProvider({
     setIsStewardUnlockedState(unlocked);
     safeSetItem(STORAGE_KEY_STEWARD, unlocked);
   }, []);
+
+  const setPackages = useCallback((newPackages: CharityPackage[] | ((prev: CharityPackage[]) => CharityPackage[])) => {
+    setPackagesState((prev) => {
+      const next = typeof newPackages === 'function' ? newPackages(prev) : newPackages;
+      safeSetItem(STORAGE_KEY_PACKAGES, next);
+      return next;
+    });
+  }, []);
+
+  const setPurchases = useCallback((newPurchases: PackagePurchase[] | ((prev: PackagePurchase[]) => PackagePurchase[])) => {
+    setPurchasesState((prev) => {
+      const next = typeof newPurchases === 'function' ? newPurchases(prev) : newPurchases;
+      safeSetItem(STORAGE_KEY_PURCHASES, next);
+      return next;
+    });
+  }, []);
+
+  const setUserPurchases = useCallback(
+    (newUserPurchases: PackagePurchase[] | ((prev: PackagePurchase[]) => PackagePurchase[])) => {
+      setUserPurchasesState((prev) => {
+        const next = typeof newUserPurchases === 'function' ? newUserPurchases(prev) : newUserPurchases;
+        safeSetItem(STORAGE_KEY_USER_PURCHASES, next);
+        return next;
+      });
+    },
+    []
+  );
+
+  const setProofBatches = useCallback(
+    (newProofBatches: GivingProofBatch[] | ((prev: GivingProofBatch[]) => GivingProofBatch[])) => {
+      setProofBatchesState((prev) => {
+        const next = typeof newProofBatches === 'function' ? newProofBatches(prev) : newProofBatches;
+        safeSetItem(STORAGE_KEY_PROOF_BATCHES, next);
+        return next;
+      });
+    },
+    []
+  );
 
   // Add donation
   const addDonation = useCallback<MonasteryStoreContextType['addDonation']>(
@@ -556,6 +645,211 @@ export function MonasteryStoreProvider({
     setIsStewardUnlocked(false);
   }, [setIsStewardUnlocked]);
 
+  // Create charity package
+  const createPackage = useCallback(
+    (payload: CreatePackagePayload): CharityPackage => {
+      const slug =
+        payload.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '') || ('pkg-' + Date.now().toString(36));
+
+      const existing = packages.find((p) => p.id === slug);
+      const pkgId = existing ? `${slug}-${Date.now().toString().slice(-4)}` : slug;
+
+      const newPackage: CharityPackage = {
+        id: pkgId,
+        title: payload.title,
+        description: payload.description,
+        category: payload.category,
+        unitPrice: Number(payload.unitPrice),
+        targetUnits: Number(payload.targetUnits),
+        fundedUnits: 0,
+        distributedUnits: 0,
+        itemsIncluded: payload.itemsIncluded || [],
+        coverImageUrl:
+          payload.coverImageUrl ||
+          'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=900&auto=format&fit=crop&q=80',
+        bannerGradient: payload.bannerGradient || 'from-amber-700 via-orange-600 to-amber-900',
+        createdByMonk: payload.createdByMonk || 'Ven. Thich Tam An',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+      };
+
+      setPackages((prev) => [...prev, newPackage]);
+      return newPackage;
+    },
+    [packages, setPackages]
+  );
+
+  // Purchase package
+  const purchasePackage = useCallback(
+    (payload: PurchasePackagePayload): PackagePurchase => {
+      const targetPkg = packages.find((p) => p.id === payload.packageId);
+      const pkgTitle = targetPkg ? targetPkg.title : 'Charity Package';
+      const unitPrice = targetPkg ? targetPkg.unitPrice : 0;
+      const unitsBought = Number(payload.unitsBought) || 1;
+      const totalAmount = unitsBought * unitPrice;
+      const purchaseId = 'pur-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      const txHash = generateCryptoTxHash(`purchase-${payload.packageId}-${purchaseId}-${Date.now()}`);
+      const donorDisplayName = payload.isAnonymous ? 'Anonymous Devotee' : (payload.donorName || 'Devotee');
+
+      const newPurchase: PackagePurchase = {
+        id: purchaseId,
+        packageId: payload.packageId,
+        packageTitle: pkgTitle,
+        unitsBought,
+        unitPrice,
+        totalAmount,
+        donorName: donorDisplayName,
+        isAnonymous: Boolean(payload.isAnonymous),
+        dedicationNote: payload.dedicationNote,
+        txHash,
+        blockNumber: 18900 + Math.floor(Math.random() * 500),
+        timestamp: new Date().toISOString(),
+        fulfillmentStatus: 'queued_distribution',
+        linkedProofBatchId: undefined,
+      };
+
+      // Update package funded units
+      setPackages((prev) =>
+        prev.map((pkg) => {
+          if (pkg.id === payload.packageId) {
+            const newFunded = pkg.fundedUnits + unitsBought;
+            const newStatus =
+              newFunded >= pkg.targetUnits && pkg.status !== 'completed'
+                ? 'fully_funded'
+                : pkg.status;
+            return {
+              ...pkg,
+              fundedUnits: newFunded,
+              status: newStatus,
+            };
+          }
+          return pkg;
+        })
+      );
+
+      // Prepend to purchases and userPurchases
+      setPurchases((prev) => [newPurchase, ...prev]);
+      setUserPurchases((prev) => [newPurchase, ...prev]);
+
+      return newPurchase;
+    },
+    [packages, setPackages, setPurchases, setUserPurchases]
+  );
+
+  // Upload giving proof
+  const uploadGivingProof = useCallback(
+    (payload: UploadProofPayload): GivingProofBatch => {
+      const targetPkg = packages.find((p) => p.id === payload.packageId);
+      const pkgTitle = targetPkg ? targetPkg.title : 'Charity Package';
+      const batchId = 'proof-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      const distTxHash = generateCryptoTxHash(`proof-dist-${payload.packageId}-${batchId}-${Date.now()}`);
+
+      const photoLeaves = (payload.heartfeltPhotos || []).map((p) => p.url);
+      const leaves = photoLeaves.length > 0 ? photoLeaves : [payload.packageId, payload.location];
+      const merkleRootHash = generateMerkleRoot(leaves);
+
+      const newProofBatch: GivingProofBatch = {
+        id: batchId,
+        packageId: payload.packageId,
+        packageTitle: pkgTitle,
+        unitsDistributed: Number(payload.unitsDistributed),
+        location: payload.location,
+        missionReport: payload.missionReport,
+        heartfeltPhotos: (payload.heartfeltPhotos || []).map((photo, idx) => ({
+          id: (photo as any).id || `photo-${Date.now().toString(36)}-${idx}`,
+          url: photo.url,
+          caption: photo.caption,
+          beneficiaryNote: photo.beneficiaryNote,
+        })),
+        distributionDate: new Date().toISOString().split('T')[0],
+        attestingMonk: payload.attestingMonk || 'Ven. Thich Tam An',
+        distributionTxHash: distTxHash,
+        merkleRootHash,
+        blockNumber: 18950 + Math.floor(Math.random() * 500),
+        comments: [],
+      };
+
+      // Update package distributed units
+      setPackages((prev) =>
+        prev.map((pkg) => {
+          if (pkg.id === payload.packageId) {
+            const newDistributed = pkg.distributedUnits + Number(payload.unitsDistributed);
+            const isCompleted = newDistributed >= pkg.targetUnits;
+            return {
+              ...pkg,
+              distributedUnits: newDistributed,
+              status: isCompleted ? 'completed' : pkg.status,
+            };
+          }
+          return pkg;
+        })
+      );
+
+      // Update queued purchases for this package
+      const updatePurchaseList = (list: PackagePurchase[]) =>
+        list.map((purchase) => {
+          if (
+            purchase.packageId === payload.packageId &&
+            purchase.fulfillmentStatus === 'queued_distribution'
+          ) {
+            return {
+              ...purchase,
+              fulfillmentStatus: 'fulfilled_with_proof' as const,
+              linkedProofBatchId: batchId,
+            };
+          }
+          return purchase;
+        });
+
+      setPurchases(updatePurchaseList);
+      setUserPurchases(updatePurchaseList);
+
+      // Prepend to proofBatches
+      setProofBatches((prev) => [newProofBatch, ...prev]);
+
+      return newProofBatch;
+    },
+    [packages, setPackages, setPurchases, setUserPurchases, setProofBatches]
+  );
+
+  // Add comment to proof
+  const addCommentToProof = useCallback(
+    (
+      batchId: string,
+      comment: Omit<CampaignComment, 'id' | 'campaignId' | 'createdAt'>
+    ): boolean => {
+      let found = false;
+      const commentObj: CampaignComment = {
+        id: 'cmt-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+        campaignId: batchId,
+        authorName: comment.authorName || 'Devotee',
+        authorRole: comment.authorRole || 'devotee',
+        monkBadge: comment.monkBadge,
+        commentText: comment.commentText || '',
+        createdAt: new Date().toISOString(),
+      };
+
+      setProofBatches((prev) =>
+        prev.map((batch) => {
+          if (batch.id === batchId) {
+            found = true;
+            return {
+              ...batch,
+              comments: [...(batch.comments || []), commentObj],
+            };
+          }
+          return batch;
+        })
+      );
+
+      return found;
+    },
+    [setProofBatches]
+  );
+
   // Reset store
   const resetStore = useCallback(() => {
     setFundsState(initialFunds);
@@ -567,6 +861,16 @@ export function MonasteryStoreProvider({
     safeRemoveItem(STORAGE_KEY_DONATIONS);
     safeRemoveItem(STORAGE_KEY_TRANSACTIONS);
     safeRemoveItem(STORAGE_KEY_STEWARD);
+
+    setPackagesState(initialPackages);
+    setPurchasesState(initialPurchases);
+    setUserPurchasesState([]);
+    setProofBatchesState(initialProofBatches);
+
+    safeRemoveItem(STORAGE_KEY_PACKAGES);
+    safeRemoveItem(STORAGE_KEY_PURCHASES);
+    safeRemoveItem(STORAGE_KEY_USER_PURCHASES);
+    safeRemoveItem(STORAGE_KEY_PROOF_BATCHES);
   }, []);
 
   // Helpers
@@ -590,6 +894,10 @@ export function MonasteryStoreProvider({
     donations,
     transactions,
     isStewardUnlocked,
+    packages,
+    purchases,
+    userPurchases,
+    proofBatches,
     addDonation,
     logExpense,
     launchNewFund,
@@ -601,10 +909,16 @@ export function MonasteryStoreProvider({
     resetStore,
     getFund,
     getDonation,
+    createPackage,
+    purchasePackage,
+    uploadGivingProof,
+    addCommentToProof,
   };
 
   return <MonasteryStoreContext.Provider value={value}>{children}</MonasteryStoreContext.Provider>;
 }
+
+export const MonasteryProvider = MonasteryStoreProvider;
 
 export function useMonasteryStore(): MonasteryStoreContextType {
   const context = useContext(MonasteryStoreContext);

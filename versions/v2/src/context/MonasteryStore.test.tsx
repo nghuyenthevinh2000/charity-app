@@ -5,11 +5,13 @@ import { MonasteryStoreProvider, useMonasteryStore } from './MonasteryStore';
 import { useMonasteryStore as useMonasteryStoreFromHook } from '../hooks/useMonasteryStore';
 import { verifyUtxoInvariant } from '../utils/utxo';
 
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <MonasteryStoreProvider>{children}</MonasteryStoreProvider>
+);
+
 const useMonasteryStoreHook = () =>
   renderHook(() => useMonasteryStore(), {
-    wrapper: ({ children }: { children: React.ReactNode }) => (
-      <MonasteryStoreProvider>{children}</MonasteryStoreProvider>
-    ),
+    wrapper,
   });
 
 describe('MonasteryStore', () => {
@@ -310,3 +312,143 @@ describe('MonasteryStore', () => {
     expect(result.current.funds.length).toBe(4);
   });
 });
+
+describe('MonasteryStore V2 Package & Proof Operations', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('allows creating a new charity package by monk steward', () => {
+    const { result } = renderHook(() => useMonasteryStore(), { wrapper });
+
+    act(() => {
+      result.current.unlockSteward('1080');
+    });
+
+    let newPkg: any;
+    act(() => {
+      newPkg = result.current.createPackage({
+        title: 'Monastery Medical Camp',
+        description: 'Free eye exams and medication',
+        category: 'medical',
+        unitPrice: 15,
+        targetUnits: 50,
+        itemsIncluded: ['Eye Drops', 'Prescription Glasses Voucher'],
+      });
+    });
+
+    expect(newPkg).toBeDefined();
+    expect(newPkg.title).toBe('Monastery Medical Camp');
+    expect(result.current.packages.some((p) => p.id === newPkg.id)).toBe(true);
+  });
+
+  it('allows a devotee to purchase a package and records user impact', () => {
+    const { result } = renderHook(() => useMonasteryStore(), { wrapper });
+    const targetPkg = result.current.packages[0];
+    const initialFunded = targetPkg.fundedUnits;
+
+    let purchase: any;
+    act(() => {
+      purchase = result.current.purchasePackage({
+        packageId: targetPkg.id,
+        unitsBought: 2,
+        donorName: 'Bodhi Heart',
+        isAnonymous: false,
+        dedicationNote: 'For all sentient beings',
+      });
+    });
+
+    expect(purchase).toBeDefined();
+    expect(purchase.unitsBought).toBe(2);
+    expect(purchase.txHash).toMatch(/^0x[a-f0-9]{64}$/);
+
+    // Check updated package fundedUnits
+    const updatedPkg = result.current.packages.find((p) => p.id === targetPkg.id);
+    expect(updatedPkg?.fundedUnits).toBe(initialFunded + 2);
+
+    // Check userPurchases includes this purchase
+    expect(result.current.userPurchases.some((p) => p.id === purchase.id)).toBe(true);
+  });
+
+  it('allows uploading a proof of giving and updates linked package & purchases', () => {
+    const { result } = renderHook(() => useMonasteryStore(), { wrapper });
+    const targetPkg = result.current.packages[0];
+
+    // Purchase first so we have a queued purchase
+    act(() => {
+      result.current.purchasePackage({
+        packageId: targetPkg.id,
+        unitsBought: 1,
+        donorName: 'Test Devotee',
+        isAnonymous: false,
+      });
+    });
+
+    let proofBatch: any;
+    act(() => {
+      proofBatch = result.current.uploadGivingProof({
+        packageId: targetPkg.id,
+        unitsDistributed: 10,
+        location: 'Highland Hamlet 3',
+        missionReport: 'Delivered successfully in rainy conditions.',
+        heartfeltPhotos: [
+          {
+            url: 'https://example.com/photo1.jpg',
+            caption: 'Monk handing kit',
+            beneficiaryNote: 'Recipient was smiling',
+          },
+        ],
+      });
+    });
+
+    expect(proofBatch).toBeDefined();
+    expect(proofBatch.distributionTxHash).toMatch(/^0x[a-f0-9]{64}$/);
+    expect(proofBatch.merkleRootHash).toMatch(/^sha256:[a-f0-9]{64}$/);
+
+    // Package distributed count increased
+    const updatedPkg = result.current.packages.find((p) => p.id === targetPkg.id);
+    expect(updatedPkg?.distributedUnits).toBeGreaterThanOrEqual(10);
+  });
+
+  it('allows adding community comments to a proof batch', () => {
+    const { result } = renderHook(() => useMonasteryStore(), { wrapper });
+    const proofId = result.current.proofBatches[0].id;
+
+    act(() => {
+      result.current.addCommentToProof(proofId, {
+        authorName: 'Lotus Disciple',
+        authorRole: 'devotee',
+        commentText: 'Sadhu Sadhu Sadhu! Touching proof.',
+      });
+    });
+
+    const updatedProof = result.current.proofBatches.find((b) => b.id === proofId);
+    expect(updatedProof?.comments.some((c) => c.commentText.includes('Sadhu'))).toBe(true);
+  });
+
+  it('resets V2 package, proof, and purchase data when resetStore is called', () => {
+    const { result } = renderHook(() => useMonasteryStore(), { wrapper });
+
+    act(() => {
+      result.current.createPackage({
+        title: 'Temporary Test Package',
+        description: 'To be wiped',
+        category: 'food',
+        unitPrice: 10,
+        targetUnits: 10,
+        itemsIncluded: ['Item 1'],
+      });
+    });
+
+    expect(result.current.packages.some((p) => p.title === 'Temporary Test Package')).toBe(true);
+
+    act(() => {
+      result.current.resetStore();
+    });
+
+    expect(result.current.packages.some((p) => p.title === 'Temporary Test Package')).toBe(false);
+    expect(result.current.packages.length).toBe(4);
+    expect(result.current.userPurchases.length).toBe(0);
+  });
+});
+
