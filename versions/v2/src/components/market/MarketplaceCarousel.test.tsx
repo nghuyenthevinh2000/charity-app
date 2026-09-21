@@ -158,5 +158,25 @@ describe('MarketplaceCarousel (Tab 1)', () => {
 
     expect(mockOpenExplorer).toHaveBeenCalledWith('pkg-winter-warmth');
   });
+
+  it('dismisses modal without navigating when Complete & Return to Sanctuary is clicked', () => {
+    const mockOpenExplorer = vi.fn();
+    renderWithProviders(<MarketplaceCarousel onOpenProofExplorer={mockOpenExplorer} />);
+
+    const sponsorBtn = screen.getByRole('button', { name: /sponsor this package/i });
+    fireEvent.click(sponsorBtn);
+
+    const confirmBtn = screen.getByRole('button', { name: /confirm sponsorship/i });
+    fireEvent.click(confirmBtn);
+
+    // Click "Complete & Return to Sanctuary"
+    const returnBtn = screen.getByRole('button', { name: /complete & return to sanctuary/i });
+    fireEvent.click(returnBtn);
+
+    // Modal is dismissed, staying in carousel without navigating
+    expect(screen.queryByText(/Offering Blessed & Recorded/i)).not.toBeInTheDocument();
+    expect(mockOpenExplorer).not.toHaveBeenCalled();
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+  });
 });
 

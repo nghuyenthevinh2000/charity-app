@@ -206,11 +206,8 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
             onOpenProofExplorer(purchase.packageId);
           }
         }}
-        onSuccess={(purchase) => {
+        onSuccess={() => {
           setSelectedPackageForBuy(null);
-          if (onOpenProofExplorer) {
-            onOpenProofExplorer(purchase.packageId);
-          }
         }}
       />
     </div>
