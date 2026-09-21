@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
 import { ProofExplorer } from './ProofExplorer';
 import { MonasteryProvider } from '../../context/MonasteryStore';
 import { LanguageProvider } from '../../context/LanguageContext';

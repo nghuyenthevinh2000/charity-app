@@ -10,7 +10,6 @@ import {
   ShieldCheck,
   Send,
   MapPin,
-  Box,
 } from 'lucide-react';
 import { GivingProofBatch } from '../../types';
 import { useMonasteryStore } from '../../context/MonasteryStore';

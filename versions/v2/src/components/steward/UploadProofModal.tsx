@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Camera, X, CheckCircle, ShieldCheck, MapPin, User, Plus, Trash2 } from 'lucide-react';
+import { Camera, X, CheckCircle, ShieldCheck, User, Plus, Trash2 } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { generateMerkleRoot } from '../../utils/crypto';
 
@@ -37,9 +37,11 @@ export const UploadProofModal: React.FC<UploadProofModalProps> = ({
 
   // Active packages with pending distribution or all packages if none pending
   const selectablePackages = useMemo(() => {
-    const pending = packages.filter((p) => p.fundedUnits > p.distributedUnits);
+    const pending = packages.filter(
+      (p) => p.fundedUnits > p.distributedUnits || p.id === preselectedPackageId
+    );
     return pending.length > 0 ? pending : packages;
-  }, [packages]);
+  }, [packages, preselectedPackageId]);
 
   const [packageId, setPackageId] = useState<string>('');
   const [unitsDistributed, setUnitsDistributed] = useState<string>('10');
@@ -64,8 +66,6 @@ export const UploadProofModal: React.FC<UploadProofModalProps> = ({
       setUnitsDistributed(String(pending));
     }
   }, [preselectedPackageId, selectablePackages, packages]);
-
-  const selectedPackage = packages.find((p) => p.id === packageId) || selectablePackages[0];
 
   // Live calculation of preview Merkle root
   const previewMerkleRoot = useMemo(() => {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Shield, Search, ExternalLink, Clock, CheckCircle2, Heart, Sparkles, Box } from 'lucide-react';
+import { Shield, Search, Clock, CheckCircle2, Heart } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
-import { PackagePurchase } from '../../types';
 
 export interface PersonalPurchasesProps {
   onViewProof?: (batchIdOrPackageId: string) => void;

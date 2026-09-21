@@ -6,11 +6,9 @@ import {
   Camera,
   Plus,
   ShieldCheck,
-  CheckCircle,
   Truck,
   Heart,
   Key,
-  ExternalLink,
 } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { CreatePackageModal } from './CreatePackageModal';

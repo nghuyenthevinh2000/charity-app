@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { CampaignProofCard } from './CampaignProofCard';
 import { PersonalPurchases } from './PersonalPurchases';
-import { Scroll, Sparkles, HeartHandshake } from 'lucide-react';
+import { Scroll } from 'lucide-react';
 
 export type ProofSubTab = 'public' | 'personal';
 
