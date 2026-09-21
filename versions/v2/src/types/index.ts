@@ -143,3 +143,106 @@ export interface LogExpensePayload {
   receiptHash?: string;
   verifiedBy?: string;
 }
+
+// --- V2 Tangible Charity Package & Cryptographic Proof Types ---
+
+export type PackageCategory = 'food' | 'education' | 'medical' | 'winter' | 'emergency';
+
+export interface CharityPackage {
+  id: string;
+  title: string;
+  description: string;
+  category: PackageCategory;
+  unitPrice: number;
+  targetUnits: number;
+  fundedUnits: number;
+  distributedUnits: number;
+  itemsIncluded: string[];
+  coverImageUrl: string;
+  bannerGradient: string;
+  createdByMonk: string;
+  status: 'active' | 'fully_funded' | 'completed';
+  createdAt: string;
+}
+
+export interface PackagePurchase {
+  id: string;
+  packageId: string;
+  packageTitle: string;
+  unitsBought: number;
+  unitPrice: number;
+  totalAmount: number;
+  donorName: string;
+  isAnonymous: boolean;
+  dedicationNote?: string;
+  txHash: string;
+  blockNumber: number;
+  timestamp: string;
+  fulfillmentStatus: 'queued_distribution' | 'fulfilled_with_proof';
+  linkedProofBatchId?: string;
+}
+
+export interface GivingProofBatch {
+  id: string;
+  packageId: string;
+  packageTitle: string;
+  unitsDistributed: number;
+  location: string;
+  missionReport: string;
+  heartfeltPhotos: Array<{
+    id: string;
+    url: string;
+    caption: string;
+    beneficiaryNote: string;
+  }>;
+  distributionDate: string;
+  attestingMonk: string;
+  distributionTxHash: string;
+  merkleRootHash: string;
+  blockNumber: number;
+  comments: CampaignComment[];
+}
+
+export interface CampaignComment {
+  id: string;
+  campaignId: string;
+  authorName: string;
+  authorRole: 'monk' | 'devotee';
+  monkBadge?: string;
+  commentText: string;
+  createdAt: string;
+}
+
+export interface CreatePackagePayload {
+  title: string;
+  description: string;
+  category: PackageCategory;
+  unitPrice: number;
+  targetUnits: number;
+  itemsIncluded: string[];
+  coverImageUrl?: string;
+  bannerGradient?: string;
+  createdByMonk?: string;
+}
+
+export interface PurchasePackagePayload {
+  packageId: string;
+  unitsBought: number;
+  donorName?: string;
+  isAnonymous: boolean;
+  dedicationNote?: string;
+}
+
+export interface UploadProofPayload {
+  packageId: string;
+  unitsDistributed: number;
+  location: string;
+  missionReport: string;
+  heartfeltPhotos: Array<{
+    url: string;
+    caption: string;
+    beneficiaryNote: string;
+  }>;
+  attestingMonk?: string;
+}
+
