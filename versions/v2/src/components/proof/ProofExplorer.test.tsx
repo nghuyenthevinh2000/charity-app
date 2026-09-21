@@ -151,4 +151,33 @@ describe('ProofExplorer (Tab 2)', () => {
     expect(screen.getByText(/Winter Warmth & Rice Kit/i)).toBeInTheDocument();
     expect(screen.queryByText(/Highland Student Study Pack/i)).not.toBeInTheDocument();
   });
+
+  it('elevates floating action dock above 50% bottom sheet drawer when opened', () => {
+    renderWithProviders(<ProofExplorer />);
+    const infoBtn = screen.getByRole('button', { name: /toggle proof details/i });
+    const dock = infoBtn.closest('aside');
+    expect(dock).toHaveClass('bottom-6');
+
+    // Open drawer
+    fireEvent.click(infoBtn);
+    expect(dock).toHaveClass('bottom-[calc(50%+1rem)]');
+
+    // Close drawer
+    fireEvent.click(infoBtn);
+    expect(dock).toHaveClass('bottom-6');
+  });
+
+  it('handles initialProofId prop by targeting and scrolling to the proof card', async () => {
+    const scrollMock = vi.fn();
+    window.HTMLElement.prototype.scrollIntoView = scrollMock;
+
+    renderWithProviders(<ProofExplorer initialProofId="proof-student-batch-1" initialSubTab="personal" />);
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    });
+
+    expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
+    expect(scrollMock).toHaveBeenCalled();
+  });
 });

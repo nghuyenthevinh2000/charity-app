@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { CampaignProofCard } from './CampaignProofCard';
 import { PersonalPurchases } from './PersonalPurchases';
@@ -22,15 +22,27 @@ export const ProofExplorer: React.FC<ProofExplorerProps> = ({
   const handleViewProof = (proofOrPackageId: string) => {
     setActiveSubTab('public');
     setTimeout(() => {
-      // Look for the proof card element
-      const targetCard =
-        document.getElementById(`proof-card-${proofOrPackageId}`) ||
-        document.querySelector(`[data-testid="proof-card-${proofOrPackageId}"]`);
-      if (targetCard && typeof targetCard.scrollIntoView === 'function') {
-        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const targetBatch = proofBatches.find(
+        (b) => b.id === proofOrPackageId || b.packageId === proofOrPackageId
+      );
+      const elementId = targetBatch
+        ? `proof-card-${targetBatch.id}`
+        : `proof-card-${proofOrPackageId}`;
+      const el =
+        document.getElementById(elementId) ||
+        document.querySelector(`[data-testid="${elementId}"]`);
+      if (el && typeof el.scrollIntoView === 'function') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
   };
+
+  useEffect(() => {
+    if (initialProofId) {
+      setActiveSubTab('public');
+      handleViewProof(initialProofId);
+    }
+  }, [initialProofId]);
 
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4 py-3">

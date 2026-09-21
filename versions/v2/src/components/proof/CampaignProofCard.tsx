@@ -190,7 +190,11 @@ export const CampaignProofCard: React.FC<CampaignProofCardProps> = ({ proof, id,
       )}
 
       {/* FLOATING RIGHT ACTION DOCK (Details & Comments Buttons) */}
-      <aside className="absolute right-4 bottom-6 flex flex-col gap-3 z-30 items-center">
+      <aside
+        className={`absolute right-4 transition-all duration-300 ${
+          activeDrawer ? 'bottom-[calc(50%+1rem)]' : 'bottom-6'
+        } flex flex-col gap-3 z-30 items-center`}
+      >
         {/* Toggle Details Button */}
         <button
           type="button"
