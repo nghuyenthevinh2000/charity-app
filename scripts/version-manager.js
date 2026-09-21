@@ -13,7 +13,8 @@ const CURRENT_LINK = path.join(ROOT_DIR, 'current');
 
 function getActiveVersion() {
   if (fs.existsSync(ACTIVE_FILE)) {
-    return fs.readFileSync(ACTIVE_FILE, 'utf8').trim();
+    const val = fs.readFileSync(ACTIVE_FILE, 'utf8').trim();
+    return val || 'v1';
   }
   return 'v1';
 }
@@ -49,17 +50,24 @@ function switchVersion(targetVersion) {
     process.exit(1);
   }
 
-  fs.writeFileSync(ACTIVE_FILE, `${targetVersion}\n`, 'utf8');
-
-  // Update symlink
-  try {
-    if (fs.existsSync(CURRENT_LINK) || fs.lstatSync(CURRENT_LINK).isSymbolicLink()) {
-      fs.unlinkSync(CURRENT_LINK);
-    }
-  } catch {}
-
   const relTarget = path.join('versions', targetVersion);
-  fs.symlinkSync(relTarget, CURRENT_LINK, 'dir');
+  const tmpLink = path.join(ROOT_DIR, `.current_tmp_${process.pid}_${Date.now()}`);
+
+  try {
+    fs.symlinkSync(relTarget, tmpLink, 'dir');
+    fs.renameSync(tmpLink, CURRENT_LINK);
+  } catch {
+    // Fallback for environments where renameSync does not atomically overwrite symlinks
+    fs.rmSync(CURRENT_LINK, { recursive: true, force: true });
+    fs.symlinkSync(relTarget, CURRENT_LINK, 'dir');
+  } finally {
+    if (fs.existsSync(tmpLink) || fs.lstatSync(tmpLink, { throwIfNoEntry: false })?.isSymbolicLink()) {
+      fs.rmSync(tmpLink, { recursive: true, force: true });
+    }
+  }
+
+  // Update .active-version only after symlink update succeeds
+  fs.writeFileSync(ACTIVE_FILE, `${targetVersion}\n`, 'utf8');
   console.log(`Successfully switched active version to: ${targetVersion}`);
 }
 
@@ -129,17 +137,23 @@ function runCommand(cmd, args = []) {
     process.exit(1);
   }
 
-  const res = spawnSync('npm', ['run', cmd, '--', ...args], {
+  const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  const res = spawnSync(npmCmd, ['run', cmd, '--', ...args], {
     cwd: activeDir,
     stdio: 'inherit',
-    shell: true,
   });
+
+  if (res.error) {
+    console.error('Execution error:', res.error.message || res.error);
+    process.exit(1);
+  }
 
   if (cmd === 'build' && res.status === 0) {
     mirrorDist(activeDir);
   }
 
-  process.exit(res.status ?? 0);
+  const exitCode = res.status !== null ? res.status : (res.signal ? 1 : 0);
+  process.exit(exitCode);
 }
 
 const [, , action, ...rest] = process.argv;
@@ -157,6 +171,10 @@ switch (action) {
     let name = rest[0];
     if (fromIdx !== -1) {
       base = rest[fromIdx + 1];
+      if (!base) {
+        console.error('Error: Please specify base version after --from. Example: version:create v2 --from v1');
+        process.exit(1);
+      }
       if (fromIdx === 0) name = rest[2];
     }
     createVersion(name, base);
@@ -166,11 +184,12 @@ switch (action) {
     runCommand(rest[0], rest.slice(1));
     break;
   default:
-    console.log(`
+    console.error(`
 Usage:
   node scripts/version-manager.js list
   node scripts/version-manager.js switch <version>
   node scripts/version-manager.js create <version> [--from <base>]
   node scripts/version-manager.js run <cmd> [args...]
 `);
+    process.exit(1);
 }

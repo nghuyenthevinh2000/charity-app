@@ -88,6 +88,30 @@ test('version-manager handles validation errors gracefully', () => {
     () => execFileSync('node', [SCRIPT, 'create', 'test-v-invalid-base', '--from', 'non-existent-base'], { cwd: ROOT_DIR, encoding: 'utf8', stdio: 'pipe' }),
     (err) => err.status !== 0
   );
+
+  // Create version with missing argument after --from should exit with non-zero code
+  assert.throws(
+    () => execFileSync('node', [SCRIPT, 'create', 'test-v-missing-base', '--from'], { cwd: ROOT_DIR, encoding: 'utf8', stdio: 'pipe' }),
+    (err) => err.status !== 0
+  );
+
+  // Unrecognized command should exit with non-zero code
+  assert.throws(
+    () => execFileSync('node', [SCRIPT, 'unknown-command'], { cwd: ROOT_DIR, encoding: 'utf8', stdio: 'pipe' }),
+    (err) => err.status !== 0
+  );
+});
+
+test('version-manager list falls back to v1 when .active-version is empty', () => {
+  const activeFile = path.join(ROOT_DIR, '.active-version');
+  const original = fs.readFileSync(activeFile, 'utf8');
+  try {
+    fs.writeFileSync(activeFile, '   \n', 'utf8');
+    const output = execFileSync('node', [SCRIPT, 'list'], { cwd: ROOT_DIR, encoding: 'utf8' });
+    assert.match(output, /\* v1 \(active\)/);
+  } finally {
+    fs.writeFileSync(activeFile, original, 'utf8');
+  }
 });
 
 test('version-manager run delegates command and mirrors dist on build', () => {
