@@ -1,128 +1,130 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StewardPortal } from './StewardPortal';
+import { MonasteryProvider } from '../../context/MonasteryStore';
 import { LanguageProvider } from '../../context/LanguageContext';
-import { MonasteryStoreProvider } from '../../context/MonasteryStore';
 
-describe('StewardPortal', () => {
-  it('opens Launch New Cause Fund modal and submits a new campaign', () => {
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <StewardPortal />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
+const renderWithProviders = (ui: React.ReactElement) => {
+  return render(
+    <LanguageProvider>
+      <MonasteryProvider>{ui}</MonasteryProvider>
+    </LanguageProvider>
+  );
+};
 
-    fireEvent.click(screen.getByRole('button', { name: /Launch New Cause Fund/i }));
-    expect(screen.getAllByText(/Launch New Cause Fund/i).length).toBeGreaterThan(0);
-
-    fireEvent.change(screen.getByLabelText(/Cause Name/i), { target: { value: 'Solar Roof Expansion' } });
-    fireEvent.change(screen.getByLabelText(/Target Goal/i), { target: { value: '3000' } });
-    fireEvent.click(screen.getByRole('button', { name: /Launch Fund/i }));
-
-    expect(screen.getByText(/Solar Roof Expansion/i)).toBeInTheDocument();
+describe('StewardPortal (Tab 3)', () => {
+  beforeEach(() => {
+    localStorage.clear();
   });
 
-  it('renders treasury summary with total reserves and low-fund alerts', () => {
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <StewardPortal />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
+  it('demands PIN 1080 when locked and unlocks upon correct entry', () => {
+    renderWithProviders(<StewardPortal />);
+    expect(screen.getByText(/Monk Steward Access/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/Total Available Reserves/i)).toBeInTheDocument();
-    expect(screen.getByText(/Reserves & Active Funds/i)).toBeInTheDocument();
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '1080' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
+
+    expect(screen.getByText(/Monastery Steward Workspace/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /\+ create charity package/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /upload proof of giving/i })).toBeInTheDocument();
   });
 
-  it('opens Log Expense modal and logs a verified expenditure', async () => {
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <StewardPortal />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
+  it('rejects incorrect PIN entry', () => {
+    renderWithProviders(<StewardPortal />);
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '9999' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
 
-    fireEvent.click(screen.getByRole('button', { name: /Log Expense|Log New Expense/i }));
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText(/Log New Expense/i)).toBeInTheDocument();
+    expect(screen.getByText(/incorrect pin/i)).toBeInTheDocument();
+  });
 
-    fireEvent.change(screen.getByLabelText(/Expense Amount/i), { target: { value: '150' } });
-    fireEvent.change(screen.getByLabelText(/Payee|Merchant/i), { target: { value: 'Monastery Farm Supply' } });
-    fireEvent.change(screen.getByLabelText(/Purchased Items/i), { target: { value: 'Organic Seeds, Soil, Trowels' } });
-    fireEvent.change(screen.getByLabelText(/Spiritual Purpose|Purpose/i), { target: { value: 'Community garden revitalization' } });
+  it('opens Create Package modal and adds new package', () => {
+    renderWithProviders(<StewardPortal />);
+    // Unlock
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '1080' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
 
-    // Use sample receipt button
-    const sampleBtn = screen.getByRole('button', { name: /Use Sample Receipt/i });
-    fireEvent.click(sampleBtn);
+    // Click create package
+    fireEvent.click(screen.getByRole('button', { name: /\+ create charity package/i }));
+    expect(screen.getByText(/Create New Charity Package/i)).toBeInTheDocument();
 
-    // Submit expense
-    fireEvent.click(screen.getByRole('button', { name: /Record Expense|Submit Expense/i }));
+    fireEvent.change(screen.getByLabelText(/package title/i), { target: { value: 'Flood Relief Pack' } });
+    fireEvent.change(screen.getByLabelText(/unit price/i), { target: { value: '20' } });
+    fireEvent.change(screen.getByLabelText(/target units/i), { target: { value: '100' } });
+    fireEvent.change(screen.getByLabelText(/items included/i), { target: { value: 'Dry Rations, Water Purifier, First Aid' } });
 
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /publish package/i }));
+    expect(screen.getByText('Flood Relief Pack')).toBeInTheDocument();
+  });
+
+  it('validates input in Create Package modal', () => {
+    renderWithProviders(<StewardPortal />);
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '1080' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
+
+    fireEvent.click(screen.getByRole('button', { name: /\+ create charity package/i }));
+    // Clear title and submit
+    fireEvent.change(screen.getByLabelText(/package title/i), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: /publish package/i }));
+
+    expect(screen.getByText(/please provide a package title/i)).toBeInTheDocument();
+  });
+
+  it('opens Upload Proof modal and records distribution proof', () => {
+    renderWithProviders(<StewardPortal />);
+    // Unlock
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '1080' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
+
+    // Click upload proof
+    fireEvent.click(screen.getByRole('button', { name: /upload proof of giving/i }));
+    expect(screen.getByRole('heading', { name: /Upload Proof of Giving/i })).toBeInTheDocument();
+
+    // Select package and enter distribution details
+    fireEvent.change(screen.getByLabelText(/units distributed/i), { target: { value: '15' } });
+    fireEvent.change(screen.getByLabelText(/village|location/i), { target: { value: 'Lung Cu Village' } });
+    fireEvent.change(screen.getByLabelText(/mission report/i), {
+      target: { value: 'Distributed warm jackets and rice sacks directly to mountain households.' },
     });
+
+    fireEvent.click(screen.getByRole('button', { name: /seal & record proof/i }));
+
+    // Modal should close
+    expect(screen.queryByText(/Attach field delivery photo/i)).not.toBeInTheDocument();
   });
 
-  it('displays morning chanting queue and allows one-tap recite and bless', () => {
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <StewardPortal />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
+  it('allows opening upload proof modal directly from package card', () => {
+    renderWithProviders(<StewardPortal />);
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '1080' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
 
-    expect(screen.getByText(/Morning Chanting & Prayer Intentions/i)).toBeInTheDocument();
-    
-    // Find queued intention cards and bless button
-    const blessButtons = screen.getAllByRole('button', { name: /Recite & Bless 🪷/i });
-    expect(blessButtons.length).toBeGreaterThan(0);
+    // Find upload proof button on card
+    const cardProofBtns = screen.getAllByRole('button', { name: /^Upload Proof$/i });
+    expect(cardProofBtns.length).toBeGreaterThan(0);
+    fireEvent.click(cardProofBtns[0]);
 
-    // Tap first bless button
-    fireEvent.click(blessButtons[0]);
-
-    // Should indicate blessed status
-    expect(screen.getAllByText(/Blessed/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { name: /Upload Proof of Giving/i })).toBeInTheDocument();
   });
 
-  it('validates required fields when attempting to submit incomplete modals', () => {
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <StewardPortal />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
+  it('allows locking the portal and triggers onLock callback', () => {
+    const handleLock = vi.fn();
+    renderWithProviders(<StewardPortal onLock={handleLock} />);
 
-    // Test NewFundModal validation
-    fireEvent.click(screen.getByRole('button', { name: /Launch New Cause Fund/i }));
-    fireEvent.click(screen.getByRole('button', { name: /Launch Fund/i }));
-    expect(screen.getByText(/Please enter a cause name/i)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Cancel/i }));
+    // Unlock first
+    const pinInput = screen.getByLabelText(/enter steward pin/i);
+    fireEvent.change(pinInput, { target: { value: '1080' } });
+    fireEvent.click(screen.getByRole('button', { name: /unlock portal/i }));
+    expect(screen.getByText(/Monastery Steward Workspace/i)).toBeInTheDocument();
 
-    // Test ExpenseEntryModal validation
-    fireEvent.click(screen.getByRole('button', { name: /Log Expense|Log New Expense/i }));
-    fireEvent.click(screen.getByRole('button', { name: /Record Expense|Submit Expense/i }));
-    expect(screen.getByText(/Please enter a valid expense amount/i)).toBeInTheDocument();
-  });
-
-  it('allows locking the portal via lock action', () => {
-    const onLockMock = vi.fn();
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <StewardPortal onLock={onLockMock} />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
-
-    const lockBtn = screen.getByRole('button', { name: /Lock Steward Portal/i });
-    fireEvent.click(lockBtn);
-    expect(onLockMock).toHaveBeenCalled();
+    // Lock portal
+    fireEvent.click(screen.getByRole('button', { name: /lock portal/i }));
+    expect(handleLock).toHaveBeenCalled();
+    expect(screen.getByText(/Monk Steward Access/i)).toBeInTheDocument();
   });
 });
-
