@@ -1,208 +1,128 @@
-# Solution Architecture: Zen Monastery Transparency & Charity Mobile Web App
+# Lotus Sanctuary V2 Architecture Specification
 
-## 1. System Overview & Dual-Persona Architecture
+## 1. Overview: Packaged Charity & On-Chain Proof of Giving
 
-```mermaid
-flowchart TB
-    subgraph Users ["User Personas"]
-        Devotee["🙏 Devotee / Donor\n(Mobile Public User)"]
-        Monk["🧘 Monk / Steward\n(Monastery Administrator)"]
-    end
+Lotus Sanctuary V2 introduces a revolutionary **Tangible Packaged Charity & On-Chain Proof of Giving** model. Moving away from abstract fund balances, V2 structures charitable contributions into discrete, tangible community packages (e.g., Winter Warmth Bundles, Medical Emergency kits, Scholastic Backpacks). 
 
-    subgraph Security ["Access & Mode Control"]
-        ModeSwitch["Role Switcher / Mode Context"]
-        PINCheck{"Steward Access\n(PIN: 1080)"}
-    end
+Every contribution directly funds a specific package unit. Once distributed by monastic stewards in the field, tangible cryptographic proof — including GPS geotags, attesting monk signatures, heartfelt beneficiary notes, and cryptographic Merkle roots anchored on-chain — is permanently recorded and viewable by donors.
 
-    subgraph Frontend ["Mobile Web Application (React + Vite + Tailwind)"]
-        subgraph DevoteeViews ["Devotee / Public Portal"]
-            HomeTab["Sanctuary Home\n• Daily Blessing\n• Modular Cause Funds\n• Fulfillment & Deadlines\n• Direct 'Offer' CTA & Modal"]
-            TransTab["Transparency Ledger\n• UTXO Fund Flow & Provenance\n• Filter by Fund\n• Receipt Viewer Drawer"]
-            PrayerTab["Prayer Intention Wall\n• Devotee Intentions\n• 'Blessed by Monks' Status\n• Rejoice in Merit (🙏)"]
-        end
+---
 
-        subgraph StewardViews ["Monk / Steward Portal"]
-            StewardDash["Steward Dashboard\n• Treasury Health & Balances\n• Low-Fund Alerts\n• Expense Statistics"]
-            ExpenseLog["+ Log Expense Action\n• Amount, Category, Vendor\n• Purpose Description\n• Camera / Receipt Upload"]
-            ChantQueue["Chanting & Intentions Log\n• View Dedication Notes\n• 'Mark as Blessed' Action"]
-            LedgerMgmt["Expense Ledger Management\n• Edit / Remove / Verify Items"]
-        end
+## 2. Core Data Models
 
-        subgraph CoreState ["Local & Reactive State Engine"]
-            Store["Central State Store (Reactive Hook & Storage)"]
-            Seed["Sample Monastery Seed Data\n(Preloaded Verified Expenses & Receipts)"]
-            LocalCache[("Browser LocalStorage & Offline Sync")]
-        end
-    end
+The V2 type system (`src/types/index.ts`) defines three primary data structures:
 
-    %% Connections
-    Devotee -->|Public Access| ModeSwitch
-    ModeSwitch -->|Devotee Mode| DevoteeViews
+### A. `CharityPackage`
+Represents a tangible humanitarian or monastic relief package available for sponsorship.
+```ts
+export type PackageCategory = 'food' | 'education' | 'medical' | 'winter' | 'emergency';
 
-    Monk -->|Elevate Role| PINCheck
-    PINCheck -->|Authorized| StewardViews
+export interface CharityPackage {
+  id: string;
+  title: string;
+  description: string;
+  category: PackageCategory;
+  unitPrice: number;        // e.g., 250,000 VND per package
+  targetUnits: number;      // Total units needed
+  fundedUnits: number;      // Units currently funded by donors
+  distributedUnits: number; // Units successfully distributed in the field
+  itemsIncluded: string[];  // Item pills e.g. ["5kg Rice", "1L Soy Sauce", "1kg Salt"]
+  coverImageUrl: string;
+  bannerGradient: string;
+  createdByMonk: string;
+  status: 'active' | 'fully_funded' | 'completed';
+  createdAt: string;
+}
+```
 
-    %% Data interactions
-    HomeTab -->|1. Submit Offering via Contextual Modal| Store
-    ExpenseLog -->|2. Record Expense + Receipt Image| Store
-    ChantQueue -->|3. Bless Prayer Intention| Store
+### B. `PackagePurchase`
+Represents a devotee's sponsorship of one or more package units, recording transactional metadata, blockchain transaction hash, block number, and fulfillment status.
+```ts
+export interface PackagePurchase {
+  id: string;
+  packageId: string;
+  packageTitle: string;
+  unitsBought: number;
+  unitPrice: number;
+  totalAmount: number;
+  donorName: string;
+  isAnonymous: boolean;
+  dedicationNote?: string;
+  txHash: string;
+  blockNumber: number;
+  timestamp: string;
+  fulfillmentStatus: 'queued_distribution' | 'fulfilled_with_proof';
+  linkedProofBatchId?: string;
+}
+```
 
-    Store <--> LocalCache
-    Seed -.->|Initialize if empty| Store
-    Store -->|Real-time Reactive Updates| TransTab
-    Store -->|Updated Balances| HomeTab
-    Store -->|Updated Intentions & Blessings| PrayerTab
-    Store -->|Treasury Aggregation| StewardDash
+### C. `GivingProofBatch`
+Represents field distribution proof submitted by monestsary stewards, sealed with a Merkle root hash.
+```ts
+export interface GivingProofBatch {
+  id: string;
+  packageId: string;
+  packageTitle: string;
+  unitsDistributed: number;
+  location: string;
+  missionReport: string;
+  heartfeltPhotos: Array<{
+    id: string;
+    url: string;
+    caption: string;
+    beneficiaryNote: string;
+  }>;
+  distributionDate: string;
+  attestingMonk: string;
+  distributionTxHash: string;
+  merkleRootHash: string;
+  blockNumber: number;
+  comments: CampaignComment[];
+}
 ```
 
 ---
 
-## 2. End-to-End Data Flow Architecture
+## 3. Cryptographic Hash & Merkle Root Generation (`utils/crypto.ts`)
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Devotee as 🙏 Devotee / Donor
-    participant App as 📱 Mobile Web App
-    participant State as 📦 App State Store
-    actor Monk as 🧘 Monk / Steward
+V2 implements a robust client-side cryptographic hashing engine to secure donations, transaction records, and distribution proofs:
 
-    rect rgb(240, 248, 255)
-        note over Devotee, State: Flow 1: Donation & Prayer Dedication
-        Devotee->>App: Taps "Offer to this Cause" on Alms Food card
-        Devotee->>App: Completes 3-step modal (Amount $50 + Prayer Intention)
-        Devotee->>App: Submits offering
-        App->>State: Creates Donation record & queues Prayer Intention
-        State-->>App: Generates Digital Blessing Receipt with Dedication ID
-        App-->>Devotee: Shows Zen Confirmation Certificate
-    end
-
-    rect rgb(255, 250, 240)
-        note over Monk, State: Flow 2: Monks Recite & Bless Intentions
-        Monk->>App: Opens Morning Chanting list
-        App->>State: Fetches pending prayer intentions
-        State-->>App: Returns unchanted dedications
-        Monk->>App: Taps "Recite & Bless" during morning chanting
-        App->>State: Updates status to "Blessed" with timestamp & lotus seal
-        State-->>App: Updates Prayer Wall for public & donor verification
-    end
-
-    rect rgb(245, 255, 245)
-        note over Monk, Devotee: Flow 3: Transparent Expense Logging & Public Verification
-        Monk->>App: Spends $84.50 on fresh market groceries for monastery alms
-        Monk->>App: Snaps photo of paper receipt & tags category "Alms & Food"
-        Monk->>App: Submits expense entry
-        App->>State: Appends expense to ledger & deducts from "Alms Food" fund balance
-        State-->>App: Recalculates treasury balance & updates public timeline
-        Devotee->>App: Opens Transparency Ledger
-        App-->>Devotee: Shows $84.50 grocery entry with verified receipt & monk note
-    end
-```
+- **`simpleHash(input: string): string`**: A dual-accumulator 32-bit FNV/Murmur-inspired hashing algorithm producing a deterministic 64-character hex string.
+- **`generateTxHash(seed: string): string`**: Generates a cryptographically-styled transaction hash prefixed with `0x` (e.g., `0x8f9b...`).
+- **`generateMerkleRoot(elements: string[]): string`**: Combines proof elements into pairwise hashed binary Merkle trees, returning a verifiable Merkle root prefixed with `sha256:` and concluding with a secondary integrity hash.
+- **`calculateProgress(current: number, target: number)`**: Computes accurate percentage completion with boundary constraints `[0, 100]` and boolean completion flags.
 
 ---
 
-## 2.1. UTXO Blockchain Ledger & Provenance Engine
+## 4. 3-Tab UI/UX Architecture
 
-```mermaid
-flowchart LR
-    subgraph Inputs ["UTXO Inputs (Donation Off-Chain/On-Chain Txs)"]
-        D1["Donation #TX-0x8e2\nDevotee Ananda: $50\n(Alms Food Fund)"]
-        D2["Donation #TX-0x3c1\nDevotee Linh: $40\n(Alms Food Fund)"]
-    end
+The application layout is organized into 3 primary tabs managed via state in `MonasteryStore` and `Navigation`:
 
-    subgraph BatchTX ["Monastery Spending Transaction #TX-0xa49f"]
-        Pool["Fund Pool Input: $90.00\nCategory: Alms & Groceries\nDate: Sep 16, 2026"]
-    end
+### Tab 1: Sanctuary Home (Tangible Marketplace Carousel)
+- **Swipeable Carousel (`MarketplaceCarousel.tsx`)**: Displays active charitable packages with rich imagery, badge categories, and price tags.
+- **Item Pills**: Visual tags showing exact contents included in each package.
+- **Dual Progress Bars**: Separately tracks **Funded Units** (sponsorship progress) vs **Distributed Units** (field fulfillment progress).
+- **Offering Modal (`OfferingModal.tsx`)**: Enables devotees to select unit quantities, attach optional dedication notes or anonymous status, and complete sponsorships.
 
-    subgraph Outputs ["UTXO Outputs (Expense & Unspent Change)"]
-        Out1["SPENT OUTPUT ($72.50)\nPayee: Green Valley Market\nItems: Fresh Tofu & Rice\nReceipt Hash: sha256:e3b0...\nPhoto: verified_receipt.jpg"]
-        Out2["UNSPENT CHANGE ($17.50)\nStatus: Retained in Treasury\nReady for next batch spending"]
-    end
+### Tab 2: Proof & Transparency Hub (Screen-Filling Campaign Cards)
+- **Screen-Filling Proof Cards (`CampaignProofCard.tsx`)**: Designed with height `calc(100vh - 220px)` for immersive viewing.
+- **Horizontal Photo Swipe**: Swipeable carousel of heartfelt beneficiary photos with captions and direct quotes.
+- **Floating Action Dock**: Floating button dock providing quick triggers for drawer exploration.
+- **50% Bottom Sheet Drawers (Details & Comments)**:
+  - **Mutual Exclusivity**: Opening the Details drawer automatically closes the Comments drawer (and vice versa) to prevent screen clutter.
+  - **Details Drawer**: Displays cryptographic Merkle root hash, attesting monk badge, location, block number, and one-click clipboard copy.
+  - **Comments Drawer**: Live community dialogue where devotees and monastics exchange reflections and gratitude.
+- **Private Personal Impact Tracker (`PersonalPurchases.tsx`)**: Devotees can toggle between public proof feeds and their personal encrypted purchase history, tracking their direct humanitarian footprint.
 
-    D1 --> Pool
-    D2 --> Pool
-    Pool --> Out1
-    Pool --> Out2
-
-    subgraph Provenance ["Devotee Provenance Tracker"]
-        Tracker["Devotee inputs TX Hash (e.g. 0x8e2...)\nCalculates proportional allocation:\n• $40.28 (80.5%) spent on Groceries\n• $9.72 (19.5%) unspent in Treasury"]
-    end
-
-    D1 -.-> Tracker
-    Out1 -.-> Tracker
-    Out2 -.-> Tracker
-```
+### Tab 3: Monk Steward Portal (`StewardPortal.tsx`)
+- **PIN Protected Gate**: Requires PIN `1080` (with modal challenge) to access administrative capabilities.
+- **Package Creation (`CreatePackageModal.tsx`)**: Allows monastic stewards to launch new tangible charity campaigns specifying unit prices, target quantities, and item lists.
+- **Merkle-Sealed Proof Uploads (`UploadProofModal.tsx`)**: Enables stewards to log field distributions, attach geo-locations, upload photo proofs, and generate cryptographic Merkle roots anchoring the mission on-chain.
 
 ---
 
-## 3. Component Hierarchy & Mobile Navigation
+## 5. Version Isolation & Build Architecture
 
-```mermaid
-graph TD
-    AppRoot["App.tsx (Root Layout & Mobile Container)"]
-
-    %% Shell
-    AppRoot --> Header["Zen Header\n• Monastery Seal\n• Mode Switcher (Devotee / Monk)"]
-    AppRoot --> Viewport["Main Viewport (Route / Active Tab Screen)"]
-    AppRoot --> BottomNav["Bottom Navigation Bar (4 Focused Tabs)"]
-
-    %% Views
-    Viewport --> TabHome["Tab 1: Sanctuary (Home)\n• Quote of the Day\n• Modular CauseFundCard List\n• Fulfillment Bars & Deadlines\n• 'Offer to this Cause' Action"]
-    Viewport --> TabTrans["Tab 2: Transparency\n• Fund Filter Pills\n• UTXO Fund Flow Diagram\n• Personal TX Provenance Search\n• Tap-to-Inspect Receipts"]
-    Viewport --> TabPrayer["Tab 3: Prayer Wall\n• Intention Feed\n• Blessing Status Badges\n• 'Rejoice in Merit' (🙏) Counter"]
-    Viewport --> TabSteward["Tab 4: Steward Portal\n(Monk Only)\n• Treasury Balance Overview\n• Quick Action: + Log Expense\n• Chanting Queue Manager\n• Audit History"]
-
-    %% Sub-components & Modals
-    TabHome --> OfferingModal["OfferingModal (Contextual Giving)\n• Pre-selected Cause\n• Amount & Prayer Note\n• Generates Blessing Certificate"]
-    TabTrans --> ReceiptModal["ReceiptInspectionModal\n• Full Image with Zoom\n• Vendor & Itemized Items\n• Monk Attestation Note"]
-    TabPrayer --> CommentDrawer["PrayerDialogueDrawer (Sangha Chat)\n• Monks' Dharma Reflections & Blessings\n• Devotee Encouragement & Replies\n• Verified Monk Badge ✓"]
-    TabSteward --> ExpenseFormModal["ExpenseEntryModal\n• Amount Input\n• Category Selector\n• Camera / File Upload\n• Purpose Notes"]
-    TabSteward --> NewFundModal["NewFundModal (+ Launch Drive)\n• Cause Name & Purpose\n• Goal Amount & Deadline\n• Verification Badge & Icon"]
-```
-
----
-
-## 4. Key Entities & Domain Model
-
-```mermaid
-classDiagram
-    class Fund {
-        +string id
-        +string name
-        +string description
-        +string icon
-        +number currentBalance
-        +number monthlyTarget
-        +string colorToken
-    }
-
-    class Expense {
-        +string id
-        +string fundId
-        +number amount
-        +string date
-        +string vendor
-        +string category
-        +string description
-        +string receiptImageUrl
-        +string loggedByMonk
-        +boolean verified
-    }
-
-    class Donation {
-        +string id
-        +string fundId
-        +number amount
-        +string date
-        +string donorName
-        +boolean isAnonymous
-        +string prayerIntention
-        +string intentionType
-        +string blessingStatus
-        +string blessedAt
-    }
-
-    Fund "1" <-- "*" Expense : deducted from
-    Fund "1" <-- "*" Donation : allocated to
-    Donation "1" --> "0..1" Expense : funding chain
-```
+- **Workspace Version Manager**: V2 is isolated within `versions/v2` with its own `package.json`, dependencies (`vite`, `react`, `tailwindcss`, `vitest`), and build configuration (`vite.config.ts`).
+- **Zero-Config Testing**: Comprehensive unit and integration test suites run via `npm test -- --run` covering stores, cryptographic functions, UI components, and localization.
+- **Clean Production Build**: Production bundle is generated via `npm run build` with optimized asset chunking.
