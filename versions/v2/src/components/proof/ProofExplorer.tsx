@@ -19,9 +19,6 @@ export const ProofExplorer: React.FC<ProofExplorerProps> = ({
   const [activeSubTab, setActiveSubTab] = useState<ProofSubTab>(initialSubTab);
   const [activeProofIndex, setActiveProofIndex] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isWheelThrottled = useRef(false);
-  const touchStartYRef = useRef<number | null>(null);
-  const touchStartXRef = useRef<number | null>(null);
 
   const safeIndex =
     proofBatches.length > 0
@@ -68,42 +65,6 @@ export const ProofExplorer: React.FC<ProofExplorerProps> = ({
     }
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (isWheelThrottled.current) return;
-    if (Math.abs(e.deltaY) > 30) {
-      isWheelThrottled.current = true;
-      if (e.deltaY > 0) {
-        handleNextProof();
-      } else {
-        handlePrevProof();
-      }
-      setTimeout(() => {
-        isWheelThrottled.current = false;
-      }, 400);
-    }
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartYRef.current = e.touches[0].clientY;
-    touchStartXRef.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartYRef.current === null || touchStartXRef.current === null) return;
-    const deltaY = e.changedTouches[0].clientY - touchStartYRef.current;
-    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
-    // Predominantly vertical swipe with threshold of 45px
-    if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 45) {
-      if (deltaY < 0) {
-        handleNextProof(); // Swipe up -> next campaign
-      } else {
-        handlePrevProof(); // Swipe down -> previous campaign
-      }
-    }
-    touchStartYRef.current = null;
-    touchStartXRef.current = null;
-  };
-
   return (
     <div className="flex flex-col w-full max-w-4xl mx-auto px-2 sm:px-4 py-2">
       {/* SUB-VIEW A: PUBLIC FIELD PROOFS (CLEAN SINGLE-CAMPAIGN VIEWPORT SWITCHING) */}
@@ -129,9 +90,6 @@ export const ProofExplorer: React.FC<ProofExplorerProps> = ({
                 ref={containerRef}
                 tabIndex={0}
                 onKeyDown={handleKeyDown}
-                onWheel={handleWheel}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
                 className="relative w-full focus:outline-none transition-all duration-300"
               >
                 <CampaignProofCard
