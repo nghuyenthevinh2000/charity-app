@@ -35,16 +35,19 @@ All standard development commands are executed from the workspace root and autom
   ```
 - **Create new version:**
   ```bash
-  npm run version:create <new-version> [--from <base-version>]
-  # Example: npm run version:create v2
+  npm run version:create -- <new-version> [--from <base-version>]
+  # or directly:
+  node scripts/version-manager.js create <new-version> [--from <base-version>]
   ```
 
 ### Development & Build
 - **Install dependencies:**
   ```bash
   npm install
-  # or npm run install:all
+  # or for CI environments:
+  npm ci
   ```
+  *Note: To add or remove packages from a specific version, run `npm install <pkg>` from within `current/` (or `versions/<ver>/`).*
 - **Run development server:**
   ```bash
   npm run dev
