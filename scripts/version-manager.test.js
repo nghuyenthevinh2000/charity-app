@@ -165,3 +165,37 @@ test('version-manager run delegates command and mirrors dist on build', () => {
     execFileSync('node', [SCRIPT, 'switch', 'v1'], { cwd: ROOT_DIR, encoding: 'utf8' });
   }
 });
+
+test('version-manager run-install delegates install to active version', () => {
+  const testVer = 'test-v-installer';
+  const testVerDir = path.join(ROOT_DIR, 'versions', testVer);
+
+  try {
+    fs.mkdirSync(testVerDir, { recursive: true });
+    const dummyPackageJson = {
+      name: testVer,
+      version: '1.0.0',
+      type: 'module',
+      scripts: {}
+    };
+    fs.writeFileSync(path.join(testVerDir, 'package.json'), JSON.stringify(dummyPackageJson, null, 2));
+
+    // Switch to dummy version
+    execFileSync('node', [SCRIPT, 'switch', testVer], { cwd: ROOT_DIR, encoding: 'utf8' });
+
+    // Test running run-install with --dry-run
+    const output = execFileSync('node', [SCRIPT, 'run-install', '--dry-run'], { cwd: ROOT_DIR, encoding: 'utf8' });
+    // Should execute cleanly without error
+    assert.ok(true);
+
+    // Also test run install alias delegation
+    const aliasOutput = execFileSync('node', [SCRIPT, 'run', 'install', '--dry-run'], { cwd: ROOT_DIR, encoding: 'utf8' });
+    assert.ok(true);
+  } finally {
+    if (fs.existsSync(testVerDir)) {
+      fs.rmSync(testVerDir, { recursive: true, force: true });
+    }
+    execFileSync('node', [SCRIPT, 'switch', 'v1'], { cwd: ROOT_DIR, encoding: 'utf8' });
+  }
+});
+

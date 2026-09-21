@@ -1,0 +1,17 @@
+{
+  "name": "charity-app-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "version:list": "node scripts/version-manager.js list",
+    "version:switch": "node scripts/version-manager.js switch",
+    "version:create": "node scripts/version-manager.js create",
+    "dev": "node scripts/version-manager.js run dev",
+    "build": "node scripts/version-manager.js run build",
+    "test": "node scripts/version-manager.js run test",
+    "preview": "node scripts/version-manager.js run preview",
+    "install:all": "node scripts/version-manager.js run-install",
+    "install:active": "node scripts/version-manager.js run-install",
+    "postinstall": "node scripts/version-manager.js run-install"
+  }
+}

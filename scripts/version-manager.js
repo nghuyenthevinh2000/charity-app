@@ -137,6 +137,11 @@ function runCommand(cmd, args = []) {
     process.exit(1);
   }
 
+  if (cmd === 'install' || cmd === 'ci') {
+    runInstall([cmd, ...args]);
+    return;
+  }
+
   const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
   const res = spawnSync(npmCmd, ['run', cmd, '--', ...args], {
     cwd: activeDir,
@@ -150,6 +155,47 @@ function runCommand(cmd, args = []) {
 
   if (cmd === 'build' && res.status === 0) {
     mirrorDist(activeDir);
+  }
+
+  const exitCode = res.status !== null ? res.status : (res.signal ? 1 : 0);
+  process.exit(exitCode);
+}
+
+function runInstall(args = []) {
+  const active = getActiveVersion();
+  const activeDir = path.join(VERSIONS_DIR, active);
+
+  if (!fs.existsSync(activeDir)) {
+    console.error(`Error: Active version directory "${activeDir}" does not exist.`);
+    process.exit(1);
+  }
+
+  let subCmd = 'install';
+  let npmArgs = [...args];
+
+  if (args[0] === 'ci') {
+    subCmd = 'ci';
+    npmArgs = args.slice(1);
+  } else if (args[0] === 'install' || args[0] === 'i') {
+    subCmd = 'install';
+    npmArgs = args.slice(1);
+  } else if (process.env.npm_command === 'ci') {
+    subCmd = fs.existsSync(path.join(activeDir, 'package-lock.json')) ? 'ci' : 'install';
+  } else if (process.env.npm_command === 'install' || process.env.npm_command === 'i') {
+    subCmd = 'install';
+  } else if (process.env.CI && fs.existsSync(path.join(activeDir, 'package-lock.json'))) {
+    subCmd = 'ci';
+  }
+
+  const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+  const res = spawnSync(npmCmd, [subCmd, ...npmArgs], {
+    cwd: activeDir,
+    stdio: 'inherit',
+  });
+
+  if (res.error) {
+    console.error('Execution error during install:', res.error.message || res.error);
+    process.exit(1);
   }
 
   const exitCode = res.status !== null ? res.status : (res.signal ? 1 : 0);
@@ -183,6 +229,9 @@ switch (action) {
   case 'run':
     runCommand(rest[0], rest.slice(1));
     break;
+  case 'run-install':
+    runInstall(rest);
+    break;
   default:
     console.error(`
 Usage:
@@ -190,6 +239,8 @@ Usage:
   node scripts/version-manager.js switch <version>
   node scripts/version-manager.js create <version> [--from <base>]
   node scripts/version-manager.js run <cmd> [args...]
+  node scripts/version-manager.js run-install [args...]
 `);
     process.exit(1);
 }
+
