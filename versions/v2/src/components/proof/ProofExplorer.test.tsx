@@ -17,28 +17,40 @@ const renderWithProviders = (ui: React.ReactElement, initialUserPurchases = init
 describe('ProofExplorer (Tab 2)', () => {
   it('renders screen-filling campaign proof card with background photo and details without free-scroll nav bar', () => {
     renderWithProviders(<ProofExplorer />);
+    // Top of image is clean; details are accessible via details toggle
+    expect(screen.getByRole('article', { name: 'Winter Warmth & Rice Kit' })).toBeInTheDocument();
+    expect(screen.getByText(/Handing the winter warmth bundle to grandmother/i)).toBeInTheDocument();
+
+    // Toggle details to verify moved information
+    const infoBtn = screen.getByRole('button', { name: /toggle proof details/i });
+    fireEvent.click(infoBtn);
     expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
     expect(screen.getByText(/Dong Van Highland Village/i)).toBeInTheDocument();
-    expect(screen.getByText(/Block #18942/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Block #18942/i)[0]).toBeInTheDocument();
+
     // Sub-nav is removed per user request
     expect(screen.queryByRole('navigation', { name: /proof explorer navigation/i })).not.toBeInTheDocument();
   });
 
   it('switches cleanly between campaign cards using next and previous buttons', () => {
     renderWithProviders(<ProofExplorer />);
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
-    expect(screen.getByText(/Mission 1 of 2/i)).toBeInTheDocument();
+    const dots = screen.getAllByRole('tab', { name: /Go to mission/i });
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true');
+    expect(dots[1]).toHaveAttribute('aria-selected', 'false');
 
     const nextCampaignBtn = screen.getByRole('button', { name: /next campaign/i });
     fireEvent.click(nextCampaignBtn);
 
-    expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
-    expect(screen.getByText(/Mission 2 of 2/i)).toBeInTheDocument();
+    expect(dots[0]).toHaveAttribute('aria-selected', 'false');
+    expect(dots[1]).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('article', { name: 'Highland Student Study Pack' })).toBeInTheDocument();
 
     const prevCampaignBtn = screen.getByRole('button', { name: /previous campaign/i });
     fireEvent.click(prevCampaignBtn);
 
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true');
+    expect(dots[1]).toHaveAttribute('aria-selected', 'false');
+    expect(screen.getByRole('article', { name: 'Winter Warmth & Rice Kit' })).toBeInTheDocument();
   });
 
   it('toggles Details 50% drawer when info icon is clicked and collapses on second click', () => {
@@ -47,12 +59,12 @@ describe('ProofExplorer (Tab 2)', () => {
 
     // Open Details
     fireEvent.click(infoBtn);
-    expect(screen.getByText(/Mission Report & Merkle Seal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Field Mission Narrative:/i)).toBeInTheDocument();
     expect(screen.getByText(/sha256:/i)).toBeInTheDocument();
 
     // Click again to close
     fireEvent.click(infoBtn);
-    expect(screen.queryByText(/Mission Report & Merkle Seal/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Field Mission Narrative:/i)).not.toBeInTheDocument();
   });
 
   it('enforces mutual exclusivity: opening comments collapses details drawer', () => {
@@ -62,11 +74,11 @@ describe('ProofExplorer (Tab 2)', () => {
 
     // Open details
     fireEvent.click(infoBtn);
-    expect(screen.getByText(/Mission Report & Merkle Seal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Field Mission Narrative:/i)).toBeInTheDocument();
 
     // Click comments
     fireEvent.click(commentBtn);
-    expect(screen.queryByText(/Mission Report & Merkle Seal/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Field Mission Narrative:/i)).not.toBeInTheDocument();
     expect(screen.getByText(/Sangha Reflections & Community Notes/i)).toBeInTheDocument();
   });
 
@@ -91,17 +103,17 @@ describe('ProofExplorer (Tab 2)', () => {
 
   it('navigates through heartfelt photos using next and previous buttons', () => {
     renderWithProviders(<ProofExplorer />);
-    expect(screen.getByText(/1 \/ 3/)).toBeInTheDocument();
+    expect(screen.getByText(/Handing the winter warmth bundle to grandmother/i)).toBeInTheDocument();
 
     const nextBtn = screen.getAllByRole('button', { name: /next photo/i })[0];
     fireEvent.click(nextBtn);
 
-    expect(screen.getByText(/2 \/ 3/)).toBeInTheDocument();
+    expect(screen.getByText(/Monks and villagers unloading 60 sacks of rice/i)).toBeInTheDocument();
 
     const prevBtn = screen.getAllByRole('button', { name: /previous photo/i })[0];
     fireEvent.click(prevBtn);
 
-    expect(screen.getByText(/1 \/ 3/)).toBeInTheDocument();
+    expect(screen.getByText(/Handing the winter warmth bundle to grandmother/i)).toBeInTheDocument();
   });
 
   it('navigates from personal purchase to public proof card when clicking view photo proof', () => {
@@ -111,7 +123,8 @@ describe('ProofExplorer (Tab 2)', () => {
     fireEvent.click(viewProofBtn);
 
     // Should navigate back to public proof view
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Winter Warmth & Rice Kit' })).toBeInTheDocument();
   });
 
   it('displays empty state when devotee has no purchases in session', () => {
@@ -126,11 +139,11 @@ describe('ProofExplorer (Tab 2)', () => {
     renderWithProviders(<ProofExplorer />);
     const infoBtn = screen.getByRole('button', { name: /toggle proof details/i });
     fireEvent.click(infoBtn);
-    expect(screen.getByText(/Mission Report & Merkle Seal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Field Mission Narrative:/i)).toBeInTheDocument();
 
     const closeBtn = screen.getByRole('button', { name: /close drawer/i });
     fireEvent.click(closeBtn);
-    expect(screen.queryByText(/Mission Report & Merkle Seal/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Field Mission Narrative:/i)).not.toBeInTheDocument();
   });
 
   it('allows copying the Merkle root hash in Details drawer', async () => {
@@ -181,8 +194,8 @@ describe('ProofExplorer (Tab 2)', () => {
   it('handles initialProofId prop by targeting and displaying the matched proof card', async () => {
     renderWithProviders(<ProofExplorer initialProofId="proof-student-batch-1" initialSubTab="personal" />);
 
-    expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
-    expect(screen.getByText(/Nam Dam Primary School/i)).toBeInTheDocument();
-    expect(screen.getByText(/Mission 2 of 2/i)).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Highland Student Study Pack' })).toBeInTheDocument();
+    const dots = screen.getAllByRole('tab', { name: /Go to mission/i });
+    expect(dots[1]).toHaveAttribute('aria-selected', 'true');
   });
 });

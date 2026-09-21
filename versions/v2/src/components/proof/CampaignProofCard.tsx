@@ -117,6 +117,7 @@ export const CampaignProofCard: React.FC<CampaignProofCardProps> = ({ proof, id,
     <article
       id={id || `proof-card-${proof.id}`}
       data-testid={`proof-card-${proof.id}`}
+      aria-label={proof.packageTitle}
       className="h-[calc(100vh-220px)] min-h-[580px] w-full relative overflow-hidden rounded-3xl snap-start border border-stone-800 bg-stone-950 shadow-2xl text-white select-none transition-all"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -132,41 +133,7 @@ export const CampaignProofCard: React.FC<CampaignProofCardProps> = ({ proof, id,
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/25 to-black/90 pointer-events-none" />
       </div>
 
-      {/* TOP FLOATING OVERLAY: PACKAGE TITLE, DELIVERED BADGE, VILLAGE LOCATION & BLOCK HEIGHT */}
-      <header className="absolute top-4 left-4 right-4 z-10 flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          {/* Package Title & Delivered Badge */}
-          <div className="flex items-center gap-2 bg-stone-950/75 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-full shadow-lg max-w-[70%]">
-            <span className="text-base">📦</span>
-            <span className="text-xs sm:text-sm font-bold text-white truncate">
-              {proof.packageTitle}
-            </span>
-            <span className="text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full shrink-0">
-              {proof.unitsDistributed} Given ✓
-            </span>
-          </div>
-
-          {/* Block Number and Photo Indicator */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            {totalPhotos > 0 && (
-              <span className="text-[11px] font-semibold bg-stone-950/75 backdrop-blur-md text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-full shadow-sm">
-                📸 {currentPhotoIndex + 1} / {totalPhotos}
-              </span>
-            )}
-            <span className="text-[11px] font-mono bg-stone-950/75 backdrop-blur-md text-stone-300 border border-stone-700/60 px-2.5 py-1 rounded-full shadow-sm">
-              Block #{proof.blockNumber}
-            </span>
-          </div>
-        </div>
-
-        {/* Village Location Badge */}
-        <div className="flex items-center gap-1 self-start bg-stone-950/70 backdrop-blur-md border border-white/10 px-2.5 py-1 rounded-full text-[11px] text-stone-300">
-          <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span className="truncate">{proof.location}</span>
-        </div>
-      </header>
-
-      {/* HORIZONTAL SWIPE ARROW CONTROLS */}
+      {/* HORIZONTAL SWIPE ARROW CONTROLS (SYMMETRIC TO IMAGE) */}
       {totalPhotos > 1 && (
         <>
           <button
@@ -181,7 +148,7 @@ export const CampaignProofCard: React.FC<CampaignProofCardProps> = ({ proof, id,
             type="button"
             onClick={handleNextPhoto}
             aria-label="Next photo"
-            className="absolute right-16 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-stone-950/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-stone-900/80 active:scale-95 transition-all shadow-lg"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-stone-950/60 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-stone-900/80 active:scale-95 transition-all shadow-lg"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -272,19 +239,32 @@ export const CampaignProofCard: React.FC<CampaignProofCardProps> = ({ proof, id,
           {/* DRAWER VIEW: DETAILS */}
           {activeDrawer === 'details' && (
             <div className="flex flex-col gap-3">
-              {/* Header */}
-              <div className="flex items-center justify-between pb-2 border-b border-stone-800">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">ℹ️</span>
-                  <h4 className="text-sm sm:text-base font-bold text-white">
-                    Mission Report &amp; Merkle Seal
-                  </h4>
+              {/* Header: Package Title, Given Badge, Location & Block Height */}
+              <div className="flex items-start justify-between pb-3 border-b border-stone-800 gap-2">
+                <div className="flex flex-col gap-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-base">📦</span>
+                    <h4 className="text-sm sm:text-base font-bold text-white leading-tight">
+                      {proof.packageTitle}
+                    </h4>
+                    <span className="text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2 py-0.5 rounded-full shrink-0">
+                      {proof.unitsDistributed} Given ✓
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-stone-400 flex-wrap">
+                    <span className="flex items-center gap-1 text-amber-300">
+                      <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      {proof.location}
+                    </span>
+                    <span>•</span>
+                    <span className="font-mono text-stone-300">Block #{proof.blockNumber}</span>
+                  </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setActiveDrawer(null)}
                   aria-label="Close drawer"
-                  className="w-7 h-7 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition-all"
+                  className="w-7 h-7 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition-all shrink-0 mt-0.5"
                 >
                   <X className="w-4 h-4" />
                 </button>

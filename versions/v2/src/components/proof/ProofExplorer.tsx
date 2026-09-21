@@ -124,40 +124,6 @@ export const ProofExplorer: React.FC<ProofExplorerProps> = ({
             </div>
           ) : (
             <>
-              {/* Clean Switcher Header Controls */}
-              <div className="flex items-center justify-between bg-stone-900/90 border border-stone-800 rounded-2xl px-3.5 py-2 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">📜</span>
-                  <span className="text-xs font-bold text-stone-200">
-                    Mission {safeIndex + 1} of {proofBatches.length}
-                  </span>
-                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">
-                    ✓ {currentProof.unitsDistributed} Given
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={handlePrevProof}
-                    aria-label="Previous campaign"
-                    className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors cursor-pointer border border-stone-700/60"
-                    title="Previous Campaign (Up)"
-                  >
-                    <ChevronUp className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNextProof}
-                    aria-label="Next campaign"
-                    className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white transition-colors cursor-pointer border border-stone-700/60"
-                    title="Next Campaign (Down)"
-                  >
-                    <ChevronDown className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
               {/* Clean Single Active Card (No free scroll overlap) */}
               <div
                 ref={containerRef}
@@ -175,30 +141,53 @@ export const ProofExplorer: React.FC<ProofExplorerProps> = ({
                 />
               </div>
 
-              {/* Campaign Indicator Dots */}
-              <div
-                className="flex items-center gap-1.5 justify-center pt-1"
-                role="tablist"
-                aria-label="Campaign selector"
-              >
-                {proofBatches.map((batch, idx) => {
-                  const isActive = idx === safeIndex;
-                  return (
-                    <button
-                      key={batch.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={isActive}
-                      aria-label={`Go to mission ${idx + 1}: ${batch.packageTitle}`}
-                      onClick={() => handleGoToProof(idx)}
-                      className={`h-2 rounded-full transition-all cursor-pointer ${
-                        isActive
-                          ? 'w-7 bg-emerald-500 shadow-xs'
-                          : 'w-2 bg-stone-700 hover:bg-stone-500'
-                      }`}
-                    />
-                  );
-                })}
+              {/* Bottom Navigation Controls (Pure Navigation Only, No Text) */}
+              <div className="flex items-center justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={handlePrevProof}
+                  aria-label="Previous campaign"
+                  className="p-1.5 rounded-full bg-stone-900/80 hover:bg-stone-800 text-stone-300 hover:text-white transition-all cursor-pointer border border-stone-800 shadow-sm active:scale-95"
+                  title="Previous Campaign"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+
+                {/* Campaign Indicator Dots */}
+                <div
+                  className="flex items-center gap-1.5"
+                  role="tablist"
+                  aria-label="Campaign selector"
+                >
+                  {proofBatches.map((batch, idx) => {
+                    const isActive = idx === safeIndex;
+                    return (
+                      <button
+                        key={batch.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        aria-label={`Go to mission ${idx + 1}: ${batch.packageTitle}`}
+                        onClick={() => handleGoToProof(idx)}
+                        className={`h-2 rounded-full transition-all cursor-pointer ${
+                          isActive
+                            ? 'w-7 bg-emerald-500 shadow-xs'
+                            : 'w-2 bg-stone-700 hover:bg-stone-500'
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleNextProof}
+                  aria-label="Next campaign"
+                  className="p-1.5 rounded-full bg-stone-900/80 hover:bg-stone-800 text-stone-300 hover:text-white transition-all cursor-pointer border border-stone-800 shadow-sm active:scale-95"
+                  title="Next Campaign"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </button>
               </div>
             </>
           )}
