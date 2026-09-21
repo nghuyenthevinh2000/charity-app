@@ -32,7 +32,7 @@ describe('V2 Vietnamese Translation Full Coverage', () => {
 
     // Switch to Proof Explorer tab
     fireEvent.click(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i }));
-    expect(screen.getByRole('tab', { name: /Public Field Proofs/i })).toBeInTheDocument();
+    expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
   });
 
   it('translates Steward Portal PIN modal in Vietnamese', () => {

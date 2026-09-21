@@ -32,7 +32,7 @@ describe('V2 End-to-End Integration Tests', () => {
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 
       fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));
-      expect(screen.getByText(/Public Field Proofs/i)).toBeInTheDocument();
+      expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
     });
   });
 
@@ -75,7 +75,7 @@ describe('V2 End-to-End Integration Tests', () => {
       // --- 3. VERIFY IN PROOF EXPLORER (TAB 2) ---
       const proofExplorerTab = screen.getByRole('button', { name: /proof explorer/i });
       fireEvent.click(proofExplorerTab);
-      expect(screen.getByText(/Public Field Proofs/i)).toBeInTheDocument();
+      expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
     });
   });
 

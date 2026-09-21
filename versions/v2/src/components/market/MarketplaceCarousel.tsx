@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Sparkles, HeartHandshake } from 'lucide-react';
+import { ChevronLeft, ChevronRight, HeartHandshake } from 'lucide-react';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 import { CharityPackage } from '../../types';
 import { PackageCard } from './PackageCard';
@@ -121,20 +121,6 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
       onKeyDown={handleKeyDown}
       aria-label="Charity Packages Marketplace"
     >
-      {/* Top Carousel Navigation Banner */}
-      <div className="flex items-center justify-between bg-amber-50/90 border border-amber-200/80 rounded-2xl px-4 py-2.5 shadow-2xs">
-        <div className="flex items-center gap-1.5 text-xs text-amber-900 font-medium">
-          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-          <span>Charity Packages Marketplace</span>
-        </div>
-        <div
-          className="text-xs font-bold text-amber-800 bg-amber-100/80 px-2.5 py-0.5 rounded-full border border-amber-300/60"
-          aria-live="polite"
-        >
-          Package {safeIndex + 1} of {totalPackages}
-        </div>
-      </div>
-
       {/* Swipeable Single-Card Viewport Frame */}
       <div
         className="swipe-container relative select-none touch-pan-y"
@@ -162,27 +148,36 @@ export const MarketplaceCarousel: React.FC<MarketplaceCarouselProps> = ({
           <ChevronLeft className="w-5 h-5" />
         </button>
 
-        {/* Dot Indicators */}
-        <div className="flex items-center gap-1.5" role="tablist" aria-label="Package selector">
-          {packages.map((pkg, idx) => {
-            const isActive = idx === safeIndex;
-            return (
-              <button
-                key={pkg.id}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-label={`Go to package ${idx + 1}: ${pkg.title}`}
-                onClick={() => handleGoTo(idx)}
-                className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                  isActive
-                    ? 'w-7 bg-amber-500 shadow-xs ring-1 ring-amber-400'
-                    : 'w-2.5 bg-stone-300 hover:bg-stone-400'
-                }`}
-              />
-            );
-          })}
+        {/* Tracking & Dot Indicators */}
+        <div className="flex flex-col items-center gap-1.5">
+          <span
+            className="text-xs font-bold text-amber-900 bg-amber-100/90 px-3 py-0.5 rounded-full border border-amber-300/80 shadow-2xs"
+            aria-live="polite"
+          >
+            Package {safeIndex + 1} of {totalPackages}
+          </span>
+          <div className="flex items-center gap-1.5" role="tablist" aria-label="Package selector">
+            {packages.map((pkg, idx) => {
+              const isActive = idx === safeIndex;
+              return (
+                <button
+                  key={pkg.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-label={`Go to package ${idx + 1}: ${pkg.title}`}
+                  onClick={() => handleGoTo(idx)}
+                  className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                    isActive
+                      ? 'w-7 bg-amber-500 shadow-xs ring-1 ring-amber-400'
+                      : 'w-2.5 bg-stone-300 hover:bg-stone-400'
+                  }`}
+                />
+              );
+            })}
+          </div>
         </div>
+
 
         {/* Right / Next Chevron Button */}
         <button

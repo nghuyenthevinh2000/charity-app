@@ -15,11 +15,30 @@ const renderWithProviders = (ui: React.ReactElement, initialUserPurchases = init
 };
 
 describe('ProofExplorer (Tab 2)', () => {
-  it('renders screen-filling campaign proof card with background photo and details', () => {
+  it('renders screen-filling campaign proof card with background photo and details without free-scroll nav bar', () => {
     renderWithProviders(<ProofExplorer />);
     expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
     expect(screen.getByText(/Dong Van Highland Village/i)).toBeInTheDocument();
     expect(screen.getByText(/Block #18942/i)).toBeInTheDocument();
+    // Sub-nav is removed per user request
+    expect(screen.queryByRole('navigation', { name: /proof explorer navigation/i })).not.toBeInTheDocument();
+  });
+
+  it('switches cleanly between campaign cards using next and previous buttons', () => {
+    renderWithProviders(<ProofExplorer />);
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText(/Mission 1 of 2/i)).toBeInTheDocument();
+
+    const nextCampaignBtn = screen.getByRole('button', { name: /next campaign/i });
+    fireEvent.click(nextCampaignBtn);
+
+    expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
+    expect(screen.getByText(/Mission 2 of 2/i)).toBeInTheDocument();
+
+    const prevCampaignBtn = screen.getByRole('button', { name: /previous campaign/i });
+    fireEvent.click(prevCampaignBtn);
+
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
   });
 
   it('toggles Details 50% drawer when info icon is clicked and collapses on second click', () => {
@@ -65,11 +84,8 @@ describe('ProofExplorer (Tab 2)', () => {
     expect(screen.getByText('Wonderful compassionate effort!')).toBeInTheDocument();
   });
 
-  it('switches between Public Proofs and My Purchased Packages view', () => {
-    renderWithProviders(<ProofExplorer />);
-    const myImpactTab = screen.getByRole('tab', { name: /my purchased packages/i });
-    fireEvent.click(myImpactTab);
-
+  it('renders Personal Purchases view when initialSubTab is personal for future usage', () => {
+    renderWithProviders(<ProofExplorer initialSubTab="personal" />);
     expect(screen.getByText(/Your Personal Giving Tracker/i)).toBeInTheDocument();
   });
 
@@ -89,9 +105,7 @@ describe('ProofExplorer (Tab 2)', () => {
   });
 
   it('navigates from personal purchase to public proof card when clicking view photo proof', () => {
-    renderWithProviders(<ProofExplorer />);
-    const myImpactTab = screen.getByRole('tab', { name: /my purchased packages/i });
-    fireEvent.click(myImpactTab);
+    renderWithProviders(<ProofExplorer initialSubTab="personal" />);
 
     const viewProofBtn = screen.getAllByRole('button', { name: /view delivery photo proof/i })[0];
     fireEvent.click(viewProofBtn);
@@ -101,9 +115,7 @@ describe('ProofExplorer (Tab 2)', () => {
   });
 
   it('displays empty state when devotee has no purchases in session', () => {
-    renderWithProviders(<ProofExplorer />, []);
-    const myImpactTab = screen.getByRole('tab', { name: /my purchased packages/i });
-    fireEvent.click(myImpactTab);
+    renderWithProviders(<ProofExplorer initialSubTab="personal" />, []);
 
     expect(
       screen.getByText(/No packages sponsored yet in this session/i)
@@ -142,9 +154,7 @@ describe('ProofExplorer (Tab 2)', () => {
   });
 
   it('filters personal purchases using search query', () => {
-    renderWithProviders(<ProofExplorer />);
-    const myImpactTab = screen.getByRole('tab', { name: /my purchased packages/i });
-    fireEvent.click(myImpactTab);
+    renderWithProviders(<ProofExplorer initialSubTab="personal" />);
 
     const searchInput = screen.getByPlaceholderText(/search by your personal tx hash/i);
     fireEvent.change(searchInput, { target: { value: 'Winter Warmth' } });
@@ -168,17 +178,11 @@ describe('ProofExplorer (Tab 2)', () => {
     expect(dock).toHaveClass('bottom-6');
   });
 
-  it('handles initialProofId prop by targeting and scrolling to the proof card', async () => {
-    const scrollMock = vi.fn();
-    window.HTMLElement.prototype.scrollIntoView = scrollMock;
-
+  it('handles initialProofId prop by targeting and displaying the matched proof card', async () => {
     renderWithProviders(<ProofExplorer initialProofId="proof-student-batch-1" initialSubTab="personal" />);
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 150));
-    });
-
     expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
-    expect(scrollMock).toHaveBeenCalled();
+    expect(screen.getByText(/Nam Dam Primary School/i)).toBeInTheDocument();
+    expect(screen.getByText(/Mission 2 of 2/i)).toBeInTheDocument();
   });
 });

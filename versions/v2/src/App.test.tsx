@@ -25,7 +25,7 @@ describe('Charity App V2 Shell & Navigation', () => {
 
     // Switch to Proof Explorer
     fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));
-    expect(screen.getByText(/Public Field Proofs/i)).toBeInTheDocument();
+    expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
 
     // Switch to Monk Steward
     fireEvent.click(screen.getByRole('button', { name: /monk steward/i }));
@@ -53,7 +53,7 @@ describe('Charity App V2 Shell & Navigation', () => {
     // Click View in On-Chain Explorer
     fireEvent.click(screen.getByRole('button', { name: /View in On-Chain Explorer/i }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(screen.getByText(/Public Field Proofs/i)).toBeInTheDocument();
+    expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
   });
 
   it('authenticates steward with PIN, launches new package, and displays it in steward portal list', () => {

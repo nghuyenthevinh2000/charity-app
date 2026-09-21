@@ -39,7 +39,7 @@ describe('App Navigation & Role Switcher (V2 3-Tab Shell)', () => {
 
     // Click Proof Explorer tab
     fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));
-    expect(screen.getByText(/Public Field Proofs/i)).toBeInTheDocument();
+    expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
 
     // Click Monk Steward tab (prompts PIN if locked)
     fireEvent.click(screen.getByRole('button', { name: /monk steward/i }));
