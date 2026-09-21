@@ -375,14 +375,17 @@ describe('MonasteryStore V2 Package & Proof Operations', () => {
     const targetPkg = result.current.packages[0];
 
     // Purchase first so we have a queued purchase
+    let purchase: any;
     act(() => {
-      result.current.purchasePackage({
+      purchase = result.current.purchasePackage({
         packageId: targetPkg.id,
         unitsBought: 1,
         donorName: 'Test Devotee',
         isAnonymous: false,
       });
     });
+
+    expect(purchase.fulfillmentStatus).toBe('queued_distribution');
 
     let proofBatch: any;
     act(() => {
@@ -408,22 +411,41 @@ describe('MonasteryStore V2 Package & Proof Operations', () => {
     // Package distributed count increased
     const updatedPkg = result.current.packages.find((p) => p.id === targetPkg.id);
     expect(updatedPkg?.distributedUnits).toBeGreaterThanOrEqual(10);
+
+    // Assert that queued purchases in userPurchases and purchases transitioned to fulfilled_with_proof
+    const userPurchase = result.current.userPurchases.find((p) => p.id === purchase.id);
+    expect(userPurchase?.fulfillmentStatus).toBe('fulfilled_with_proof');
+    expect(userPurchase?.linkedProofBatchId).toBe(proofBatch.id);
+
+    const storePurchase = result.current.purchases.find((p) => p.id === purchase.id);
+    expect(storePurchase?.fulfillmentStatus).toBe('fulfilled_with_proof');
+    expect(storePurchase?.linkedProofBatchId).toBe(proofBatch.id);
   });
 
   it('allows adding community comments to a proof batch', () => {
     const { result } = renderHook(() => useMonasteryStore(), { wrapper });
     const proofId = result.current.proofBatches[0].id;
 
+    let success: boolean | undefined;
     act(() => {
-      result.current.addCommentToProof(proofId, {
+      success = result.current.addCommentToProof(proofId, {
         authorName: 'Lotus Disciple',
         authorRole: 'devotee',
         commentText: 'Sadhu Sadhu Sadhu! Touching proof.',
       });
     });
 
+    expect(success).toBe(true);
     const updatedProof = result.current.proofBatches.find((b) => b.id === proofId);
     expect(updatedProof?.comments.some((c) => c.commentText.includes('Sadhu'))).toBe(true);
+
+    // Non-existent proof batch returns false synchronously
+    const nonExistentSuccess = result.current.addCommentToProof('non-existent-proof', {
+      authorName: 'Lotus Disciple',
+      authorRole: 'devotee',
+      commentText: 'Should fail',
+    });
+    expect(nonExistentSuccess).toBe(false);
   });
 
   it('resets V2 package, proof, and purchase data when resetStore is called', () => {

@@ -821,7 +821,9 @@ export function MonasteryStoreProvider({
       batchId: string,
       comment: Omit<CampaignComment, 'id' | 'campaignId' | 'createdAt'>
     ): boolean => {
-      let found = false;
+      const exists = proofBatches.some((b) => b.id === batchId);
+      if (!exists) return false;
+
       const commentObj: CampaignComment = {
         id: 'cmt-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
         campaignId: batchId,
@@ -835,7 +837,6 @@ export function MonasteryStoreProvider({
       setProofBatches((prev) =>
         prev.map((batch) => {
           if (batch.id === batchId) {
-            found = true;
             return {
               ...batch,
               comments: [...(batch.comments || []), commentObj],
@@ -845,9 +846,9 @@ export function MonasteryStoreProvider({
         })
       );
 
-      return found;
+      return true;
     },
-    [setProofBatches]
+    [proofBatches, setProofBatches]
   );
 
   // Reset store
