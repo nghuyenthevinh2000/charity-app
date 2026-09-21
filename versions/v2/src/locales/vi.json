@@ -10,11 +10,14 @@
     "copy": "Sao chép",
     "copyHash": "Sao chép mã",
     "pinHint": "Mã PIN 1080",
+    "v2Badge": "v2.0 Trao Gói Thiện Nguyện",
+    "demoReset": "Đặt Lại",
+    "packagesCount": "Gói",
+    "proofsCount": "Minh Chứng",
     "devotee": "Phật tử",
     "tabs": {
-      "sanctuary": "Tịnh Xá",
-      "transparency": "Minh Bạch",
-      "prayerWall": "Sổ Cầu Nguyện",
+      "market": "Gói Thiện Nguyện",
+      "proof": "Khám Phá Minh Chứng",
       "steward": "Quản Sự"
     }
   },

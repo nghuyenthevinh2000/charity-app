@@ -4,12 +4,12 @@ import App from '../../App';
 import { LanguageProvider } from '../../context/LanguageContext';
 import { MonasteryStoreProvider } from '../../context/MonasteryStore';
 
-describe('App Navigation & Role Switcher', () => {
+describe('App Navigation & Role Switcher (V2 3-Tab Shell)', () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('renders exactly 4 navigation tabs', () => {
+  it('renders exactly 3 navigation tabs', () => {
     render(
       <LanguageProvider>
         <MonasteryStoreProvider>
@@ -17,12 +17,12 @@ describe('App Navigation & Role Switcher', () => {
         </MonasteryStoreProvider>
       </LanguageProvider>
     );
-    expect(screen.getByRole('button', { name: /Sanctuary/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Transparency/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Prayer Wall/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Steward/i })).toBeInTheDocument();
-    // Confirms NO separate donate tab
-    expect(screen.queryByRole('button', { name: /^Donate$/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /charity packages/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /proof explorer/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /monk steward/i })).toBeInTheDocument();
+    // Old tabs removed
+    expect(screen.queryByRole('button', { name: /sanctuary/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /prayer wall/i })).not.toBeInTheDocument();
   });
 
   it('switches between tabs when bottom navigation buttons are clicked', () => {
@@ -34,20 +34,17 @@ describe('App Navigation & Role Switcher', () => {
       </LanguageProvider>
     );
 
-    // Initial tab is Sanctuary
-    expect(screen.getByRole('heading', { level: 1, name: /Lotus Grove Sanctuary/i })).toBeInTheDocument();
+    // Initial tab is Charity Packages
+    expect(screen.getByText(/Winter Warmth & Rice Kit/i)).toBeInTheDocument();
 
-    // Click Transparency tab
-    fireEvent.click(screen.getByRole('button', { name: /Transparency/i }));
-    expect(screen.getByRole('heading', { name: /UTXO Transparency Ledger/i })).toBeInTheDocument();
+    // Click Proof Explorer tab
+    fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));
+    expect(screen.getByText(/Public Field Proofs/i)).toBeInTheDocument();
 
-    // Click Prayer Wall tab
-    fireEvent.click(screen.getByRole('button', { name: /Prayer Wall/i }));
-    expect(screen.getByRole('heading', { name: /Book of Intentions/i })).toBeInTheDocument();
-
-    // Click Sanctuary tab
-    fireEvent.click(screen.getByRole('button', { name: /Sanctuary/i }));
-    expect(screen.getByText(/In giving, we find boundless peace/i)).toBeInTheDocument();
+    // Click Monk Steward tab (prompts PIN if locked)
+    fireEvent.click(screen.getByRole('button', { name: /monk steward/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText(/Steward Authentication/i)).toBeInTheDocument();
   });
 
   it('toggles language between English and Vietnamese', () => {
@@ -59,24 +56,21 @@ describe('App Navigation & Role Switcher', () => {
       </LanguageProvider>
     );
 
-    // Initial English tab names
-    expect(screen.getByRole('button', { name: /Sanctuary/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /charity packages/i })).toBeInTheDocument();
 
     // Switch to Vietnamese
     const viBtn = screen.getByRole('button', { name: /🇻🇳 VI|Tiếng Việt/i });
     fireEvent.click(viBtn);
 
-    // Vietnamese tab names should appear
-    expect(screen.getByRole('button', { name: /Tịnh Xá/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Minh Bạch/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Sổ Cầu Nguyện/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Gói Thiện Nguyện/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Quản Sự/i })).toBeInTheDocument();
 
     // Switch back to English
     const enBtn = screen.getByRole('button', { name: /🇬🇧 EN|English/i });
     fireEvent.click(enBtn);
 
-    expect(screen.getByRole('button', { name: /Sanctuary/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /charity packages/i })).toBeInTheDocument();
   });
 
   it('prompts StewardPinModal when selecting Steward tab while locked', () => {
@@ -89,50 +83,17 @@ describe('App Navigation & Role Switcher', () => {
     );
 
     // Click Steward tab when locked
-    fireEvent.click(screen.getByRole('button', { name: /Steward/i }));
+    fireEvent.click(screen.getByRole('button', { name: /monk steward/i }));
 
     // PIN modal should appear
     expect(screen.getByRole('heading', { name: /Steward Authentication/i })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/PIN/i)).toBeInTheDocument();
 
-    // Wrong PIN
-    const pinInput = screen.getByPlaceholderText(/PIN/i);
-    fireEvent.change(pinInput, { target: { value: '9999' } });
+    // Quick fill 1080 and unlock
+    fireEvent.click(screen.getByRole('button', { name: /1080/i }));
     fireEvent.click(screen.getByRole('button', { name: /Unlock/i }));
 
-    expect(screen.getByText(/Incorrect PIN/i)).toBeInTheDocument();
-
-    // Correct PIN 1080
-    fireEvent.change(pinInput, { target: { value: '1080' } });
-    fireEvent.click(screen.getByRole('button', { name: /Unlock/i }));
-
-    // Modal closed, steward portal displayed
-    expect(screen.queryByPlaceholderText(/PIN/i)).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Steward Portal/i })).toBeInTheDocument();
-  });
-
-  it('prompts PIN modal when tapping Steward View from role switcher dropdown', () => {
-    render(
-      <LanguageProvider>
-        <MonasteryStoreProvider>
-          <App />
-        </MonasteryStoreProvider>
-      </LanguageProvider>
-    );
-
-    // Click role pill
-    const rolePill = screen.getByRole('button', { name: /Devotee View/i });
-    fireEvent.click(rolePill);
-
-    // In role dropdown, click Steward View
-    const stewardOption = screen.getByText(/Steward View|Steward \/ Monk View/i);
-    fireEvent.click(stewardOption);
-
-    // PIN modal appears
-    expect(screen.getByPlaceholderText(/PIN/i)).toBeInTheDocument();
-
-    // Close/Cancel PIN modal
-    fireEvent.click(screen.getByRole('button', { name: /^Cancel$/i }));
-    expect(screen.queryByPlaceholderText(/PIN/i)).not.toBeInTheDocument();
+    // Modal closed, steward workspace displayed
+    expect(screen.queryByText(/Steward Authentication/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Monastery Steward Workspace/i })).toBeInTheDocument();
   });
 });

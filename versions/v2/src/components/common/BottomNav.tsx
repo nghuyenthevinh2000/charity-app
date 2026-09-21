@@ -1,8 +1,8 @@
 import React from 'react';
-import { Home, Eye, BookOpen, Shield } from 'lucide-react';
+import { ShoppingBag, Camera, Shield } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 
-export type TabId = 'sanctuary' | 'transparency' | 'prayerWall' | 'steward';
+export type TabId = 'market' | 'proof' | 'steward';
 
 export interface BottomNavProps {
   activeTab: TabId;
@@ -17,19 +17,14 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    id: 'sanctuary',
-    labelKey: 'common.tabs.sanctuary',
-    icon: Home,
+    id: 'market',
+    labelKey: 'common.tabs.market',
+    icon: ShoppingBag,
   },
   {
-    id: 'transparency',
-    labelKey: 'common.tabs.transparency',
-    icon: Eye,
-  },
-  {
-    id: 'prayerWall',
-    labelKey: 'common.tabs.prayerWall',
-    icon: BookOpen,
+    id: 'proof',
+    labelKey: 'common.tabs.proof',
+    icon: Camera,
   },
   {
     id: 'steward',
@@ -58,7 +53,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabSelect }) 
             type="button"
             onClick={() => onTabSelect(item.id)}
             aria-selected={isActive}
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all min-w-[64px] ${
+            className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all min-w-[72px] ${
               isActive
                 ? 'text-saffron-700 font-medium bg-amber-50/80 shadow-2xs'
                 : 'text-stone-500 hover:text-stone-800'

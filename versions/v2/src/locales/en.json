@@ -10,12 +10,15 @@
     "copy": "Copy",
     "copyHash": "Copy Hash",
     "pinHint": "PIN 1080",
+    "v2Badge": "v2.0 Packaged Giving",
+    "demoReset": "Demo Reset",
+    "packagesCount": "Packages",
+    "proofsCount": "Verified Proofs",
     "devotee": "Devotee",
     "tabs": {
-      "sanctuary": "Sanctuary",
-      "transparency": "Transparency",
-      "prayerWall": "Prayer Wall",
-      "steward": "Steward"
+      "market": "Charity Packages",
+      "proof": "Proof Explorer",
+      "steward": "Monk Steward"
     }
   },
   "categories": {
