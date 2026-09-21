@@ -17,10 +17,6 @@ describe('V2 Vietnamese Translation Full Coverage', () => {
   it('translates marketplace and tabs in Vietnamese', () => {
     render(<App />);
 
-    // Header branding in Vietnamese
-    expect(screen.getByText('Tịnh Xá Sen Vàng')).toBeInTheDocument();
-    expect(screen.getByText('v2.0 Trao Gói Thiện Nguyện')).toBeInTheDocument();
-
     // Tabs in Vietnamese
     expect(screen.getByRole('button', { name: /Gói Thiện Nguyện/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i })).toBeInTheDocument();

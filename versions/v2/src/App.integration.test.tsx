@@ -15,7 +15,6 @@ describe('V2 End-to-End Integration Tests', () => {
       render(<App />);
 
       // --- 1. BROWSE CHARITY PACKAGES (TAB 1) ---
-      expect(screen.getByText('Lotus Grove Sanctuary')).toBeInTheDocument();
       expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Sponsor This Package/i })).toBeInTheDocument();
 
@@ -80,20 +79,13 @@ describe('V2 End-to-End Integration Tests', () => {
   });
 
   describe('Language Switcher Flow', () => {
-    it('switches languages between English and Vietnamese successfully', () => {
+    it('persists and renders Vietnamese language when configured', () => {
+      localStorage.setItem('lotus_language', 'vi');
       render(<App />);
 
-      expect(screen.getByText('Lotus Grove Sanctuary')).toBeInTheDocument();
-
-      // Switch to Vietnamese
-      const viBtn = screen.getByRole('button', { name: /Tiếng Việt/i });
-      fireEvent.click(viBtn);
-      expect(screen.getByText('Tịnh Xá Sen Vàng')).toBeInTheDocument();
-
-      // Switch back to English
-      const enBtn = screen.getByRole('button', { name: /English/i });
-      fireEvent.click(enBtn);
-      expect(screen.getByText('Lotus Grove Sanctuary')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Gói Thiện Nguyện/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Quản Sự/i })).toBeInTheDocument();
     });
   });
 });

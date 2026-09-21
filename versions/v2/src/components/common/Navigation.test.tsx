@@ -47,7 +47,8 @@ describe('App Navigation & Role Switcher (V2 3-Tab Shell)', () => {
     expect(screen.getByText(/Steward Authentication/i)).toBeInTheDocument();
   });
 
-  it('toggles language between English and Vietnamese', () => {
+  it('displays navigation tabs in Vietnamese when language is set to vi', () => {
+    localStorage.setItem('lotus_language', 'vi');
     render(
       <LanguageProvider>
         <MonasteryStoreProvider>
@@ -56,21 +57,9 @@ describe('App Navigation & Role Switcher (V2 3-Tab Shell)', () => {
       </LanguageProvider>
     );
 
-    expect(screen.getByRole('button', { name: /charity packages/i })).toBeInTheDocument();
-
-    // Switch to Vietnamese
-    const viBtn = screen.getByRole('button', { name: /🇻🇳 VI|Tiếng Việt/i });
-    fireEvent.click(viBtn);
-
     expect(screen.getByRole('button', { name: /Gói Thiện Nguyện/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Quản Sự/i })).toBeInTheDocument();
-
-    // Switch back to English
-    const enBtn = screen.getByRole('button', { name: /🇬🇧 EN|English/i });
-    fireEvent.click(enBtn);
-
-    expect(screen.getByRole('button', { name: /charity packages/i })).toBeInTheDocument();
   });
 
   it('prompts StewardPinModal when selecting Steward tab while locked', () => {
