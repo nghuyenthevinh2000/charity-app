@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charity App V2 - Interactive Design Mockup</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: #18181b;
+      --card-border: #27272a;
+      --amber: #d97706;
+      --amber-light: #fbbf24;
+      --emerald: #10b981;
+      --emerald-light: #34d399;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 24px 16px; min-height: 100vh; }
+    .container { max-width: 900px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 28px; }
+    .badge { display: inline-block; background: rgba(217, 119, 6, 0.2); color: var(--amber-light); border: 1px solid rgba(217, 119, 6, 0.4); padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+    h1 { font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    p.lead { color: var(--text-muted); font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.5; }
+
+    /* Interactive Tabs */
+    .tab-bar { display: flex; gap: 8px; background: #121215; padding: 6px; border-radius: 12px; border: 1px solid var(--card-border); margin-bottom: 24px; overflow-x: auto; }
+    .tab-btn { flex: 1; padding: 10px 14px; background: transparent; border: none; border-radius: 8px; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; transition: all 0.2s; }
+    .tab-btn.active { background: #27272a; color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+    .tab-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); }
+
+    /* Phone container */
+    .phone-frame { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); overflow: hidden; padding: 20px; min-height: 520px; }
+
+    /* Tab Contents */
+    .view-panel { display: none; }
+    .view-panel.active { display: block; animation: fadeIn 0.25s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cards */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .card { background: #202024; border: 1px solid #2e2e33; border-radius: 14px; overflow: hidden; }
+    .card-banner { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 42px; position: relative; }
+    .card-body { padding: 16px; }
+    .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; }
+    .tag { background: #18181b; border: 1px solid #333; font-size: 11px; padding: 3px 8px; border-radius: 6px; color: #d4d4d8; }
+    
+    .progress-track { height: 8px; background: #121215; border-radius: 9999px; overflow: hidden; display: flex; margin: 8px 0 14px; }
+    .btn-buy { width: 100%; padding: 11px; background: linear-gradient(135deg, #d97706, #b45309); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: opacity 0.2s; }
+    .btn-buy:hover { opacity: 0.9; }
+
+    /* Proof Cards */
+    .proof-card { background: #202024; border: 1px solid #2e2e33; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+    .hash-badge { font-family: monospace; font-size: 11px; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2); }
+    .monk-seal { display: inline-flex; align-items: center; gap: 6px; color: var(--emerald-light); font-size: 12px; font-weight: 600; }
+
+    /* Interactive modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: #18181b; border: 1px solid #333; border-radius: 16px; width: 100%; max-width: 440px; padding: 22px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+
+    .action-banner { background: rgba(217, 119, 6, 0.1); border: 1px solid rgba(217, 119, 6, 0.3); padding: 12px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 13px; color: #fde68a; display: flex; align-items: center; justify-content: space-between; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="badge">🌸 Lotus Grove Sanctuary &bull; Version 2.0</div>
+    <h1>Charity Packages &amp; On-Chain Proof System</h1>
+    <p class="lead">Interactive design preview: Explore how devotees purchase bundled charity items, how monks upload field distribution photos, and how on-chain proofs verify delivery.</p>
+  </header>
+
+  <!-- Navigation Switcher -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('tab-market', this)">
+      <span>🛍️</span> 1. Charity Packages (Market)
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-proof', this)">
+      <span>📸 ⛓️</span> 2. On-Chain Proof Explorer
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-steward', this)">
+      <span>🧘</span> 3. Monk Steward Portal
+    </button>
+  </div>
+
+  <div class="phone-frame">
+
+    <!-- VIEW 1: MARKETPLACE (SWIPEABLE SINGLE-PACKAGE CAROUSEL) -->
+    <div id="tab-market" class="view-panel active">
+      <div class="action-banner">
+        <div><strong>Swipe &amp; Select:</strong> Showing 1 charity package at a time. Swipe or use arrows to discover packages.</div>
+        <div style="font-size: 11px; color: var(--amber-light); font-weight: 600;" id="carousel-counter">Package 1 of 3</div>
+      </div>
+
+      <!-- Carousel Frame -->
+      <div style="position: relative; max-width: 480px; margin: 0 auto;">
+        
+        <!-- Package Carousel Wrapper -->
+        <div id="package-carousel" style="overflow: hidden; border-radius: 18px; border: 1px solid #333; background: #1a1a1e; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+          
+          <!-- Slide 1 -->
+          <div class="carousel-slide" data-index="0">
+            <div class="card-banner" style="height: 220px; background: linear-gradient(135deg, #78350f, #b45309);">
+              🍲 🧣 🍚
+              <div style="position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); padding: 6px 12px; border-radius: 9999px; font-size: 14px; font-weight: 700; color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4);">
+                $25 / package
+              </div>
+              <div style="position: absolute; bottom: 12px; left: 14px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 4px; font-size: 11px; color: #fde68a;">
+                🌾 Category: Winter &amp; Food Relief
+              </div>
+            </div>
+            <div class="card-body" style="padding: 20px;">
+              <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #fff;">Winter Warmth &amp; Rice Kit</h2>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                Provides 10kg fragrant Jasmine rice, a thick fleece thermal blanket, and warm knit beanie for solitary elderly villagers facing freezing mountain frosts.
+              </p>
+
+              <div style="font-size: 12px; font-weight: 600; color: #e4e4e7; margin-bottom: 6px;">Included in this package:</div>
+              <div class="tag-row" style="margin-top: 0; margin-bottom: 16px;">
+                <span class="tag">🌾 10kg Jasmine Rice</span>
+                <span class="tag">🧣 Fleece Thermal Blanket</span>
+                <span class="tag">🧤 Winter Beanie &amp; Socks</span>
+                <span class="tag">🍵 Herbal Ginger Tea</span>
+              </div>
+
+              <!-- Dual Progress -->
+              <div style="background: #121215; border: 1px solid #27272a; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+                <div style="font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span>Funded: <strong style="color:#fff;">72 of 100</strong> kits (72%)</span>
+                  <span style="color: var(--emerald-light); font-weight: 600;">50 Kits Distributed ✓</span>
+                </div>
+                <div class="progress-track" style="margin: 0 0 6px;">
+                  <div style="width: 50%; background: var(--emerald);" title="50 Distributed with photo proof"></div>
+                  <div style="width: 22%; background: #3b82f6;" title="22 Awaiting distribution"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #71717a;">
+                  <span>🟢 Green = Distributed &amp; on-chain verified</span>
+                  <span>🔵 Blue = Funded &amp; queued</span>
+                </div>
+              </div>
+
+              <button class="btn-buy" style="font-size: 15px; padding: 14px;" onclick="openBuyModal('Winter Warmth & Rice Kit', 25)">
+                🙏 Select &amp; Buy Package ($25)
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="carousel-slide" data-index="1" style="display: none;">
+            <div class="card-banner" style="height: 220px; background: linear-gradient(135deg, #1e3a8a, #0284c7);">
+              📚 ✏️ 💡
+              <div style="position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); padding: 6px 12px; border-radius: 9999px; font-size: 14px; font-weight: 700; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">
+                $15 / package
+              </div>
+              <div style="position: absolute; bottom: 12px; left: 14px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 4px; font-size: 11px; color: #bae6fd;">
+                📖 Category: Education &amp; Children
+              </div>
+            </div>
+            <div class="card-body" style="padding: 20px;">
+              <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #fff;">Highland Student Study Pack</h2>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                Equips rural highland pupils with complete school supplies, solar study lamp for homes without grid electricity, and learning workbooks for the new term.
+              </p>
+
+              <div style="font-size: 12px; font-weight: 600; color: #e4e4e7; margin-bottom: 6px;">Included in this package:</div>
+              <div class="tag-row" style="margin-top: 0; margin-bottom: 16px;">
+                <span class="tag">📓 5 Grid Workbooks</span>
+                <span class="tag">✏️ Writing &amp; Pen Set</span>
+                <span class="tag">💡 Solar LED Study Lamp</span>
+                <span class="tag">🎒 Waterproof Backpack</span>
+              </div>
+
+              <!-- Dual Progress -->
+              <div style="background: #121215; border: 1px solid #27272a; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+                <div style="font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span>Funded: <strong style="color:#fff;">110 of 150</strong> kits (73%)</span>
+                  <span style="color: var(--emerald-light); font-weight: 600;">80 Kits Distributed ✓</span>
+                </div>
+                <div class="progress-track" style="margin: 0 0 6px;">
+                  <div style="width: 53%; background: var(--emerald);"></div>
+                  <div style="width: 20%; background: #3b82f6;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #71717a;">
+                  <span>🟢 Green = Distributed &amp; on-chain verified</span>
+                  <span>🔵 Blue = Funded &amp; queued</span>
+                </div>
+              </div>
+
+              <button class="btn-buy" style="font-size: 15px; padding: 14px;" onclick="openBuyModal('Highland Student Study Pack', 15)">
+                🙏 Select &amp; Buy Package ($15)
+              </button>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="carousel-slide" data-index="2" style="display: none;">
+            <div class="card-banner" style="height: 220px; background: linear-gradient(135deg, #065f46, #059669);">
+              🩺 💊 🩹
+              <div style="position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); padding: 6px 12px; border-radius: 9999px; font-size: 14px; font-weight: 700; color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4);">
+                $40 / package
+              </div>
+              <div style="position: absolute; bottom: 12px; left: 14px; background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 4px; font-size: 11px; color: #a7f3d0;">
+                🌱 Category: Elderly Healthcare
+              </div>
+            </div>
+            <div class="card-body" style="padding: 20px;">
+              <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #fff;">Elderly Herbal &amp; First Aid Pack</h2>
+              <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                Traditional monastery medicinal tonics, blood pressure monitoring arm band, joint pain balms, and first-aid dressings for infirm villagers.
+              </p>
+
+              <div style="font-size: 12px; font-weight: 600; color: #e4e4e7; margin-bottom: 6px;">Included in this package:</div>
+              <div class="tag-row" style="margin-top: 0; margin-bottom: 16px;">
+                <span class="tag">🌿 Herbal Joint Tonics</span>
+                <span class="tag">🩺 Blood Pressure Arm Cuff</span>
+                <span class="tag">🩹 Sterile Gauze &amp; Disinfectant</span>
+                <span class="tag">🧴 Camphor Herbal Balm</span>
+              </div>
+
+              <!-- Dual Progress -->
+              <div style="background: #121215; border: 1px solid #27272a; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+                <div style="font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span>Funded: <strong style="color:#fff;">45 of 60</strong> kits (75%)</span>
+                  <span style="color: var(--emerald-light); font-weight: 600;">30 Kits Distributed ✓</span>
+                </div>
+                <div class="progress-track" style="margin: 0 0 6px;">
+                  <div style="width: 50%; background: var(--emerald);"></div>
+                  <div style="width: 25%; background: #3b82f6;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #71717a;">
+                  <span>🟢 Green = Distributed &amp; on-chain verified</span>
+                  <span>🔵 Blue = Funded &amp; queued</span>
+                </div>
+              </div>
+
+              <button class="btn-buy" style="font-size: 15px; padding: 14px;" onclick="openBuyModal('Elderly Herbal & First Aid Pack', 40)">
+                🙏 Select &amp; Buy Package ($40)
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Carousel Navigation Arrows & Dots -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+          <button onclick="prevPackage()" style="background: #27272a; border: 1px solid #3f3f46; color: #fff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px;">
+            &#8592;
+          </button>
+          
+          <div style="display: flex; gap: 8px;" id="carousel-dots">
+            <span style="width: 24px; height: 8px; border-radius: 4px; background: var(--amber); cursor: pointer;" onclick="goToPackage(0)"></span>
+            <span style="width: 8px; height: 8px; border-radius: 40%; background: #3f3f46; cursor: pointer;" onclick="goToPackage(1)"></span>
+            <span style="width: 8px; height: 8px; border-radius: 40%; background: #3f3f46; cursor: pointer;" onclick="goToPackage(2)"></span>
+          </div>
+
+          <button onclick="nextPackage()" style="background: #27272a; border: 1px solid #3f3f46; color: #fff; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px;">
+            &#8594;
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIEW 2: PROOF & TRANSPARENCY (EXPANDABLE CAMPAIGNS & INDIVIDUAL PURCHASE TRACKER) -->
+    <div id="tab-proof" class="view-panel">
+      
+      <!-- Sub-Navigation Toggle: Public Campaigns vs. Private Personal Purchases -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; background: #121215; padding: 4px; border-radius: 10px; border: 1px solid #27272a;">
+        <button id="subtab-campaigns-btn" onclick="switchProofSubTab('campaigns')" style="flex: 1; padding: 8px 12px; background: #27272a; color: #fff; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer;">
+          📜 Public Campaigns &amp; Heartfelt Proofs
+        </button>
+        <button id="subtab-purchases-btn" onclick="switchProofSubTab('purchases')" style="flex: 1; padding: 8px 12px; background: transparent; color: var(--text-muted); border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer;">
+          🌸 My Purchased Packages (My Impact)
+        </button>
+      </div>
+
+      <!-- SUB-VIEW A: SCROLLABLE CAMPAIGNS LIST -->
+      <div id="proof-campaigns-view">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+          <div>
+            <h2 style="font-size: 17px; font-weight: 700;">Verified Giving Campaigns</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">Scroll up/down to browse. Click any campaign to expand details &amp; swipe heartfelt field photos.</p>
+          </div>
+          <span style="font-size: 11px; background: rgba(16,185,129,0.1); color: var(--emerald-light); padding: 3px 8px; border-radius: 9999px; border: 1px solid rgba(16,185,129,0.3); font-weight: 600;">
+            ✓ 3 Active Campaigns
+          </span>
+        </div>
+
+        <!-- Full-Width Screen-Filling Campaign List with Snap Scrolling -->
+        <div style="display: flex; flex-direction: column; gap: 24px; max-height: calc(100vh - 160px); min-height: 640px; overflow-y: auto; scroll-snap-type: y mandatory; padding-right: 4px;">
+
+          <!-- CAMPAIGN BOX 1 (Screen-Filling Image Background with Side Overlay Icons) -->
+          <div class="proof-card" style="position: relative; width: 100%; height: calc(100vh - 220px); min-height: 600px; max-height: 780px; scroll-snap-align: start; border-radius: 22px; overflow: hidden; border: 1px solid #444; background: #0c0c0e; padding: 0; box-shadow: 0 15px 40px rgba(0,0,0,0.8);">
+            
+            <!-- MAIN BACKGROUND IMAGE SLIDES (Swipeable Left/Right) -->
+            <div id="camp1-bg-carousel" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;">
+              
+              <!-- Slide 1 -->
+              <div class="c1-bg-slide" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%), #3b2a1a; display: flex; flex-direction: column; justify-content: flex-end; padding: 22px 70px 22px 22px;">
+                <div style="font-size: 50px; margin-bottom: 8px;">👵 🙏 🌾</div>
+                <h3 style="font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                  Grandma Hoa (84 yrs) receiving 10kg Jasmine Rice &amp; Fleece
+                </h3>
+                <p style="font-size: 12px; color: #e4e4e7; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">
+                  "I have warm blankets and rice for the cold mountain months now." &bull; Ha Giang Highland
+                </p>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="c1-bg-slide" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%), #243324; display: none; flex-direction: column; justify-content: flex-end; padding: 22px 70px 22px 22px;">
+                <div style="font-size: 50px; margin-bottom: 8px;">🧘 📦 🏡</div>
+                <h3 style="font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                  Ven. Thich Tam An delivering 50 Winter Kits
+                </h3>
+                <p style="font-size: 12px; color: #e4e4e7; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">
+                  Unloading at Dong Van community house with village leaders.
+                </p>
+              </div>
+
+              <!-- Slide 3 -->
+              <div class="c1-bg-slide" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%), #1c2738; display: none; flex-direction: column; justify-content: flex-end; padding: 22px 70px 22px 22px;">
+                <div style="font-size: 50px; margin-bottom: 8px;">🍵 🧤 ❤️</div>
+                <h3 style="font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                  Grandfather Lung putting on winter knit beanie
+                </h3>
+                <p style="font-size: 12px; color: #e4e4e7; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">
+                  Herbal tea &amp; thermal wear for daily frost protection.
+                </p>
+              </div>
+
+              <!-- Slide 4 -->
+              <div class="c1-bg-slide" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%), #2d264a; display: none; flex-direction: column; justify-content: flex-end; padding: 22px 70px 22px 22px;">
+                <div style="font-size: 50px; margin-bottom: 8px;">📜 ✍️ 🌸</div>
+                <h3 style="font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8);">
+                  Dawn merit blessing chanting for donors
+                </h3>
+                <p style="font-size: 12px; color: #e4e4e7; margin: 0; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">
+                  Monks dedicating prayers for all who sponsored kits.
+                </p>
+              </div>
+
+            </div>
+
+            <!-- TOP FLOATING HEADER (Overlay on top of Image) -->
+            <div style="position: absolute; top: 16px; left: 16px; right: 16px; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
+              <div style="background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 9999px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 15px;">🍲</span>
+                <span style="font-size: 13px; font-weight: 700; color: #fff;">Winter Warmth Drive</span>
+                <span style="font-size: 10px; background: rgba(16,185,129,0.25); color: var(--emerald-light); padding: 1px 6px; border-radius: 4px; font-weight: 600;">50 Given ✓</span>
+              </div>
+
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <span style="font-size: 11px; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); padding: 5px 10px; border-radius: 9999px; font-weight: 600;" id="camp1-photo-indicator">
+                  📸 1 / 4
+                </span>
+                <span class="hash-badge" style="background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);">Block #18,942</span>
+              </div>
+            </div>
+
+            <!-- HORIZONTAL SWIPE ARROW CONTROLS (Overlay on sides) -->
+            <button onclick="prevCampPhoto(1, 4)" style="position: absolute; left: 12px; top: 45%; z-index: 10; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              &#8592;
+            </button>
+            <button onclick="nextCampPhoto(1, 4)" style="position: absolute; right: 64px; top: 45%; z-index: 10; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); color: #fff; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              &#8594;
+            </button>
+
+            <!-- RIGHT-SIDE FLOATING ACTION DOCK (Comment & More Details Icons on top of Image) -->
+            <div style="position: absolute; right: 14px; bottom: 22px; z-index: 15; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+              
+              <!-- More Details Icon Button -->
+              <button id="btn-icon-details-camp1" onclick="toggleOverlay('camp1', 'details')" title="More Details & Proof Hashes" style="width: 46px; height: 46px; border-radius: 50%; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                <span style="font-size: 18px;">ℹ️</span>
+                <span style="font-size: 9px; font-weight: 700; margin-top: 1px;">Details</span>
+              </button>
+
+              <!-- Comment Icon Button with Badge -->
+              <button id="btn-icon-comment-camp1" onclick="toggleOverlay('camp1', 'comments')" title="Community Comments" style="width: 46px; height: 46px; border-radius: 50%; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.5); position: relative;">
+                <span style="font-size: 18px;">💬</span>
+                <span style="font-size: 9px; font-weight: 700; margin-top: 1px;">Chat</span>
+                <!-- Comment Count Pill -->
+                <span id="badge-camp1-comments" style="position: absolute; top: -3px; right: -3px; background: var(--amber); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 9999px; border: 1px solid #18181b;">
+                  3
+                </span>
+              </button>
+
+            </div>
+
+            <!-- OVERLAY PANEL A: MORE DETAILS (Expands 50% from bottom over the image) -->
+            <div id="camp1-panel-details" style="display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(16px); border-top: 1px solid #444; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 20; padding: 16px 20px; overflow-y: auto; animation: slideUp 0.25s ease-out; box-shadow: 0 -8px 24px rgba(0,0,0,0.6);">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 18px;">ℹ️</span>
+                  <h3 style="font-size: 15px; color: #fff; margin: 0;">Campaign Story &amp; Proof Verification</h3>
+                </div>
+                <!-- Close Button -->
+                <button onclick="closeOverlays('camp1')" style="background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer;">&times;</button>
+              </div>
+
+              <div style="font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 12px;">
+                <strong style="color: #fbbf24;">Field Mission Report:</strong> Monks traveled over 300km through mountain passes to reach solitary elderly residents in Ha Giang. Each household received a 10kg Jasmine rice sack, an insulated fleece blanket, and warm winter cap.
+              </div>
+
+              <!-- Key Metrics -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div style="background: #121215; border: 1px solid #27272a; border-radius: 8px; padding: 8px;">
+                  <div style="font-size: 10px; color: #71717a;">Units Distributed</div>
+                  <div style="font-size: 15px; font-weight: 700; color: var(--emerald-light);">50 Kits ✓</div>
+                </div>
+                <div style="background: #121215; border: 1px solid #27272a; border-radius: 8px; padding: 8px;">
+                  <div style="font-size: 10px; color: #71717a;">Total Donors Linked</div>
+                  <div style="font-size: 15px; font-weight: 700; color: #38bdf8;">72 Devotees</div>
+                </div>
+              </div>
+
+              <!-- Cryptographic On-Chain Hashes -->
+              <div style="background: #09090b; border: 1px solid #27272a; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 11px; color: #a1a1aa; line-height: 1.6;">
+                <div><span style="color: #71717a;">Distribution TX:</span> <span style="color: #38bdf8;">0x8f3c7e4b9102ca89b3104e</span></div>
+                <div><span style="color: #71717a;">Photo Merkle Root:</span> <span style="color: var(--emerald-light);">sha256:d83e7a29f81ca992bc4e0</span></div>
+                <div><span style="color: #71717a;">Attesting Monk:</span> <span style="color: #fbbf24;">Ven. Thich Tam An (Monastery Seal ✓)</span></div>
+              </div>
+            </div>
+
+            <!-- OVERLAY PANEL B: COMMENTS SECTION (Expands 50% from bottom over the image) -->
+            <div id="camp1-panel-comments" style="display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(16px); border-top: 1px solid #444; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 20; padding: 16px 20px; flex-direction: column; animation: slideUp 0.25s ease-out; box-shadow: 0 -8px 24px rgba(0,0,0,0.6);">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 18px;">💬</span>
+                  <h3 style="font-size: 15px; color: #fff; margin: 0;">Community Blessings &amp; Dharma Notes</h3>
+                </div>
+                <button onclick="closeOverlays('camp1')" style="background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer;">&times;</button>
+              </div>
+
+              <!-- Comment List (Scrollable) -->
+              <div id="camp1-comment-list" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; padding-right: 4px;">
+                <div style="background: #1e1e24; border: 1px solid #2e2e33; border-radius: 8px; padding: 8px 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                    <span style="font-size: 11px; font-weight: 700; color: #fbbf24;">🧘 Ven. Thich Tam An &bull; <span style="font-size: 10px; background: rgba(245,158,11,0.2); padding: 1px 4px; border-radius: 4px;">Monk ✓</span></span>
+                    <span style="font-size: 10px; color: #71717a;">Yesterday</span>
+                  </div>
+                  <p style="font-size: 11px; color: #d4d4d8; margin: 0;">
+                    "Temperature dropped to 8°C in Dong Van. Elders were relieved to receive warm fleece. Gratitude to all donors."
+                  </p>
+                </div>
+
+                <div style="background: #1e1e24; border: 1px solid #2e2e33; border-radius: 8px; padding: 8px 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                    <span style="font-size: 11px; font-weight: 700; color: #60a5fa;">🙏 Devotee Huong Lan</span>
+                    <span style="font-size: 10px; color: #71717a;">2 days ago</span>
+                  </div>
+                  <p style="font-size: 11px; color: #d4d4d8; margin: 0;">
+                    "Seeing Grandma Hoa smile with her warm blanket brought tears to my eyes. Sadhu!"
+                  </p>
+                </div>
+              </div>
+
+              <!-- Add Comment Input Box -->
+              <div style="display: flex; gap: 8px; border-top: 1px solid #2e2e33; padding-top: 8px;">
+                <input type="text" id="camp1-new-comment" placeholder="Write a prayer blessing or reflection..." style="flex: 1; background: #09090b; border: 1px solid #333; padding: 7px 10px; border-radius: 6px; color: #fff; font-size: 11px;">
+                <button onclick="addComment('camp1')" style="background: var(--amber); color: #fff; border: none; padding: 0 14px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                  Post
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- CAMPAIGN BOX 2 (Highland Student Study Pack Drive - Screen Filling) -->
+          <div class="proof-card" style="position: relative; width: 100%; height: calc(100vh - 220px); min-height: 600px; max-height: 780px; scroll-snap-align: start; border-radius: 22px; overflow: hidden; border: 1px solid #444; background: #0c0c0e; padding: 0; box-shadow: 0 15px 40px rgba(0,0,0,0.8);">
+            
+            <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.85) 100%), #1e293b; display: flex; flex-direction: column; justify-content: flex-end; padding: 22px 70px 22px 22px;">
+              <div style="font-size: 50px; margin-bottom: 8px;">📚 ✏️ 💡</div>
+              <h3 style="font-size: 19px; font-weight: 700; color: #fff; margin-bottom: 4px;">
+                80 Highland Pupils Equipped with Study Kits &amp; Solar Lamps
+              </h3>
+              <p style="font-size: 12px; color: #e4e4e7; margin: 0;">
+                Ban Lung Elementary School &bull; Monks direct classroom delivery
+              </p>
+            </div>
+
+            <!-- Top Floating Header -->
+            <div style="position: absolute; top: 16px; left: 16px; right: 16px; z-index: 10; display: flex; justify-content: space-between; align-items: center;">
+              <div style="background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 9999px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 15px;">📚</span>
+                <span style="font-size: 13px; font-weight: 700; color: #fff;">Student Study Pack Drive</span>
+                <span style="font-size: 10px; background: rgba(16,185,129,0.25); color: var(--emerald-light); padding: 1px 6px; border-radius: 4px; font-weight: 600;">80 Given ✓</span>
+              </div>
+              <span class="hash-badge" style="background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);">Block #18,910</span>
+            </div>
+
+            <!-- Side Action Dock -->
+            <div style="position: absolute; right: 14px; bottom: 22px; z-index: 15; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+              <button id="btn-icon-details-camp2" onclick="toggleOverlay('camp2', 'details')" style="width: 46px; height: 46px; border-radius: 50%; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;">
+                <span style="font-size: 18px;">ℹ️</span>
+                <span style="font-size: 9px; font-weight: 700;">Details</span>
+              </button>
+              <button id="btn-icon-comment-camp2" onclick="toggleOverlay('camp2', 'comments')" style="width: 46px; height: 46px; border-radius: 50%; background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.25); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative;">
+                <span style="font-size: 18px;">💬</span>
+                <span style="font-size: 9px; font-weight: 700;">Chat</span>
+                <span style="position: absolute; top: -3px; right: -3px; background: #38bdf8; color: #fff; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 9999px;">5</span>
+              </button>
+            </div>
+
+            <!-- Details Overlay (50% from bottom) -->
+            <div id="camp2-panel-details" style="display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(16px); border-top: 1px solid #444; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 20; padding: 16px 20px; overflow-y: auto;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                <h3 style="font-size: 15px; color: #fff; margin: 0;">Highland School Mission Details</h3>
+                <button onclick="closeOverlays('camp2')" style="background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer;">&times;</button>
+              </div>
+              <p style="font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 12px;">
+                Delivered 80 complete study sets (backpack, notebooks, pens, and solar lamps) to children at Ban Lung Highland Elementary school.
+              </p>
+              <div style="background: #09090b; border: 1px solid #27272a; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 11px; color: #a1a1aa;">
+                <div><span style="color: #71717a;">Distribution TX:</span> <span style="color: #38bdf8;">0x4e1a99b2401f8e32c819</span></div>
+                <div><span style="color: #71717a;">Photo Merkle Root:</span> <span style="color: var(--emerald-light);">sha256:1a8c90e3881df8a34bc</span></div>
+              </div>
+            </div>
+
+            <!-- Comments Overlay (50% from bottom) -->
+            <div id="camp2-panel-comments" style="display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(16px); border-top: 1px solid #444; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 20; padding: 16px 20px; overflow-y: auto;">
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 8px; margin-bottom: 10px;">
+                <h3 style="font-size: 15px; color: #fff; margin: 0;">Student Drive Comments (5)</h3>
+                <button onclick="closeOverlays('camp2')" style="background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer;">&times;</button>
+              </div>
+              <p style="font-size: 12px; color: #cbd5e1;">"Seeing the children light up with their solar lamps is the highest merit. Sadhu!" &bull; Devotee Minh</p>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SUB-VIEW B: PRIVATE PERSONAL PURCHASES ONLY (MY IMPACT) -->
+      <div id="proof-purchases-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div>
+            <h2 style="font-size: 17px; font-weight: 700;">My Purchased Packages &amp; Impact</h2>
+            <p style="font-size: 12px; color: var(--text-muted);">Personal ledger: Only shows charity packages you have purchased from this device.</p>
+          </div>
+          <span style="font-size: 11px; background: rgba(59,130,246,0.15); color: #60a5fa; padding: 3px 8px; border-radius: 9999px; font-weight: 600;">
+            🔒 Private to You
+          </span>
+        </div>
+
+        <!-- Personal lookup / search -->
+        <div style="margin-bottom: 14px; display: flex; gap: 8px;">
+          <input type="text" id="personal-tx-search" placeholder="Search by your personal TX hash (e.g. 0x8a92...)" style="flex: 1; background: #121215; border: 1px solid #333; padding: 9px 12px; border-radius: 8px; color: #fff; font-size: 12px;">
+          <button style="background: #27272a; border: 1px solid #3f3f46; color: #fff; padding: 0 14px; border-radius: 8px; font-size: 12px; cursor: pointer;">Lookup</button>
+        </div>
+
+        <!-- Personal Purchases Feed -->
+        <div style="display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto;">
+          
+          <!-- Personal Purchase 1 (Fulfilled) -->
+          <div style="background: #202024; border: 1px solid #2e2e33; border-radius: 12px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div>
+                <strong style="color: #fff; font-size: 15px;">🍲 Winter Warmth &amp; Rice Kit (2 Packages)</strong>
+                <div style="font-size: 12px; color: var(--amber-light); margin-top: 2px;">$50 total &bull; Purchased Sep 19, 2026</div>
+              </div>
+              <span style="background: rgba(16,185,129,0.15); color: var(--emerald-light); border: 1px solid rgba(16,185,129,0.3); font-size: 11px; padding: 3px 8px; border-radius: 9999px; font-weight: 600;">
+                ✓ Fulfilled &amp; Delivered in Batch #1
+              </span>
+            </div>
+
+            <p style="font-size: 12px; font-style: italic; color: #d4d4d8; background: #121215; padding: 8px 10px; border-radius: 6px; margin-bottom: 10px;">
+              Your Dedication: "May all elders stay warm during mountain frost. Peace and good health for my parents."
+            </p>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-family: monospace; color: #71717a; border-top: 1px solid #27272a; padding-top: 8px;">
+              <span>Your TX: <strong style="color: #38bdf8;">0x7b2ae918c04a29...</strong></span>
+              <button onclick="switchProofSubTab('campaigns')" style="background: var(--amber); color: #fff; border: none; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                View Delivery Photo Proof ➔
+              </button>
+            </div>
+          </div>
+
+          <!-- Personal Purchase 2 (Pending Distribution) -->
+          <div style="background: #202024; border: 1px solid #2e2e33; border-radius: 12px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div>
+                <strong style="color: #fff; font-size: 15px;">📚 Highland Student Study Pack (1 Package)</strong>
+                <div style="font-size: 12px; color: #38bdf8; margin-top: 2px;">$15 total &bull; Purchased Today</div>
+              </div>
+              <span style="background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); font-size: 11px; padding: 3px 8px; border-radius: 9999px; font-weight: 600;">
+                ⏳ Packaged &bull; Queued for Upcoming Village Trek
+              </span>
+            </div>
+
+            <p style="font-size: 12px; font-style: italic; color: #d4d4d8; background: #121215; padding: 8px 10px; border-radius: 6px; margin-bottom: 10px;">
+              Your Dedication: "May highland children study with bright lights and joy."
+            </p>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-family: monospace; color: #71717a; border-top: 1px solid #27272a; padding-top: 8px;">
+              <span>Your TX: <strong style="color: #38bdf8;">0x8a92f03c4de19b...</strong></span>
+              <span style="color: #a1a1aa; font-size: 11px;">Monks will upload photo upon field delivery</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VIEW 3: MONK STEWARD PORTAL -->
+    <div id="tab-steward" class="view-panel">
+      <div class="action-banner" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #a7f3d0;">
+        <div><strong>🧘 Monk Steward Mode:</strong> You have verified administrative access (Monastery Key: 1080).</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <!-- Action 1: Upload New Package -->
+        <div style="background: #202024; border: 1px solid #2e2e33; border-radius: 12px; padding: 16px;">
+          <h3 style="font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <span>📦</span> + Create New Charity Package
+          </h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Define items, set target quota, and list for public donation.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+            <div>
+              <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Package Title</label>
+              <input type="text" value="Flood Relief Rice & Water Purifiers" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Unit Price ($)</label>
+                <input type="number" value="30" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+              </div>
+              <div>
+                <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Target Quantity</label>
+                <input type="number" value="100" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Included Items (comma separated)</label>
+              <input type="text" value="10kg Rice, Water Straw Filter, Canned Beans" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+            </div>
+            <button style="padding: 10px; background: var(--amber); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 6px;">
+              Publish Charity Package to Sanctuary
+            </button>
+          </div>
+        </div>
+
+        <!-- Action 2: Upload Proof of Giving -->
+        <div style="background: #202024; border: 1px solid #2e2e33; border-radius: 12px; padding: 16px;">
+          <h3 style="font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <span>📸</span> Upload Proof of Giving
+          </h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Attach field delivery photo, record recipient notes, and sign on-chain.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+            <div>
+              <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Select Active Package</label>
+              <select style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+                <option>Winter Warmth &amp; Rice Kit (22 Pending Delivery)</option>
+                <option>Highland Student Study Pack (30 Pending Delivery)</option>
+              </select>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <div>
+                <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Units Distributed</label>
+                <input type="number" value="22" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+              </div>
+              <div>
+                <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Village / Location</label>
+                <input type="text" value="Dong Van Valley" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff;">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; color: #a1a1aa; margin-bottom: 4px;">Field Photo Attachment</label>
+              <div style="border: 1px dashed #444; border-radius: 6px; padding: 12px; text-align: center; color: #a1a1aa; background: #121215; cursor: pointer;">
+                📷 Click or Drag Delivery Photos Here
+              </div>
+            </div>
+            <button style="padding: 10px; background: var(--emerald); color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 6px;">
+              ⛓️ Seal &amp; Record Proof On-Chain
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+
+<!-- Interactive Buy Modal -->
+<div id="buy-modal" class="modal-overlay">
+  <div class="modal-box">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 id="modal-title" style="font-size: 17px; color: #fff;">Sponsor Charity Package</h3>
+      <button onclick="closeBuyModal()" style="background: transparent; border: none; color: #aaa; font-size: 20px; cursor: pointer;">&times;</button>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="font-size: 12px; color: #a1a1aa; display: block; margin-bottom: 4px;">Select Quantity</label>
+      <div style="display: flex; gap: 8px;">
+        <button class="tag" style="padding: 8px 14px; font-size: 13px; cursor: pointer;" onclick="setUnits(1)">1 Kit ($25)</button>
+        <button class="tag" style="padding: 8px 14px; font-size: 13px; cursor: pointer;" onclick="setUnits(2)">2 Kits ($50)</button>
+        <button class="tag" style="padding: 8px 14px; font-size: 13px; cursor: pointer;" onclick="setUnits(5)">5 Kits ($125)</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label style="font-size: 12px; color: #a1a1aa; display: block; margin-bottom: 4px;">Your Name / Dedication</label>
+      <input id="donor-name" type="text" value="Devotee Nguyen" style="width: 100%; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff; font-size: 13px;">
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <label style="font-size: 12px; color: #a1a1aa; display: block; margin-bottom: 4px;">Prayer Intention Note</label>
+      <textarea style="width: 100%; height: 60px; background: #121215; border: 1px solid #333; padding: 8px; border-radius: 6px; color: #fff; font-size: 13px;">Peace, happiness, and good health for those in need.</textarea>
+    </div>
+
+    <button onclick="executeDemoPurchase()" style="width: 100%; padding: 12px; background: var(--amber); color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer;">
+      Confirm Offering &bull; Generate On-Chain TX
+    </button>
+  </div>
+</div>
+
+<!-- Success Modal with Hash -->
+<div id="success-modal" class="modal-overlay">
+  <div class="modal-box" style="text-align: center;">
+    <div style="font-size: 40px; margin-bottom: 10px;">🌸</div>
+    <h3 style="font-size: 18px; color: #fbbf24; margin-bottom: 6px;">Offering Blessed &amp; Recorded</h3>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">Your charity package purchase has been broadcast and assigned an immutable on-chain hash.</p>
+    
+    <div style="background: #121215; border: 1px solid #27272a; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-family: monospace; font-size: 12px; color: #38bdf8; word-break: break-all;">
+      TX Hash: 0x8a92f03c4de19b22a0914bf689e471<br>
+      <span style="color: #a1a1aa; font-size: 11px;">Status: Awaiting Monk Field Distribution Proof</span>
+    </div>
+
+    <button onclick="closeSuccessAndShowProof()" style="width: 100%; padding: 10px; background: #27272a; color: #fff; border: 1px solid #3f3f46; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer;">
+      View in Proof Explorer ➔
+    </button>
+  </div>
+</div>
+
+<script>
+  let currentPackageIdx = 0;
+  const totalPackages = 3;
+
+  function updateCarousel() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    slides.forEach((slide, idx) => {
+      slide.style.display = idx === currentPackageIdx ? 'block' : 'none';
+    });
+
+    // update dots
+    const dotsContainer = document.getElementById('carousel-dots');
+    if (dotsContainer) {
+      const dots = dotsContainer.querySelectorAll('span');
+      dots.forEach((dot, idx) => {
+        if (idx === currentPackageIdx) {
+          dot.style.width = '24px';
+          dot.style.borderRadius = '4px';
+          dot.style.background = 'var(--amber)';
+        } else {
+          dot.style.width = '8px';
+          dot.style.borderRadius = '40%';
+          dot.style.background = '#3f3f46';
+        }
+      });
+    }
+
+    const counter = document.getElementById('carousel-counter');
+    if (counter) {
+      counter.innerText = `Package ${currentPackageIdx + 1} of ${totalPackages}`;
+    }
+  }
+
+  function nextPackage() {
+    currentPackageIdx = (currentPackageIdx + 1) % totalPackages;
+    updateCarousel();
+  }
+
+  function prevPackage() {
+    currentPackageIdx = (currentPackageIdx - 1 + totalPackages) % totalPackages;
+    updateCarousel();
+  }
+
+  function goToPackage(idx) {
+    currentPackageIdx = idx;
+    updateCarousel();
+  }
+
+  // Swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const carouselEl = document.getElementById('package-carousel');
+  if (carouselEl) {
+    carouselEl.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    carouselEl.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    }, false);
+  }
+
+  function handleSwipe() {
+    if (touchEndX < touchStartX - 40) {
+      nextPackage();
+    }
+    if (touchEndX > touchStartX + 40) {
+      prevPackage();
+    }
+  }
+
+  // Proof Explorer Sub-Tabs
+  function switchProofSubTab(tab) {
+    const campView = document.getElementById('proof-campaigns-view');
+    const purchView = document.getElementById('proof-purchases-view');
+    const campBtn = document.getElementById('subtab-campaigns-btn');
+    const purchBtn = document.getElementById('subtab-purchases-btn');
+
+    if (tab === 'campaigns') {
+      campView.style.display = 'block';
+      purchView.style.display = 'none';
+      campBtn.style.background = '#27272a';
+      campBtn.style.color = '#fff';
+      purchBtn.style.background = 'transparent';
+      purchBtn.style.color = 'var(--text-muted)';
+    } else {
+      campView.style.display = 'none';
+      purchView.style.display = 'block';
+      purchBtn.style.background = '#27272a';
+      purchBtn.style.color = '#fff';
+      campBtn.style.background = 'transparent';
+      campBtn.style.color = 'var(--text-muted)';
+    }
+  }
+
+  // Toggle Campaign Details Accordion
+  function toggleCampaignDetails(campId) {
+    const details = document.getElementById(campId + '-details');
+    const arrow = document.getElementById(campId + '-arrow');
+    if (!details) return;
+
+    if (details.style.display === 'none' || !details.style.display) {
+      details.style.display = 'block';
+      if (arrow) {
+        arrow.innerText = '▲ Expanded';
+        arrow.style.color = 'var(--amber-light)';
+      }
+    } else {
+      details.style.display = 'none';
+      if (arrow) {
+        arrow.innerText = '▼ Click to Expand';
+        arrow.style.color = 'var(--text-muted)';
+      }
+    }
+  }
+
+  // Campaign 1 Heartfelt Photo Carousel (Background slides)
+  let currentCamp1Photo = 0;
+  function updateCamp1Photo() {
+    const slides = document.querySelectorAll('.c1-bg-slide');
+    slides.forEach((s, idx) => {
+      s.style.display = idx === currentCamp1Photo ? 'flex' : 'none';
+    });
+    const indicator = document.getElementById('camp1-photo-indicator');
+    if (indicator) {
+      indicator.innerText = `📸 ${currentCamp1Photo + 1} / ${slides.length}`;
+    }
+  }
+
+  function nextCampPhoto(campNum, total) {
+    currentCamp1Photo = (currentCamp1Photo + 1) % total;
+    updateCamp1Photo();
+  }
+
+  function prevCampPhoto(campNum, total) {
+    currentCamp1Photo = (currentCamp1Photo - 1 + total) % total;
+    updateCamp1Photo();
+  }
+
+  // Photo gallery swipe gesture on background
+  const camp1Carousel = document.getElementById('camp1-bg-carousel');
+  if (camp1Carousel) {
+    let pStartX = 0;
+    let pEndX = 0;
+    camp1Carousel.addEventListener('touchstart', e => {
+      pStartX = e.changedTouches[0].screenX;
+    }, false);
+    camp1Carousel.addEventListener('touchend', e => {
+      pEndX = e.changedTouches[0].screenX;
+      if (pEndX < pStartX - 40) nextCampPhoto(1, 4);
+      if (pEndX > pStartX + 40) prevCampPhoto(1, 4);
+    }, false);
+  }
+
+  // Mutually Exclusive Overlay Toggling (Details vs. Comments)
+  function toggleOverlay(campId, type) {
+    const detailsPanel = document.getElementById(campId + '-panel-details');
+    const commentsPanel = document.getElementById(campId + '-panel-comments');
+    const detailsBtn = document.getElementById('btn-icon-details-' + campId);
+    const commentBtn = document.getElementById('btn-icon-comment-' + campId);
+
+    if (type === 'details') {
+      const isAlreadyOpen = detailsPanel && detailsPanel.style.display !== 'none';
+      if (isAlreadyOpen) {
+        // Close details
+        if (detailsPanel) detailsPanel.style.display = 'none';
+        if (detailsBtn) detailsBtn.style.background = 'rgba(24, 24, 27, 0.85)';
+      } else {
+        // Open details, close comments
+        if (detailsPanel) detailsPanel.style.display = 'block';
+        if (commentsPanel) commentsPanel.style.display = 'none';
+        if (detailsBtn) detailsBtn.style.background = 'var(--amber)';
+        if (commentBtn) commentBtn.style.background = 'rgba(24, 24, 27, 0.85)';
+      }
+    } else if (type === 'comments') {
+      const isAlreadyOpen = commentsPanel && commentsPanel.style.display !== 'none';
+      if (isAlreadyOpen) {
+        // Close comments
+        if (commentsPanel) commentsPanel.style.display = 'none';
+        if (commentBtn) commentBtn.style.background = 'rgba(24, 24, 27, 0.85)';
+      } else {
+        // Open comments, close details
+        if (commentsPanel) commentsPanel.style.display = 'flex';
+        if (detailsPanel) detailsPanel.style.display = 'none';
+        if (commentBtn) commentBtn.style.background = 'var(--amber)';
+        if (detailsBtn) detailsBtn.style.background = 'rgba(24, 24, 27, 0.85)';
+      }
+    }
+  }
+
+  function closeOverlays(campId) {
+    const detailsPanel = document.getElementById(campId + '-panel-details');
+    const commentsPanel = document.getElementById(campId + '-panel-comments');
+    const detailsBtn = document.getElementById('btn-icon-details-' + campId);
+    const commentBtn = document.getElementById('btn-icon-comment-' + campId);
+
+    if (detailsPanel) detailsPanel.style.display = 'none';
+    if (commentsPanel) commentsPanel.style.display = 'none';
+    if (detailsBtn) detailsBtn.style.background = 'rgba(24, 24, 27, 0.85)';
+    if (commentBtn) commentBtn.style.background = 'rgba(24, 24, 27, 0.85)';
+  }
+
+  // Add in-box comment
+  function addComment(campId) {
+    const input = document.getElementById(campId + '-new-comment');
+    const list = document.getElementById(campId + '-comment-list');
+    const countEl = document.getElementById(campId + '-comment-count');
+    if (!input || !input.value.trim() || !list) return;
+
+    const commentDiv = document.createElement('div');
+    commentDiv.style.cssText = 'background: #1e1e24; border: 1px solid #2e2e33; border-radius: 8px; padding: 10px;';
+    commentDiv.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-size: 12px; font-weight: 700; color: #60a5fa;">🙏 Devotee (You)</span>
+        <span style="font-size: 10px; color: #71717a;">Just now</span>
+      </div>
+      <p style="font-size: 12px; color: #d4d4d8; margin: 0;">${input.value.trim()}</p>
+    `;
+    list.appendChild(commentDiv);
+    input.value = '';
+
+    if (countEl) {
+      const current = parseInt(countEl.innerText) || 3;
+      countEl.innerText = current + 1;
+    }
+  }
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function openBuyModal(title, price) {
+    document.getElementById('modal-title').innerText = 'Sponsor ' + title;
+    document.getElementById('buy-modal').classList.add('open');
+  }
+
+  function closeBuyModal() {
+    document.getElementById('buy-modal').classList.remove('open');
+  }
+
+  function setUnits(units) {
+    // demo trigger
+  }
+
+  function executeDemoPurchase() {
+    closeBuyModal();
+    document.getElementById('success-modal').classList.add('open');
+  }
+
+  function closeSuccessAndShowProof() {
+    document.getElementById('success-modal').classList.remove('open');
+    const proofTabBtn = document.querySelectorAll('.tab-btn')[1];
+    switchTab('tab-proof', proofTabBtn);
+  }
+</script>
+
+</body>
+</html>
