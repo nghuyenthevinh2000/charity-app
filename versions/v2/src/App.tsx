@@ -12,7 +12,9 @@ export function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('market');
   const [initialProofId, setInitialProofId] = useState<string | undefined>(undefined);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
-  const { isStewardUnlocked, resetStore } = useMonasteryStore();
+  const { isStewardUnlocked } = useMonasteryStore();
+
+
 
   const currentRole: AppRole = activeTab === 'steward' ? 'steward' : 'devotee';
 
@@ -51,8 +53,8 @@ export function AppContent() {
           currentRole={currentRole}
           onSelectRole={handleSelectRole}
           onRequestStewardUnlock={handleRequestStewardUnlock}
-          onResetStore={resetStore}
         />
+
 
         <main className="flex-1 overflow-y-auto pb-6">
           {activeTab === 'market' && (

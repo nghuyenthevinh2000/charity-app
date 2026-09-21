@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Lock, Check, RotateCcw } from 'lucide-react';
+import { ChevronDown, Lock, Check } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import { useMonasteryStore } from '../../context/MonasteryStore';
 
@@ -9,17 +9,15 @@ export interface HeaderProps {
   currentRole?: AppRole;
   onSelectRole?: (role: AppRole) => void;
   onRequestStewardUnlock?: () => void;
-  onResetStore?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentRole = 'devotee',
   onSelectRole,
   onRequestStewardUnlock,
-  onResetStore,
 }) => {
   const { t, language, setLanguage } = useTranslation();
-  const { isStewardUnlocked, packages, proofBatches, resetStore } = useMonasteryStore();
+  const { isStewardUnlocked, packages, proofBatches } = useMonasteryStore();
   const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
   const roleMenuRef = useRef<HTMLDivElement>(null);
 
@@ -37,14 +35,6 @@ export const Header: React.FC<HeaderProps> = ({
   const devoteeLabel = t('common.devoteeRole');
   const stewardLabel = t('common.stewardRole');
   const activeRoleLabel = currentRole === 'steward' ? stewardLabel : devoteeLabel;
-
-  const handleReset = () => {
-    if (onResetStore) {
-      onResetStore();
-    } else {
-      resetStore();
-    }
-  };
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-parchment-300 px-3 py-2.5 flex items-center justify-between shadow-2xs">
@@ -88,21 +78,10 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Right Controls: Demo Reset, Language pill & Role pill */}
+      {/* Right Controls: Language pill & Role pill */}
       <div className="flex items-center gap-1.5">
-        {/* Demo Reset Button */}
-        <button
-          type="button"
-          onClick={handleReset}
-          className="flex items-center gap-1 px-2 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-full text-xs font-medium border border-stone-300 transition-colors"
-          title="Reset Demo Data"
-          aria-label={t('common.demoReset') || 'Demo Reset'}
-        >
-          <RotateCcw className="w-3 h-3 text-stone-500" />
-          <span className="hidden sm:inline">{t('common.demoReset') || 'Reset'}</span>
-        </button>
-
         {/* Language switcher pill [🇻🇳 VI | 🇬🇧 EN] */}
+
         <div
           className="flex items-center bg-parchment-200 rounded-full p-0.5 border border-parchment-300"
           role="group"

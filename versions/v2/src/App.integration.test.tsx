@@ -79,8 +79,8 @@ describe('V2 End-to-End Integration Tests', () => {
     });
   });
 
-  describe('Language Switcher & Demo Reset Flow', () => {
-    it('switches languages and resets store demo data successfully', () => {
+  describe('Language Switcher Flow', () => {
+    it('switches languages between English and Vietnamese successfully', () => {
       render(<App />);
 
       expect(screen.getByText('Lotus Grove Sanctuary')).toBeInTheDocument();
@@ -90,11 +90,6 @@ describe('V2 End-to-End Integration Tests', () => {
       fireEvent.click(viBtn);
       expect(screen.getByText('Tịnh Xá Sen Vàng')).toBeInTheDocument();
 
-      // Click Demo Reset
-      const resetBtn = screen.getByRole('button', { name: /Đặt Lại|Demo Reset/i });
-      fireEvent.click(resetBtn);
-      expect(screen.getByText('Tịnh Xá Sen Vàng')).toBeInTheDocument();
-
       // Switch back to English
       const enBtn = screen.getByRole('button', { name: /English/i });
       fireEvent.click(enBtn);
@@ -102,3 +97,4 @@ describe('V2 End-to-End Integration Tests', () => {
     });
   });
 });
+
