@@ -88,6 +88,24 @@ export const initialFundsVI: Fund[] = [
     supportersCount: 19,
     icon: 'BookOpen',
     color: '#78350F'
+  },
+  {
+    id: 'dog-rescue',
+    name: 'Quỹ Cứu Hộ & Y Tế Chó Lang Thang',
+    description: 'Tiếp nhận, cứu hộ khẩn cấp, chữa trị y tế, tiêm phòng dại và chăm sóc nuôi dưỡng trọn đời cho các chú chó bị bỏ rơi hoặc bị thương quanh tịnh xá.',
+    category: 'special-drive',
+    targetAmount: 2000,
+    currentBalance: 1350,
+    deadline: '2026-10-31',
+    daysRemaining: 39,
+    verifiedStatus: {
+      isVerified: true,
+      attestedBy: 'Hòa Thượng Thích Tâm Đức',
+      badgeLabel: 'Chứng thực bởi Thầy Trụ Trì ✓'
+    },
+    supportersCount: 34,
+    icon: 'Heart',
+    color: '#C2410C'
   }
 ];
 
@@ -263,6 +281,34 @@ export const initialDonationsVI: DonationInput[] = [
       blessingStatus: 'queued',
       rejoiceCount: 6,
       comments: []
+    }
+  },
+  {
+    id: 'd8',
+    txHash: '0x9a7b2c5e',
+    donorName: 'Phật Tử Diệu Tâm',
+    isAnonymous: false,
+    amount: 100,
+    fundId: 'dog-rescue',
+    date: '2026-09-17',
+    prayerIntention: {
+      id: 'p8',
+      category: 'peace',
+      dedicationText: 'Nguyện đem công đức này hồi hướng cho muôn loài chúng sinh, đặc biệt là các chú chó mèo cơ nhỡ sớm tìm được mái ấm bình an và yêu thương.',
+      isPublic: true,
+      blessingStatus: 'blessed',
+      blessedAt: '2026-09-18T06:00:00Z',
+      rejoiceCount: 16,
+      comments: [
+        {
+          id: 'c10',
+          authorName: 'Thầy Trí Giác',
+          authorRole: 'monk',
+          monkTitle: 'Đại Đức Thích Trí Giác',
+          commentText: 'Mọi sinh mệnh đều trân quý và xứng đáng nhận được lòng từ bi. Tịnh xá tri ân tấm lòng bao la của Phật tử.',
+          createdAt: '2026-09-18T07:15:00Z'
+        }
+      ]
     }
   }
 ];

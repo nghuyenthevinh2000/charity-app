@@ -45,6 +45,10 @@
     "education": {
       "name": "Dharma Texts & Sangha Education",
       "description": "Preserving and printing sacred Buddhist sutras, translation efforts, and novice monk education."
+    },
+    "dog-rescue": {
+      "name": "Sanctuary Stray Dog Rescue & Medical Fund",
+      "description": "Emergency rescue operations, veterinary care & surgeries, vaccination, and lifelong compassionate shelter for abandoned dogs around the mountain sanctuary."
     }
   },
   "sanctuary": {

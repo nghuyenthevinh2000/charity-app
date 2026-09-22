@@ -206,10 +206,11 @@ describe('SanctuaryHome Tab', () => {
     expect(screen.getByText('Monastery Healthcare & Medicine')).toBeInTheDocument();
     expect(screen.getByText('Monastery Solar & Clean Water Utilities')).toBeInTheDocument();
     expect(screen.getByText('Dharma Texts & Sangha Education')).toBeInTheDocument();
+    expect(screen.getByText('Sanctuary Stray Dog Rescue & Medical Fund')).toBeInTheDocument();
 
     // Check offering buttons exist for each fund
     const offerButtons = screen.getAllByRole('button', { name: /Offer to this Cause/i });
-    expect(offerButtons.length).toBe(4);
+    expect(offerButtons.length).toBe(5);
 
     // Clicking first button calls onOffer with first fund ID
     fireEvent.click(offerButtons[0]);
@@ -229,6 +230,6 @@ describe('SanctuaryHome Tab', () => {
     expect(screen.getByText(/Các Quỹ Thiện Nguyện Hiện Tại/i)).toBeInTheDocument();
 
     const viOfferButtons = screen.getAllByRole('button', { name: /Cúng Dường Quỹ Này/i });
-    expect(viOfferButtons.length).toBe(4);
+    expect(viOfferButtons.length).toBe(5);
   });
 });

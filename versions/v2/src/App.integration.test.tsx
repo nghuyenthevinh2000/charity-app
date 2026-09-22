@@ -15,7 +15,7 @@ describe('V2 End-to-End Integration Tests', () => {
       render(<App />);
 
       // --- 1. BROWSE CHARITY PACKAGES (TAB 1) ---
-      expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+      expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Sponsor This Package/i })).toBeInTheDocument();
 
       // Click "Sponsor This Package"
@@ -24,7 +24,7 @@ describe('V2 End-to-End Integration Tests', () => {
       // --- 2. COMPLETE SPONSORSHIP MODAL ---
       const modalDialog = screen.getByRole('dialog');
       expect(modalDialog).toBeInTheDocument();
-      expect(within(modalDialog).getByText(/Sponsor Winter Warmth & Rice Kit/i)).toBeInTheDocument();
+      expect(within(modalDialog).getByText(/Sponsor Compassionate Canine Rescue & Care/i)).toBeInTheDocument();
 
       // --- 3. JUMP TO PROOF EXPLORER (TAB 2) ---
       fireEvent.click(within(modalDialog).getByRole('button', { name: /Close/i }));

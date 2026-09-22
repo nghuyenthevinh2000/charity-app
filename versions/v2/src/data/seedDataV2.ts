@@ -2,6 +2,22 @@ import { CharityPackage, GivingProofBatch, PackagePurchase } from '../types';
 
 export const initialPackages: CharityPackage[] = [
   {
+    id: 'pkg-dog-rescue',
+    title: 'Compassionate Canine Rescue & Care',
+    description: 'Providing nourishing food, urgent veterinary surgery, rabies vaccination, and warm sheltering for stray dogs rescued from harsh mountain environments.',
+    category: 'emergency',
+    unitPrice: 20,
+    targetUnits: 100,
+    fundedUnits: 55,
+    distributedUnits: 35,
+    itemsIncluded: ['15kg Nutritious Dry Dog Food', 'Rabies & 5-in-1 Vaccine Dose', 'Flea & Deworming Treatment', 'Warm Fleece Kennel Bedding'],
+    coverImageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=900&auto=format&fit=crop&q=80',
+    bannerGradient: 'from-amber-800 via-orange-700 to-stone-900',
+    createdByMonk: 'Ven. Thich Tri Giac',
+    status: 'active',
+    createdAt: '2026-09-10T11:00:00Z',
+  },
+  {
     id: 'pkg-winter-warmth',
     title: 'Winter Warmth & Rice Kit',
     description: 'Providing a 10kg sack of highland jasmine rice, thermal fleece blanket, and woolen beanie for families facing sub-zero winter temperatures in Ha Giang.',
@@ -68,6 +84,52 @@ export const initialPackages: CharityPackage[] = [
 ];
 
 export const initialProofBatches: GivingProofBatch[] = [
+  {
+    id: 'proof-dog-rescue-batch-1',
+    packageId: 'pkg-dog-rescue',
+    packageTitle: 'Compassionate Canine Rescue & Care',
+    unitsDistributed: 35,
+    location: 'Monastery Animal Haven, Ha Giang Outpost',
+    missionReport: 'Monastery stewards and veterinary volunteers administered 35 rescue care packages including vaccinations, nutritious meals, and flea treatments to rescued dogs sheltered at the outpost.',
+    heartfeltPhotos: [
+      {
+        id: 'photo-d1',
+        url: 'https://images.unsplash.com/photo-1534361960057-19889db9621e?w=900&auto=format&fit=crop&q=80',
+        caption: 'Rescued golden puppy receiving warm nourishment and clean water.',
+        beneficiaryNote: 'Found abandoned near the mountain pass, now recuperating with strength and joy.',
+      },
+      {
+        id: 'photo-d2',
+        url: 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=900&auto=format&fit=crop&q=80',
+        caption: 'Volunteer veterinarian providing medical examination and rabies vaccination.',
+        beneficiaryNote: '35 rescued dogs successfully vaccinated and protected against seasonal ailments.',
+      },
+    ],
+    distributionDate: '2026-09-19',
+    attestingMonk: 'Ven. Thich Tri Giac',
+    distributionTxHash: '0x9d4e7b1a305f6e8d2c4b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a108f2d',
+    merkleRootHash: 'sha256:8f0a2c4e6b8d0f2a4c6e8b0d2f4a6c8e0b2d4f6a8c0e7c9e1b3d5f7a902b4d6e',
+    blockNumber: 18995,
+    comments: [
+      {
+        id: 'cmt-4',
+        campaignId: 'proof-dog-rescue-batch-1',
+        authorName: 'Ven. Thich Tri Giac',
+        authorRole: 'monk',
+        monkBadge: 'Compassion Steward',
+        commentText: 'All sentient beings seek happiness and freedom from suffering. Gratitude to all kind benefactors.',
+        createdAt: '2026-09-19T17:30:00Z',
+      },
+      {
+        id: 'cmt-5',
+        campaignId: 'proof-dog-rescue-batch-1',
+        authorName: 'Dieu Tam',
+        authorRole: 'devotee',
+        commentText: 'So touched to see these sweet souls safe, fed, and healed. Sadhu lành thay!',
+        createdAt: '2026-09-20T09:12:00Z',
+      },
+    ],
+  },
   {
     id: 'proof-winter-batch-1',
     packageId: 'pkg-winter-warmth',
@@ -192,5 +254,21 @@ export const initialPurchases: PackagePurchase[] = [
     timestamp: '2026-09-17T11:45:00Z',
     fulfillmentStatus: 'fulfilled_with_proof',
     linkedProofBatchId: 'proof-student-batch-1',
+  },
+  {
+    id: 'pur-103',
+    packageId: 'pkg-dog-rescue',
+    packageTitle: 'Compassionate Canine Rescue & Care',
+    unitsBought: 2,
+    unitPrice: 20,
+    totalAmount: 40,
+    donorName: 'Dieu Tam',
+    isAnonymous: false,
+    dedicationNote: 'For the well-being, nourishment, and healing of all vulnerable shelter animals.',
+    txHash: '0x6c72f258e72bbd94c78d523ecab710a9f0227bb30a1de458c031d6837be70993',
+    blockNumber: 18972,
+    timestamp: '2026-09-18T14:10:00Z',
+    fulfillmentStatus: 'fulfilled_with_proof',
+    linkedProofBatchId: 'proof-dog-rescue-batch-1',
   },
 ];

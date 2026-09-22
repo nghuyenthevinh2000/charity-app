@@ -18,15 +18,15 @@ describe('ProofExplorer (Tab 2)', () => {
   it('renders screen-filling campaign proof card with background photo and details without free-scroll nav bar', () => {
     renderWithProviders(<ProofExplorer />);
     // Top of image is clean; details are accessible via details toggle
-    expect(screen.getByRole('article', { name: 'Winter Warmth & Rice Kit' })).toBeInTheDocument();
-    expect(screen.getByText(/Handing the winter warmth bundle to grandmother/i)).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Compassionate Canine Rescue & Care' })).toBeInTheDocument();
+    expect(screen.getByText(/Rescued golden puppy receiving warm nourishment/i)).toBeInTheDocument();
 
     // Toggle details to verify moved information
     const infoBtn = screen.getByRole('button', { name: /toggle proof details/i });
     fireEvent.click(infoBtn);
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
-    expect(screen.getByText(/Dong Van Highland Village/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/Block #18942/i)[0]).toBeInTheDocument();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
+    expect(screen.getByText(/Monastery Animal Haven/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Block #18995/i)[0]).toBeInTheDocument();
 
     // Sub-nav is removed per user request
     expect(screen.queryByRole('navigation', { name: /proof explorer navigation/i })).not.toBeInTheDocument();
@@ -43,14 +43,14 @@ describe('ProofExplorer (Tab 2)', () => {
 
     expect(dots[0]).toHaveAttribute('aria-selected', 'false');
     expect(dots[1]).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('article', { name: 'Highland Student Study Pack' })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Winter Warmth & Rice Kit' })).toBeInTheDocument();
 
     const prevCampaignBtn = screen.getByRole('button', { name: /previous campaign/i });
     fireEvent.click(prevCampaignBtn);
 
     expect(dots[0]).toHaveAttribute('aria-selected', 'true');
     expect(dots[1]).toHaveAttribute('aria-selected', 'false');
-    expect(screen.getByRole('article', { name: 'Winter Warmth & Rice Kit' })).toBeInTheDocument();
+    expect(screen.getByRole('article', { name: 'Compassionate Canine Rescue & Care' })).toBeInTheDocument();
   });
 
   it('toggles Details 50% drawer when info icon is clicked and collapses on second click', () => {
@@ -103,17 +103,17 @@ describe('ProofExplorer (Tab 2)', () => {
 
   it('navigates through heartfelt photos using next and previous buttons', () => {
     renderWithProviders(<ProofExplorer />);
-    expect(screen.getByText(/Handing the winter warmth bundle to grandmother/i)).toBeInTheDocument();
+    expect(screen.getByText(/Rescued golden puppy receiving warm nourishment/i)).toBeInTheDocument();
 
     const nextBtn = screen.getAllByRole('button', { name: /next photo/i })[0];
     fireEvent.click(nextBtn);
 
-    expect(screen.getByText(/Monks and villagers unloading 60 sacks of rice/i)).toBeInTheDocument();
+    expect(screen.getByText(/Volunteer veterinarian providing medical examination/i)).toBeInTheDocument();
 
     const prevBtn = screen.getAllByRole('button', { name: /previous photo/i })[0];
     fireEvent.click(prevBtn);
 
-    expect(screen.getByText(/Handing the winter warmth bundle to grandmother/i)).toBeInTheDocument();
+    expect(screen.getByText(/Rescued golden puppy receiving warm nourishment/i)).toBeInTheDocument();
   });
 
   it('navigates from personal purchase to public proof card when clicking view photo proof', () => {
@@ -196,6 +196,15 @@ describe('ProofExplorer (Tab 2)', () => {
 
     expect(screen.getByRole('article', { name: 'Highland Student Study Pack' })).toBeInTheDocument();
     const dots = screen.getAllByRole('tab', { name: /Go to mission/i });
-    expect(dots[1]).toHaveAttribute('aria-selected', 'true');
+    expect(dots[2]).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('handles initialProofId targeting proof-dog-rescue-batch-1', async () => {
+    renderWithProviders(<ProofExplorer initialProofId="proof-dog-rescue-batch-1" />);
+
+    expect(screen.getByRole('article', { name: 'Compassionate Canine Rescue & Care' })).toBeInTheDocument();
+    expect(screen.getByText(/Rescued golden puppy receiving warm nourishment/i)).toBeInTheDocument();
+    const dots = screen.getAllByRole('tab', { name: /Go to mission/i });
+    expect(dots[0]).toHaveAttribute('aria-selected', 'true');
   });
 });

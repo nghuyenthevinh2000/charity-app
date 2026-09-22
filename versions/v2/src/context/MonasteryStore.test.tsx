@@ -309,7 +309,7 @@ describe('MonasteryStore', () => {
     });
 
     expect(result.current.funds.some((f) => f.name === 'Temporary Drive')).toBe(false);
-    expect(result.current.funds.length).toBe(4);
+    expect(result.current.funds.length).toBe(5);
   });
 });
 
@@ -469,7 +469,7 @@ describe('MonasteryStore V2 Package & Proof Operations', () => {
     });
 
     expect(result.current.packages.some((p) => p.title === 'Temporary Test Package')).toBe(false);
-    expect(result.current.packages.length).toBe(4);
+    expect(result.current.packages.length).toBe(5);
     expect(result.current.userPurchases.length).toBe(0);
   });
 });

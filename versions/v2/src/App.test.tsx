@@ -21,7 +21,7 @@ describe('Charity App V2 Shell & Navigation', () => {
     render(<App />);
 
     // Default tab is packages
-    expect(screen.getByText(/Winter Warmth & Rice Kit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Compassionate Canine Rescue & Care/i)).toBeInTheDocument();
 
     // Switch to Proof Explorer
     fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));
@@ -36,13 +36,13 @@ describe('Charity App V2 Shell & Navigation', () => {
   it('sponsors a package, completes purchase, and jumps to Proof Explorer', () => {
     render(<App />);
 
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
     const sponsorBtn = screen.getByRole('button', { name: /Sponsor This Package/i });
     fireEvent.click(sponsorBtn);
 
     // Modal opens
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText(/Sponsor Winter Warmth & Rice Kit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sponsor Compassionate Canine Rescue & Care/i)).toBeInTheDocument();
 
     // Confirm purchase
     fireEvent.click(screen.getByRole('button', { name: /Confirm Sponsorship/i }));

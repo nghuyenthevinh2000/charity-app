@@ -22,11 +22,11 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     renderWithProviders(<MarketplaceCarousel />);
 
     // Shows package title of first package
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
     // Does not show second package in active view
-    expect(screen.queryByText('Highland Student Study Pack')).not.toBeInTheDocument();
-    // Indicator shows "Package 1 of 4"
-    expect(screen.getByText(/Package 1 of 4/i)).toBeInTheDocument();
+    expect(screen.queryByText('Winter Warmth & Rice Kit')).not.toBeInTheDocument();
+    // Indicator shows "Package 1 of 5"
+    expect(screen.getByText(/Package 1 of 5/i)).toBeInTheDocument();
   });
 
   it('navigates to next package when next arrow is clicked', () => {
@@ -35,8 +35,8 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     const nextBtn = screen.getByRole('button', { name: /next package/i });
     fireEvent.click(nextBtn);
 
-    expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
-    expect(screen.getByText(/Package 2 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText(/Package 2 of 5/i)).toBeInTheDocument();
   });
 
   it('navigates to previous package when prev arrow is clicked', () => {
@@ -45,9 +45,9 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     const prevBtn = screen.getByRole('button', { name: /previous package/i });
     fireEvent.click(prevBtn);
 
-    // Should wrap to last package (Package 4 of 4)
+    // Should wrap to last package (Package 5 of 5)
     expect(screen.getByText('Clean Mountain Water Filtration Kit')).toBeInTheDocument();
-    expect(screen.getByText(/Package 4 of 4/i)).toBeInTheDocument();
+    expect(screen.getByText(/Package 5 of 5/i)).toBeInTheDocument();
   });
 
   it('navigates when swipe gesture is simulated', () => {
@@ -59,13 +59,13 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     fireEvent.touchStart(swipeArea!, { touches: [{ clientX: 300 }] });
     fireEvent.touchEnd(swipeArea!, { changedTouches: [{ clientX: 100 }] });
 
-    expect(screen.getByText('Highland Student Study Pack')).toBeInTheDocument();
+    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
 
     // Simulate swipe right (prev)
     fireEvent.touchStart(swipeArea!, { touches: [{ clientX: 100 }] });
     fireEvent.touchEnd(swipeArea!, { changedTouches: [{ clientX: 300 }] });
 
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
   });
 
   it('opens purchase modal when Sponsor button is clicked', () => {
@@ -73,8 +73,8 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     const sponsorBtn = screen.getByRole('button', { name: /sponsor this package/i });
     fireEvent.click(sponsorBtn);
 
-    expect(screen.getByText(/Sponsor Winter Warmth & Rice Kit/i)).toBeInTheDocument();
-    expect(screen.getByText(/\$25 per package/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sponsor Compassionate Canine Rescue & Care/i)).toBeInTheDocument();
+    expect(screen.getByText(/\$20 per package/i)).toBeInTheDocument();
   });
 
   it('handles quantity selection, anonymity, and purchasing a package', () => {
@@ -83,14 +83,14 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     fireEvent.click(sponsorBtn);
 
     // Check modal opened
-    expect(screen.getByText(/Sponsor Winter Warmth & Rice Kit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sponsor Compassionate Canine Rescue & Care/i)).toBeInTheDocument();
 
     // Select preset 2 kits
     const preset2 = screen.getByRole('button', { name: /2 kits/i });
     fireEvent.click(preset2);
 
-    // Total should update to $50
-    expect(screen.getAllByText(/\$50/)[0]).toBeInTheDocument();
+    // Total should update to $40 (2 * $20)
+    expect(screen.getAllByText(/\$40/)[0]).toBeInTheDocument();
 
     // Fill donor name
     const nameInput = screen.getByLabelText(/donor name/i);
@@ -125,8 +125,8 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     fireEvent.touchEnd(swipeArea!, { changedTouches: [{ clientX: 220, clientY: 220 }] });
 
     // Should stay on first package
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
-    expect(screen.queryByText('Highland Student Study Pack')).not.toBeInTheDocument();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
+    expect(screen.queryByText('Winter Warmth & Rice Kit')).not.toBeInTheDocument();
   });
 
   it('aborts gesture on touchCancel without navigating', () => {
@@ -139,7 +139,7 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     fireEvent.touchEnd(swipeArea!, { changedTouches: [{ clientX: 100, clientY: 100 }] });
 
     // Should stay on first package because touchStart was cleared
-    expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
   });
 
   it('navigates to on-chain explorer from receipt action button', () => {
@@ -156,7 +156,7 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     const explorerBtn = screen.getByRole('button', { name: /view in on-chain explorer/i });
     fireEvent.click(explorerBtn);
 
-    expect(mockOpenExplorer).toHaveBeenCalledWith('pkg-winter-warmth');
+    expect(mockOpenExplorer).toHaveBeenCalledWith('pkg-dog-rescue');
   });
 
   it('dismisses modal without navigating when Complete & Return to Sanctuary is clicked', () => {
@@ -176,7 +176,23 @@ describe('MarketplaceCarousel (Tab 1)', () => {
     // Modal is dismissed, staying in carousel without navigating
     expect(screen.queryByText(/Offering Blessed & Recorded/i)).not.toBeInTheDocument();
     expect(mockOpenExplorer).not.toHaveBeenCalled();
+    expect(screen.getByText('Compassionate Canine Rescue & Care')).toBeInTheDocument();
+  });
+
+  it('navigates to and displays the Winter Warmth package as next package', () => {
+    renderWithProviders(<MarketplaceCarousel />);
+
+    const nextBtn = screen.getByRole('button', { name: /next package/i });
+    fireEvent.click(nextBtn);
+
     expect(screen.getByText('Winter Warmth & Rice Kit')).toBeInTheDocument();
+    expect(screen.getByText(/10kg Jasmine Rice/i)).toBeInTheDocument();
+    expect(screen.getByText('$25')).toBeInTheDocument();
+
+    const sponsorBtn = screen.getByRole('button', { name: /sponsor this package/i });
+    fireEvent.click(sponsorBtn);
+
+    expect(screen.getByText(/Sponsor Winter Warmth & Rice Kit/i)).toBeInTheDocument();
   });
 });
 

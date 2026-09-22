@@ -215,7 +215,18 @@ export function MonasteryStoreProvider({
 
   const [packages, setPackagesState] = useState<CharityPackage[]>(() => {
     if (propPackages) return propPackages;
-    return safeGetItem<CharityPackage[]>(STORAGE_KEY_PACKAGES, initialPackages);
+    const stored = safeGetItem<CharityPackage[]>(STORAGE_KEY_PACKAGES, initialPackages);
+    if (Array.isArray(stored)) {
+      const dogPkgInStored = stored.find((p) => p.id === 'pkg-dog-rescue');
+      const seedDog = initialPackages.find((p) => p.id === 'pkg-dog-rescue');
+      if (seedDog && (!dogPkgInStored || stored[0]?.id !== 'pkg-dog-rescue')) {
+        const withoutDog = stored.filter((p) => p.id !== 'pkg-dog-rescue');
+        const reordered = [dogPkgInStored || seedDog, ...withoutDog];
+        safeSetItem(STORAGE_KEY_PACKAGES, reordered);
+        return reordered;
+      }
+    }
+    return stored;
   });
 
   const [purchases, setPurchasesState] = useState<PackagePurchase[]>(() => {
@@ -230,7 +241,18 @@ export function MonasteryStoreProvider({
 
   const [proofBatches, setProofBatchesState] = useState<GivingProofBatch[]>(() => {
     if (propProofBatches) return propProofBatches;
-    return safeGetItem<GivingProofBatch[]>(STORAGE_KEY_PROOF_BATCHES, initialProofBatches);
+    const stored = safeGetItem<GivingProofBatch[]>(STORAGE_KEY_PROOF_BATCHES, initialProofBatches);
+    if (Array.isArray(stored)) {
+      const dogProofInStored = stored.find((p) => p.id === 'proof-dog-rescue-batch-1');
+      const seedDogProof = initialProofBatches.find((p) => p.id === 'proof-dog-rescue-batch-1');
+      if (seedDogProof && (!dogProofInStored || stored[0]?.id !== 'proof-dog-rescue-batch-1')) {
+        const withoutDogProof = stored.filter((p) => p.id !== 'proof-dog-rescue-batch-1');
+        const reordered = [dogProofInStored || seedDogProof, ...withoutDogProof];
+        safeSetItem(STORAGE_KEY_PROOF_BATCHES, reordered);
+        return reordered;
+      }
+    }
+    return stored;
   });
 
   const setFunds = useCallback((newFunds: Fund[] | ((prev: Fund[]) => Fund[])) => {

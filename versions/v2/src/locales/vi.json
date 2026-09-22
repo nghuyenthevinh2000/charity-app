@@ -45,6 +45,10 @@
     "education": {
       "name": "Kinh Điển & Giáo Dục Tăng Ni",
       "description": "Bảo tồn và ấn tống kinh điển Phật giáo, công tác dịch thuật và đào tạo Tăng Ni trẻ."
+    },
+    "dog-rescue": {
+      "name": "Quỹ Cứu Hộ & Y Tế Chó Lang Thang",
+      "description": "Cứu hộ khẩn cấp, phẫu thuật y tế, tiêm phòng dại và chăm sóc nuôi dưỡng trọn đời cho các chú chó cơ nhỡ quanh tịnh xá."
     }
   },
   "sanctuary": {

@@ -35,7 +35,7 @@ describe('App Navigation & Role Switcher (V2 3-Tab Shell)', () => {
     );
 
     // Initial tab is Charity Packages
-    expect(screen.getByText(/Winter Warmth & Rice Kit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Compassionate Canine Rescue & Care/i)).toBeInTheDocument();
 
     // Click Proof Explorer tab
     fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));

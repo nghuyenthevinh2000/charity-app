@@ -75,6 +75,24 @@ export const initialFunds: Fund[] = [
     supportersCount: 19,
     icon: 'BookOpen',
     color: '#78350F'
+  },
+  {
+    id: 'dog-rescue',
+    name: 'Sanctuary Stray Dog Rescue & Medical Fund',
+    description: 'Emergency rescue operations, veterinary care & surgeries, vaccination, and lifelong compassionate shelter for abandoned dogs around the mountain sanctuary.',
+    category: 'special-drive',
+    targetAmount: 2000,
+    currentBalance: 1350,
+    deadline: '2026-10-31',
+    daysRemaining: 39,
+    verifiedStatus: {
+      isVerified: true,
+      attestedBy: 'Abbot Thich Tam Duc',
+      badgeLabel: 'Verified by Abbot ✓'
+    },
+    supportersCount: 34,
+    icon: 'Heart',
+    color: '#C2410C'
   }
 ];
 
@@ -250,6 +268,34 @@ export const initialDonations: DonationInput[] = [
       blessingStatus: 'queued',
       rejoiceCount: 6,
       comments: []
+    }
+  },
+  {
+    id: 'd8',
+    txHash: '0x9a7b2c5e',
+    donorName: 'Devotee Dieu Tam',
+    isAnonymous: false,
+    amount: 100,
+    fundId: 'dog-rescue',
+    date: '2026-09-17',
+    prayerIntention: {
+      id: 'p8',
+      category: 'peace',
+      dedicationText: 'May all animal beings be free from hunger and fear, finding love and sanctuary.',
+      isPublic: true,
+      blessingStatus: 'blessed',
+      blessedAt: '2026-09-18T06:00:00Z',
+      rejoiceCount: 16,
+      comments: [
+        {
+          id: 'c10',
+          authorName: 'Ven. Thich Tri Giac',
+          authorRole: 'monk',
+          monkTitle: 'Ven. Thich Tri Giac',
+          commentText: 'All sentient lives are precious and deserve unconditional loving-kindness.',
+          createdAt: '2026-09-18T07:15:00Z'
+        }
+      ]
     }
   }
 ];
