@@ -1,12 +1,13 @@
 import React from 'react';
-import { ShoppingBag, Camera, Shield } from 'lucide-react';
+import { ShoppingBag, Camera, Shield, User } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 
-export type TabId = 'market' | 'proof' | 'steward';
+export type TabId = 'market' | 'proof' | 'steward' | 'profile';
 
 export interface BottomNavProps {
   activeTab: TabId;
   onTabSelect: (tab: TabId) => void;
+  isStewardUnlocked?: boolean;
 }
 
 interface NavItem {
@@ -15,26 +16,36 @@ interface NavItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const navItems: NavItem[] = [
-  {
-    id: 'market',
-    labelKey: 'common.tabs.market',
-    icon: ShoppingBag,
-  },
-  {
-    id: 'proof',
-    labelKey: 'common.tabs.proof',
-    icon: Camera,
-  },
-  {
-    id: 'steward',
-    labelKey: 'common.tabs.steward',
-    icon: Shield,
-  },
-];
-
-export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, onTabSelect }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({
+  activeTab,
+  onTabSelect,
+  isStewardUnlocked = false,
+}) => {
   const { t } = useTranslation();
+
+  const navItems: NavItem[] = [
+    {
+      id: 'market',
+      labelKey: 'common.tabs.market',
+      icon: ShoppingBag,
+    },
+    {
+      id: 'proof',
+      labelKey: 'common.tabs.proof',
+      icon: Camera,
+    },
+    isStewardUnlocked
+      ? {
+          id: 'steward',
+          labelKey: 'common.tabs.steward',
+          icon: Shield,
+        }
+      : {
+          id: 'profile',
+          labelKey: 'common.tabs.profile',
+          icon: User,
+        },
+  ];
 
   return (
     <nav

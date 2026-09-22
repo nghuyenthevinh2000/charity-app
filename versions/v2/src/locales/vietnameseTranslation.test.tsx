@@ -17,10 +17,10 @@ describe('V2 Vietnamese Translation Full Coverage', () => {
   it('translates marketplace and tabs in Vietnamese', () => {
     render(<App />);
 
-    // Tabs in Vietnamese
+    // Tabs in Vietnamese (Devotee mode shows Hồ Sơ for Tab 3)
     expect(screen.getByRole('button', { name: /Gói Thiện Nguyện/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Quản Sự/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Hồ Sơ/i })).toBeInTheDocument();
   });
 
   it('translates Proof Explorer in Vietnamese', () => {
@@ -34,8 +34,11 @@ describe('V2 Vietnamese Translation Full Coverage', () => {
   it('translates Steward Portal PIN modal in Vietnamese', () => {
     render(<App />);
 
-    // Click Steward tab in Vietnamese mode
-    fireEvent.click(screen.getByRole('button', { name: /Quản Sự/i }));
+    // Click Profile tab in Vietnamese mode
+    fireEvent.click(screen.getByRole('button', { name: /Hồ Sơ/i }));
+
+    // Click Steward login button in ProfileView
+    fireEvent.click(screen.getByRole('button', { name: /Đăng Nhập Quản Sự Chùa/i }));
 
     // PIN modal in Vietnamese
     expect(screen.getByRole('dialog')).toBeInTheDocument();

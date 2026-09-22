@@ -39,9 +39,12 @@ describe('V2 End-to-End Integration Tests', () => {
     it('authenticates monk with PIN, creates new charity package, and verifies in proof explorer', () => {
       render(<App />);
 
-      // --- 1. UNLOCK STEWARD PORTAL (PIN 1080) ---
-      const stewardTab = screen.getByRole('button', { name: /monk steward/i });
-      fireEvent.click(stewardTab);
+      // --- 1. UNLOCK STEWARD PORTAL FROM PROFILE TAB (PIN 1080) ---
+      const profileTab = screen.getByRole('button', { name: /profile/i });
+      fireEvent.click(profileTab);
+
+      const loginBtn = screen.getByRole('button', { name: /Monk Steward Login/i });
+      fireEvent.click(loginBtn);
 
       const pinModal = screen.getByRole('dialog');
       expect(within(pinModal).getByText(/Steward Authentication/i)).toBeInTheDocument();
@@ -79,13 +82,21 @@ describe('V2 End-to-End Integration Tests', () => {
   });
 
   describe('Language Switcher Flow', () => {
-    it('persists and renders Vietnamese language when configured', () => {
+    it('persists and renders Vietnamese language when configured, and switches language in Profile', () => {
       localStorage.setItem('lotus_language', 'vi');
       render(<App />);
 
       expect(screen.getByRole('button', { name: /Gói Thiện Nguyện/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Khám Phá Minh Chứng/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /Quản Sự/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Hồ Sơ/i })).toBeInTheDocument();
+
+      // Open Profile tab and toggle back to English
+      fireEvent.click(screen.getByRole('button', { name: /Hồ Sơ/i }));
+      fireEvent.click(screen.getByRole('button', { name: /English \(EN\)/i }));
+
+      expect(screen.getByRole('button', { name: /Charity Packages/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Proof Explorer/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Profile/i })).toBeInTheDocument();
     });
   });
 });

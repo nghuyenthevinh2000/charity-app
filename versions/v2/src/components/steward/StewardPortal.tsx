@@ -135,17 +135,17 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
 
   // --- UNLOCKED STATE: STEWARD WORKSPACE ---
   return (
-    <div className="flex flex-col w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-6">
+    <div className="flex flex-col w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-5">
       {/* Header & Lock Portal Button */}
-      <div className="flex items-center justify-between border-b border-stone-800 pb-4">
+      <div className="flex items-center justify-between border-b border-stone-200 pb-3.5">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <h1 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <h1 className="text-base sm:text-lg font-bold text-stone-900 tracking-tight leading-snug">
               Monastery Steward Workspace
             </h1>
           </div>
-          <p className="text-xs text-stone-400 mt-0.5">
+          <p className="text-xs text-stone-600 mt-0.5 font-medium">
             Verified Abbot &amp; Monastery Steward Control Panel
           </p>
         </div>
@@ -153,57 +153,57 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
         <button
           type="button"
           onClick={handleLock}
-          className="px-3 py-1.5 rounded-xl border border-stone-700 hover:bg-stone-800 text-stone-300 text-xs font-medium flex items-center gap-1.5 transition-colors"
+          className="px-2.5 py-1.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 text-xs font-medium flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 cursor-pointer"
           aria-label="Lock Portal"
         >
-          <Lock className="w-3.5 h-3.5 text-stone-400" />
+          <Lock className="w-3.5 h-3.5 text-stone-500" />
           <span>Lock Portal</span>
         </button>
       </div>
 
       {/* Verified Monk Banner */}
-      <div className="bg-emerald-950/40 border border-emerald-500/30 rounded-2xl p-3.5 text-xs text-emerald-200 flex items-center justify-between gap-3 shadow-xs">
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-900 flex items-center justify-between gap-3 shadow-2xs">
         <div className="flex items-center gap-2.5">
-          <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
           <div>
-            <strong>🧘 Monk Steward Mode:</strong> You have verified administrative access (Monastery Key: 1080).
+            <strong className="text-emerald-950 font-semibold">🧘 Monk Steward Mode:</strong> You have verified administrative access (Monastery Key: 1080).
           </div>
         </div>
-        <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+        <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
           Signer Active
         </span>
       </div>
 
       {/* Overview Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl p-4 space-y-1">
-          <div className="flex items-center justify-between text-stone-400 text-xs">
+        <div className="bg-white border border-stone-200 rounded-2xl p-3.5 space-y-1 shadow-2xs">
+          <div className="flex items-center justify-between text-stone-600 text-xs font-medium">
             <span>Active Packages</span>
-            <Package className="w-4 h-4 text-amber-400" />
+            <Package className="w-4 h-4 text-amber-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-white">
+          <div className="text-xl sm:text-2xl font-bold text-stone-900">
             {activePackagesCount}
           </div>
           <p className="text-[11px] text-stone-500">{packages.length} total packages created</p>
         </div>
 
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl p-4 space-y-1">
-          <div className="flex items-center justify-between text-stone-400 text-xs">
+        <div className="bg-white border border-stone-200 rounded-2xl p-3.5 space-y-1 shadow-2xs">
+          <div className="flex items-center justify-between text-stone-600 text-xs font-medium">
             <span>Total Units Funded</span>
-            <Heart className="w-4 h-4 text-rose-400" />
+            <Heart className="w-4 h-4 text-rose-500" />
           </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-white">
+          <div className="text-xl sm:text-2xl font-bold text-stone-900">
             {totalUnitsFunded}
           </div>
           <p className="text-[11px] text-stone-500">Sponsored by devotees globally</p>
         </div>
 
-        <div className="bg-stone-900 border border-stone-800 rounded-2xl p-4 space-y-1">
-          <div className="flex items-center justify-between text-stone-400 text-xs">
+        <div className="bg-white border border-stone-200 rounded-2xl p-3.5 space-y-1 shadow-2xs">
+          <div className="flex items-center justify-between text-stone-600 text-xs font-medium">
             <span>Distributed with Proof</span>
-            <Truck className="w-4 h-4 text-emerald-400" />
+            <Truck className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-white">
+          <div className="text-xl sm:text-2xl font-bold text-stone-900">
             {totalDistributedWithProof}
           </div>
           <p className="text-[11px] text-stone-500">Verified via on-chain Merkle root</p>
@@ -237,10 +237,10 @@ export const StewardPortal: React.FC<StewardPortalProps> = ({ onLock }) => {
       {/* Managed Charity Packages List */}
       <section className="space-y-3" aria-label="Managed Charity Packages">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm sm:text-base font-serif font-bold text-white">
+          <h2 className="text-sm sm:text-base font-bold text-stone-900">
             Managed Charity Packages
           </h2>
-          <span className="text-xs text-stone-400">{packages.length} packages listed</span>
+          <span className="text-xs text-stone-600 font-medium">{packages.length} packages listed</span>
         </div>
 
         <div className="space-y-3">

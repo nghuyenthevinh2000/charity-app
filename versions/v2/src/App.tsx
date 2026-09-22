@@ -4,6 +4,7 @@ import { StewardPinModal } from './components/modals/StewardPinModal';
 import { MarketplaceCarousel } from './components/market/MarketplaceCarousel';
 import { ProofExplorer } from './components/proof/ProofExplorer';
 import { StewardPortal } from './components/steward/StewardPortal';
+import { ProfileView } from './components/profile/ProfileView';
 import { LanguageContext, LanguageProvider } from './context/LanguageContext';
 import { MonasteryStoreContext, MonasteryStoreProvider, useMonasteryStore } from './context/MonasteryStore';
 
@@ -11,7 +12,7 @@ export function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('market');
   const [initialProofId, setInitialProofId] = useState<string | undefined>(undefined);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
-  const { isStewardUnlocked } = useMonasteryStore();
+  const { isStewardUnlocked, lockSteward } = useMonasteryStore();
 
   const handleTabSelect = (tab: TabId) => {
     if (tab === 'steward' && !isStewardUnlocked) {
@@ -22,7 +23,13 @@ export function AppContent() {
   };
 
   const handlePinSuccess = () => {
+    setIsPinModalOpen(false);
     setActiveTab('steward');
+  };
+
+  const handleLockSteward = () => {
+    lockSteward();
+    setActiveTab('profile');
   };
 
   return (
@@ -42,12 +49,27 @@ export function AppContent() {
             <ProofExplorer initialProofId={initialProofId} />
           )}
 
+          {activeTab === 'profile' && (
+            <ProfileView
+              onRequestStewardUnlock={() => setIsPinModalOpen(true)}
+              onNavigateToSteward={() => setActiveTab('steward')}
+              onViewProof={(pkgId) => {
+                setInitialProofId(pkgId);
+                setActiveTab('proof');
+              }}
+            />
+          )}
+
           {activeTab === 'steward' && (
-            <StewardPortal onLock={() => setActiveTab('market')} />
+            <StewardPortal onLock={handleLockSteward} />
           )}
         </main>
 
-        <BottomNav activeTab={activeTab} onTabSelect={handleTabSelect} />
+        <BottomNav
+          activeTab={activeTab}
+          onTabSelect={handleTabSelect}
+          isStewardUnlocked={isStewardUnlocked}
+        />
 
         <StewardPinModal
           isOpen={isPinModalOpen}

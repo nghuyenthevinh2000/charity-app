@@ -18,7 +18,8 @@
     "tabs": {
       "market": "Gói Thiện Nguyện",
       "proof": "Khám Phá Minh Chứng",
-      "steward": "Quản Sự"
+      "steward": "Quản Sự",
+      "profile": "Hồ Sơ"
     }
   },
   "categories": {
@@ -264,5 +265,25 @@
     "p7": {
       "dedication": "Cầu nguyện cho các sĩ tử tâm trí sáng suốt, bình tĩnh, đạt kết quả tốt đẹp trong mùa thi cử."
     }
+  },
+  "profile": {
+    "title": "Hồ Sơ Phật Tử & Cài Đặt",
+    "devoteeTitle": "Phật Tử Phát Tâm",
+    "devoteeSubtitle": "Người trợ duyên thanh tịnh cho Tu Viện Vườn Sen",
+    "devoteeModeBadge": "Chế Độ Phật Tử",
+    "monkModeBadge": "Chế Độ Quản Sự (Đã Mở)",
+    "stewardLoginBtn": "Đăng Nhập Quản Sự Chùa",
+    "stewardLoginHint": "Nhập mã PIN 1080 để vào khu vực quản lý",
+    "switchToSteward": "Vào Bàn Làm Việc Quản Sự",
+    "lockSteward": "Khóa Phiên Quản Sự",
+    "languageTitle": "Tùy Chọn Ngôn Ngữ",
+    "languageSubtitle": "Chọn ngôn ngữ hiển thị cho ứng dụng",
+    "personalGivingTitle": "Nhật Ký Cúng Dường Cá Nhân",
+    "personalGivingSubtitle": "Sổ cái riêng các gói từ thiện đã tài trợ trên thiết bị này",
+    "sanctuaryTitle": "Thông Tin Tu Viện & Sổ Cái",
+    "smartContract": "Sổ Cái Hợp Đồng Thông Minh",
+    "verificationStatus": "Xác thực gốc Merkle SHA-256 trên chuỗi",
+    "missionDispatch": "Sứ mệnh cứu trợ vùng cao • Hoạt động miền Trung & Đồng bằng sông Cửu Long",
+    "version": "v2.0 Trao Gửi Yêu Thương"
   }
 }

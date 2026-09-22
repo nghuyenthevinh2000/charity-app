@@ -7,12 +7,12 @@ describe('Charity App V2 Shell & Navigation', () => {
     localStorage.clear();
   });
 
-  it('renders the 3 main tabs: Packages, Proof Explorer, and Monk Steward', () => {
+  it('renders the 3 main tabs: Packages, Proof Explorer, and Profile', () => {
     render(<App />);
 
     expect(screen.getByRole('button', { name: /charity packages/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /proof explorer/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /monk steward/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /profile/i })).toBeInTheDocument();
     // Old prayer wall is removed
     expect(screen.queryByRole('button', { name: /prayer wall/i })).not.toBeInTheDocument();
   });
@@ -27,10 +27,10 @@ describe('Charity App V2 Shell & Navigation', () => {
     fireEvent.click(screen.getByRole('button', { name: /proof explorer/i }));
     expect(screen.getByRole('tabpanel', { name: /Public Field Proofs/i })).toBeInTheDocument();
 
-    // Switch to Monk Steward
-    fireEvent.click(screen.getByRole('button', { name: /monk steward/i }));
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText(/Steward Authentication/i)).toBeInTheDocument();
+    // Switch to Profile
+    fireEvent.click(screen.getByRole('button', { name: /profile/i }));
+    expect(screen.getByText(/Devotee Practitioner/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your Personal Giving Tracker/i)).toBeInTheDocument();
   });
 
   it('sponsors a package, completes purchase, and jumps to Proof Explorer', () => {
@@ -59,8 +59,11 @@ describe('Charity App V2 Shell & Navigation', () => {
   it('authenticates steward with PIN, launches new package, and displays it in steward portal list', () => {
     render(<App />);
 
-    // Click Monk Steward tab
-    fireEvent.click(screen.getByRole('button', { name: /monk steward/i }));
+    // Click Profile tab
+    fireEvent.click(screen.getByRole('button', { name: /profile/i }));
+
+    // Click Monk Steward Login
+    fireEvent.click(screen.getByRole('button', { name: /Monk Steward Login/i }));
 
     // PIN modal opens
     expect(screen.getByRole('dialog')).toBeInTheDocument();

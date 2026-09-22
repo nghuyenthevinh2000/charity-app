@@ -18,7 +18,8 @@
     "tabs": {
       "market": "Charity Packages",
       "proof": "Proof Explorer",
-      "steward": "Monk Steward"
+      "steward": "Monk Steward",
+      "profile": "Profile"
     }
   },
   "categories": {
@@ -267,5 +268,25 @@
     "p7": {
       "dedication": "For clarity of mind and wisdom for young students during exam season."
     }
+  },
+  "profile": {
+    "title": "Devotee Profile & Preferences",
+    "devoteeTitle": "Devotee Practitioner",
+    "devoteeSubtitle": "Noble supporter of the Lotus Grove Sanctuary",
+    "devoteeModeBadge": "Devotee Mode",
+    "monkModeBadge": "Monk Steward Mode (Unlocked)",
+    "stewardLoginBtn": "Monk Steward Login",
+    "stewardLoginHint": "Enter PIN 1080 to access steward management",
+    "switchToSteward": "Open Steward Portal",
+    "lockSteward": "Lock Steward Workspace",
+    "languageTitle": "Language Preferences",
+    "languageSubtitle": "Select your preferred application language",
+    "personalGivingTitle": "Personal Giving History",
+    "personalGivingSubtitle": "Private ledger of charity packages sponsored on this device",
+    "sanctuaryTitle": "Sanctuary & Ledger Info",
+    "smartContract": "Smart Contract Ledger",
+    "verificationStatus": "SHA-256 Merkle verified on-chain",
+    "missionDispatch": "Highland Relief Mission • Central Vietnam & Mekong Outreach",
+    "version": "v2.0 Packaged Giving"
   }
 }
